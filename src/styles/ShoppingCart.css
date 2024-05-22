@@ -1,0 +1,255 @@
+/* Background and container */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+    body {
+      background-color: #fff;
+      color: #590209;
+      font-family: Arial, 'Poppins', sans-serif;
+    }
+
+    .container {
+      max-width: 100%;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    h2 {
+      font-size: 28px;
+      font-weight: bolder;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .font-poppins {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .shopping-btn{
+      padding: 5px 10px;
+      font-size: 10px;
+    }
+
+    .quantitybtn {
+      visibility: hidden;
+    }
+
+  
+
+
+  /* Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+
+  th {
+    margin-bottom: 20px;
+  }
+
+  /* Product row */
+  td:first-child {
+    display: flex;
+    align-items: center;
+  }
+
+  td img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    margin-right: 10px;
+  }
+  
+  /* Quantity buttons */
+  td:nth-child(3) button {
+    background-color: transparent;
+    color: #590209;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+
+  td:nth-child(3) button:hover {
+    background-color: #590209;
+    color: #fff;
+  }
+
+  td:nth-child(3) span {
+    margin: 0 10px;
+  }
+
+  /* Align contents to the top */
+  td.align-top {
+    vertical-align: top;
+  }
+
+  /* Remove product button */
+  td:last-child button {
+    font-size: 1.2rem;
+    line-height: 1;
+    transition: color 0.2s ease-in-out;
+  }
+
+  /* .hidden {
+    visibility: hidden;
+  } */
+  
+  /* Delivery options */
+  .delivery-options {
+    background-color: #ffcccc;
+    padding: 20px;
+    border-radius: 5px;
+  }
+  
+  .delivery-options p {
+    margin-bottom: 10px;
+  }
+  
+  .delivery-options label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  /* Checkout button */
+  .checkout-btn {
+    background-color: #590209;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  .checkout-btn:hover {
+    background-color: #cc0000;
+  }
+
+
+  /* Media queries for responsive design */
+@media (max-width: 768px) {
+  /* Adjust container width */
+  .container {
+    max-width: 100%;
+  }
+
+  .shopping-btn {
+    padding: 8px 10px;
+    font-size: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+
+  .productId, .productColor, .productPrice{
+    display: none;
+  }
+
+  .quantitydiv  {
+    visibility: hidden;
+  }
+
+  /* Adjust table layout */
+  table {
+    font-size: 14px;
+  }
+
+  /* Adjust product image size */
+  td img {
+    width: 60px;
+    height: 60px;
+  }
+
+  /* Adjust font sizes */
+  h1 {
+    font-size: 20px;
+  }
+
+  h2 {
+    font-size: 24px;
+  }
+
+  .quantitybtn{
+    visibility: visible;
+    background-color: transparent;
+    color: #590209;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-left: 40px;
+    margin-top: -10px;
+  }
+
+  .qtybtn:hover {
+    background-color: #590209;
+    color: #fff;
+    border-radius: 50%;
+  }
+
+  .mobilediv {
+    display: flex;
+    flex-direction: row;
+    margin-top: -50px;
+  }
+
+  .xmark {
+    margin-top: -45px;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Adjust table layout for smaller screens */
+  table,
+  thead,
+  tbody,
+  th,
+  td,
+  tr {
+    display: block;
+  }
+
+  /* Hide table headers */
+  thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  /* Display table rows vertically */
+  tr {
+    border-top: 1px dashed #590209;
+    border-bottom: none;
+    padding: 5px;
+  }
+
+  /* Adjust table cell styles */
+  td {
+    border: none;
+    position: relative;
+    padding-left: 20%;
+  }
+
+  /* Adjust product image size */
+  td img {
+    width: 40px;
+    height: 40px;
+  }
+
+  /* Add label for table cells */
+  td:before {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+    font-weight: bold;
+    content: attr(data-label);
+  }
+}
