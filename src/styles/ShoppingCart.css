@@ -5,12 +5,12 @@
       background-color: #fff;
       color: #590209;
       font-family: Arial, 'Poppins', sans-serif;
+      min-width: 100%;
     }
 
     .container {
-      max-width: 100%;
-      margin: 0 auto;
-      padding: 20px;
+      min-width: 100%;
+      margin: 0;
     }
 
     h1 {

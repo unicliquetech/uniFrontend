@@ -1,6 +1,6 @@
 "use client";
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState, ChangeEvent } from 'react';
+import axios, {AxiosError} from 'axios';
 import Input from '../component/Input';
 import Image from 'next/image';
 import eyelock from '../images/eye-off.svg';
@@ -35,11 +35,11 @@ const SignUp = () => {
         setConfirmPasswordVisible((prev) => !prev);
     };
 
-    const handleChange = (e) => {
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleRegistration = async (e) => {
+    const handleRegistration = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if (formData.password !== formData.confirmPassword) {
@@ -58,19 +58,14 @@ const SignUp = () => {
             } else {
                 console.error('Registration failed:', response.data.msg);
             }
-        } catch (error) {
-            // Handle the error
-            if (error.response) {
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
                 // The request was made and the server responded with a status code
-                console.error('Error:', error.response.status, error.response.data);
-            } else if (error.request) {
-                // The request was made but no response was received
-                console.error('No response received:', error.request);
-            } else {
-                // Something happened in setting up the request that triggered an error
-                console.error('Error:', error.message);
+                console.error('Error:', error.response?.status, error.response?.data);
+              } else {
+                console.error('Error:', error);
+              }
             }
-        }
     };
 
     return (
@@ -177,7 +172,7 @@ const SignUp = () => {
                     <Button
                         style={{ backgroundColor: "#590209", fontSize: "12px", font: 'bold', padding: "15px", color: '#fff', width: '90%', marginTop: "20px", borderRadius: '10px' }}
                         text="Sign Up"
-                        onClick={handleRegistration}
+                        // onClick={() => handleRegistration()}
                     />
                     <Button
                         style={{ backgroundColor: "#590209", fontSize: "12px", font: 'bold', padding: "15px", color: '#fff', width: '90%', marginTop: "2px", borderRadius: '10px' }}

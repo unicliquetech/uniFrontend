@@ -1,0 +1,94 @@
+/* For small screens */
+@media (max-width: 748px) {
+    .delivery-option {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .deliverytext{
+      font-size: 12px
+    }
+  
+    .delivery-option span {
+      margin-left: 0;
+      margin-top: 0.5rem;
+    }
+  
+    .delivery-option select {
+      margin-left: 0;
+      margin-top: 0.5rem;
+    }
+
+    .address-container{
+      max-width: 100%;
+    }
+
+    .step{
+      max-width: 90%;
+    }
+
+    .step-content{
+      font-size: 8px;
+    }
+  
+    .address-card {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .address-card small {
+      margin-left: 0;
+      margin-top: 0.5rem;
+    }
+  
+    .address-card button {
+      margin-top: 0.5rem;
+    }
+  
+    .payment-form div {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .payment-form label {
+      margin-bottom: 0.25rem;
+    }
+  }
+  
+  /* For larger screens */
+  @media (min-width: 641px) {
+    .delivery-option {
+      flex-direction: row;
+      align-items: center;
+    }
+  
+    .delivery-option span {
+      margin-left: auto;
+    }
+  
+    .delivery-option select {
+      margin-left: auto;
+    }
+  
+    .address-card {
+      flex-direction: row;
+      align-items: center;
+    }
+  
+    .address-card small {
+      margin-left: auto;
+    }
+  
+    .address-card button {
+      margin-left: 1rem;
+    }
+  
+    .payment-form div {
+      flex-direction: row;
+      align-items: center;
+    }
+  
+    .payment-form label {
+      margin-right: 1rem;
+    }
+  }
