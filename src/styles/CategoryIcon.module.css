@@ -1,0 +1,30 @@
+/* src/styles/CategoryIcon.module.css */
+.categoryIcon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .iconContainer {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .iconContainer img {
+    max-width: 60%;
+    max-height: 60%;
+    object-fit: contain;
+  }
+  
+  .categoryIcon h4 {
+    margin-top: 0.5rem;
+    font-weight: 600;
+  }
+  

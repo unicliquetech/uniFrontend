@@ -1,0 +1,145 @@
+/* src/styles/Header.module.css */
+.header {
+    align-items: center;
+    background-color: #fff; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;  
+    color: #fff;
+    justify-content: space-between;
+    max-width: 100vw;
+    overflow-x: hidden; 
+  }
+
+  .headerbar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    max-width: inherit;
+  }
+
+  .headericon {
+    position: relative;
+  }
+
+  .headerTextWrapper {
+    position: absolute;
+    top: 50%;
+    left: 35%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .headerText {
+    color: white;
+    font-size: 2rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+  
+  .headerText span {
+    color: #590209;
+    font-size: 2.4rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  }
+
+  .headericon img{
+    height: 25rem;
+    width: 100%;
+  }
+  
+  .logo img {
+    height: 40px;
+  }
+  
+  .search {
+    display: flex;
+    width: 55%;
+    /* padding: 0.5rem 1rem; */
+    border: 1px solid #590209;
+    border-radius: 4px;
+    font-size: 1rem;
+    padding: 0;
+    justify-content: space-between;
+  }
+
+  .search input {
+    border: none;
+    outline: none;
+    background-color:#fff ;
+    color: transparent;
+    padding: 0;
+  }
+
+  .searchIcon {
+    height: 24px;
+    border: transparent;
+    justify-self: flex-end;
+  }
+  
+  .icons {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .icons button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .icons img {
+    height: 24px;
+  }
+
+
+  @media (max-width: 768px) and (min-width: 325px) {
+    .logo img {
+      height: 18px;
+      margin: 0;
+    }
+  
+    .search {
+      width: 30%;
+      padding: 0.01rem 0.05rem;
+      font-size: 0.5rem;
+      background-color: #fff;
+      margin-left: 0.4em;    
+      margin-right: 4.2em;
+    }
+  
+    .headerbar {
+      display: flex;
+      justify-content: flex-start;
+      align-items: left;
+      padding: 0.5rem 0.2rem 0 0.5rem;
+      max-width: 95%;
+      width: 100%;
+    }
+  
+    .icons img {
+      height: 18px;
+    }
+  
+    .icons {
+      display: flex;
+      gap: 0.8rem;
+    }
+  }
+  
+  @media (min-width: 375px) {
+    .headerbar {
+      align-items: center;
+      /* padding: 0.5rem; */
+    }
+  
+    .logo img {
+      height: 20px;
+    }
+  
+    .search {
+      width: 55%;
+      margin: 0.03rem 4rem 0.4rem 2rem;
+      padding: 0.08rem 0.6rem;
+    }
+  
+  }
+
