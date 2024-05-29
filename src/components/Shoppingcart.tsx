@@ -19,7 +19,7 @@ const ShoppingCart = () => {
   useEffect(() => {
     const fetchCartData = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/v1/cart');
+        const response = await axios.get('https://unibackend.onrender.com/api/v1/cart');
         setCartItems(response.data);
       } catch (error) {
         console.error('Error fetching cart data:', error);
@@ -33,13 +33,22 @@ const ShoppingCart = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const subtotal = cartItems.reduce((acc, item) => acc + item.total, 0);
+  const deliveryPrice = (400);
+  // const productTotals = cartItems.map(item => item.price * item.quantity);
+  const itemTotal = cartItems.reduce((acc, item) => item.price * item.quantity, 0);
+  // const subtotal = total.reduce((acc, total) => acc + total, 0);
 
-  const handleQuantityChange = async (itemId: string, newQuantity: number) => {
+  const itemTotals = cartItems.map(item => item.price * item.quantity);
+  const total = itemTotals.reduce((acc, itemTotal) => acc + itemTotal, 0);
+  const subtotal = total;
+  const serviceFee = 50;
+  const Total = subtotal + deliveryPrice + serviceFee;
+
+  const handleQuantityChange = async (productId: string, newQuantity: number) => {
     try {
-      const response = await axios.put(`http://localhost:5000/api/v1/cart/${itemId}`, { quantity: newQuantity });
+      const response = await axios.put(`https://unibackend.onrender.com/api/v1/cart/${productId}`, { quantity: newQuantity });
       const updatedCartItems = cartItems.map((item) =>
-        item._id === itemId ? response.data : item
+        item.productId === productId ? { ...item, quantity: response.data.quantity } : item
       );
       setCartItems(updatedCartItems);
     } catch (error) {
@@ -47,11 +56,13 @@ const ShoppingCart = () => {
     }
   };
 
-  const handleRemoveFromCart = async (itemId: string) => {
+  const handleRemoveFromCart = async (productId: string) => {
     try {
-      await axios.delete(`http://localhost:5000/api/v1/cart/${itemId}`);
-      const updatedCartItems = cartItems.filter((item) => item._id !== itemId);
-      setCartItems(updatedCartItems);
+      await axios.delete(`https://unibackend.onrender.com/api/v1/cart/${productId}`);
+
+    // Filter out the removed product from the cartItems state
+    const updatedCartItems = cartItems.filter((item) => item.productId !== productId);
+    setCartItems(updatedCartItems);
     } catch (error) {
       console.error('Error removing cart item:', error);
     }
@@ -64,7 +75,7 @@ const ShoppingCart = () => {
         const newQuantity = existingItem.quantity + 1;
         await handleQuantityChange(existingItem._id, newQuantity);
       } else {
-        const response = await axios.post('http://localhost:5000/api/v1/cart', { productId });
+        const response = await axios.post('https://unibackend.onrender.com/api/v1/cart', { productId });
         const newItem = response.data;
         setCartItems([...cartItems, newItem]);
       }
@@ -72,7 +83,28 @@ const ShoppingCart = () => {
       console.error('Error adding to cart:', error);
     }
   };
+  
+  // interface DeliveryOptionsProps {
+  //   subtotal: number;
+  // }
+  
+  // const DeliveryOptions = ({shippingPrice} ) => {
+  //   const [deliveryPrice, setShippingPrice] = useState(0);
+  
+  //   const handleStorePickup = () => {
+  //     const [shippingPrice, setShippingPrice] = useState(0);
+  //     setShippingPrice(0);
+  //   };
+  
+  //   const handleHomeDelivery = () => {
+  //     setShippingPrice(2000);
+  //   };
+  // };
 
+  
+
+
+  
   return (
     <div className="container">
       <div className="bg-white rounded-lg shadow-md p-6">
@@ -154,7 +186,7 @@ const ShoppingCart = () => {
               </div>
             </div>
             <button className="bg-red-900 hover:bg-red-600 text-white rounded ml-2 sm:ml-4 px-2 py-2 sm:px-4 sm:py-2 hidden sm:inline-block">
-              Continue Shopping
+              <a href='/product'>Continue Shopping</a>
             </button>
           </div>
 
@@ -240,7 +272,7 @@ const ShoppingCart = () => {
                 <td className="px-4 py-2 align-top quantitydiv">
                   <button
                     className="bg-gray-200 hover:bg-gray-300 text-red-800 font-bold py-1 px-2 rounded-l"
-                    onClick={() => handleQuantityChange(item._id, item.quantity - 1)}
+                    onClick={() => handleQuantityChange(item.productId, item.quantity - 1)}
                     disabled={item.quantity === 1}
                   >
                     -
@@ -248,7 +280,7 @@ const ShoppingCart = () => {
                   <span className="mx-1">{item.quantity}</span>
                   <button
                     className="bg-gray-200 hover:bg-gray-300 text-red-800 font-bold py-1 px-2 rounded-r"
-                    onClick={() => handleQuantityChange(item._id, item.quantity + 1)}
+                    onClick={() => handleQuantityChange(item.productId, item.quantity + 1)}
                   >
                     +
                   </button>
@@ -256,11 +288,11 @@ const ShoppingCart = () => {
 
                 <td className="px-4 py-2 align-top relative">
                   <div className="mobilediv">
-                    ₦{item.total.toLocaleString()}
+                    ₦{itemTotal}
                     <div className="px-4 py-2 align-top quantitybtn">
                       <button
                         className=" py-1 px-2 rounded-l qtybtn"
-                        onClick={() => handleQuantityChange(item._id, item.quantity - 1)}
+                        onClick={() => handleQuantityChange(item.productId, item.quantity - 1)}
                         disabled={item.quantity === 1}
                       >
                         -
@@ -268,14 +300,14 @@ const ShoppingCart = () => {
                       <span className="mx-1">{item.quantity}</span>
                       <button
                         className=" py-1 px-2 rounded-r qtybtn"
-                        onClick={() => handleQuantityChange(item._id, item.quantity + 1)}
+                        onClick={() => handleQuantityChange(item.productId, item.quantity + 1)}
                       >
                         +
                       </button>
                     </div>
                     <button
                       className="absolute top-0 right-0 text-red-800 hover:text-red-600 xmark"
-                      onClick={() => handleRemoveFromCart(item._id)}
+                      onClick={() => handleRemoveFromCart(item.productId)}
                     >
                       &times;
                     </button>
@@ -288,24 +320,51 @@ const ShoppingCart = () => {
 
         <div className="mt-4 bg-pink-100 p-4 rounded-lg">
             <p className="text-lg font-semibold">Choose Delivery Method:</p>
-            <div className="mt-2">
-              <label className="inline-flex items-center">
-                <input type="radio" name="delivery" defaultChecked className="form-radio" />
-                <span className="ml-2">Store Pickup (In 30 min) • FREE</span>
-              </label>
-            </div>
-            <div className="mt-2">
-              <label className="inline-flex items-center">
-                <input type="radio" name="delivery" className="form-radio" />
-                <span className="ml-2">Delivery at home (Under 2 - 4 days) • ₦2,000</span>
-              </label>
-            </div>
+      <div className="mt-2">
+        <label className="inline-flex items-center">
+          <input
+            type="radio"
+            name="delivery"
+            value="homeDelivery"
+            className="form-radio"
+            // onChange={handle}
+          />
+          <span className="ml-2">Express (In 15 minutes) • ₦800</span>
+        </label>
+        <div className="mt-2">
+        <label className="inline-flex items-center">
+          <input
+            type="radio"
+            name="delivery"
+            value="storePickup"
+            defaultChecked
+            className="form-radio"
+            // onChange={handleStorePickup}
+          />
+          <span className="ml-2">Regular Delivery (In 30 min) • ₦400</span>
+        </label>
+      </div>
+      <div className="mt-2">
+        <label className="inline-flex items-center">
+          <input
+            type="radio"
+            name="delivery"
+            value="schedule"
+            defaultChecked
+            className="form-radio"
+            // onChange={handleStorePickup}
+          />
+          <span className="ml-2">Schedule (In 2-4 days) • ₦500</span>
+        </label>
+      </div>
+      </div>
             <div className="mt-4 text-right">
               <p className="text-sm">SUB TOTAL: ₦{subtotal.toLocaleString()}</p>
-              <p className="text-sm">SHIPPING: Free</p>
-              <p className="text-lg font-semibold mt-2">TOTAL: ₦{subtotal.toLocaleString()}</p>
+              <p className="text-sm">SHIPPING: ₦{deliveryPrice.toLocaleString()}</p>
+              <p className="text-sm">SERVICE FEE: ₦{serviceFee.toLocaleString()}</p>
+              <p className="text-lg font-semibold mt-2">TOTAL: ₦{Total.toLocaleString()}</p>
               <button className="bg-red-900 hover:bg-red-600 text-white py-2 px-4 rounded mt-4 checkout-btn">
-                CHECKOUT ₦{subtotal.toLocaleString()}
+                <a href='/checkout' > CHECKOUT ₦{Total.toLocaleString()} </a>
               </button>
             </div>
           </div>

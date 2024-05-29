@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import styles from '@/styles/MainContent.module.css';
+import styles from '../styles/Product.module.css';
+const crypto = require('crypto');
 // import star from '/assets/Star 1.png';
 
 interface Product {
@@ -11,9 +12,10 @@ interface Product {
   deliveryTime: string;
   deliveryNote: string;
   category: string;
+  productId: string;
 }
 
-interface ProductCardProps extends Product {}
+interface ProductCardProps extends Product { }
 
 const ProductCard: React.FC<ProductCardProps> = ({
   image,
@@ -22,10 +24,43 @@ const ProductCard: React.FC<ProductCardProps> = ({
   rating,
   deliveryTime,
   deliveryNote,
+  productId,
 }) => {
+  // const [minMinutes, maxMinutes] = deliveryTime;
+  const [isAdded, setIsAdded] = useState(false);
+
+
+  const handleAddToCart = async () => {
+    try {
+      const response = await fetch('https://unibackend.onrender.com/api/v1/cart', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          productId,
+          quantity: 1,
+          image,
+          name,
+          price,
+        }),
+      });
+
+      if (response.ok) {
+        setIsAdded(true);
+        // You can also show a success message or update the cart count here
+      } else {
+        console.error('Failed to add product to cart');
+      }
+    } catch (error) {
+      console.error('Error adding product to cart:', error);
+    }
+  };
+
+
   return (
     <div className={styles.productCard}>
-      <a href="/">
+      <div>
         <div className={styles.product}>
           <img src={image} alt={`${name} image`} className={styles.productImage} />
           <div className={styles.productContent}>
@@ -33,17 +68,25 @@ const ProductCard: React.FC<ProductCardProps> = ({
               <b>{name}</b>
             </p>
             <p>₦{price}</p>
-            <p>{deliveryTime}</p>
+            {/* <p>{minMinutes}-{maxMinutes} minutes</p> */}
+            <p>{deliveryTime} minutes</p>
             <div className={styles.deliveryData}>
               <p>{deliveryNote}</p>
               <div className={styles.rating}>
                 <p>{rating}</p>
-                {/* <img src={star} className={styles.star} /> */}
+                <img src="https://res.cloudinary.com/da1l4j12k/image/upload/v1716642067/Star_1_ahpoz0.png" className={styles.star} />
               </div>
             </div>
+            <button
+              className={styles.addToCartButton}
+              onClick={handleAddToCart}
+              disabled={isAdded}
+            >
+              {isAdded ? 'Added to Cart' : 'Add to Cart'}
+            </button>
           </div>
         </div>
-      </a>
+      </div>
     </div>
   );
 };
@@ -55,7 +98,7 @@ const ProductList: React.FC = () => {
   useEffect(() => {
     const fetchProductData = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/v1/products');
+        const response = await fetch('https://unibackend.onrender.com/api/v1/products');
         const data = await response.json();
         setProducts(data.products);
       } catch (error) {
@@ -115,6 +158,7 @@ const ProductList: React.FC = () => {
                 deliveryTime={product.deliveryTime}
                 deliveryNote={product.deliveryNote}
                 category={product.category}
+                productId={product.productId}
               />
             ))}
           </div>
