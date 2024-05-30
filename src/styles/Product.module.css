@@ -26,7 +26,8 @@
   }
 
   .product{
-    background-color: #590209;
+    background-color: #fff;
+    color: #590209;
     display: grid;
     justify-content: space-between;
   }
@@ -56,14 +57,13 @@
 
   .productImage {
     width: 25em;
-    height: 17em;
-    border: transparent solid 2px;
-    border-radius: 15px;
-    /* margin-bottom: 10px; */
+    height: 18em;
+    /* border: transparent solid 2px;
+    border-radius: 15px; */
+    margin-bottom: 0px;
   }
   .productContent {
-    color: #fff;
-    height: 60%;
+    color: #590209;
     display: flex;
     flex-direction: column;
     padding: 10px 20px;
@@ -80,10 +80,11 @@
     justify-content: space-between; 
     width: 100%;
     margin-bottom: 5%;
+    margin-top: 0;
   }
   .productName {
     font-size: 1.3rem;
-    /* margin-bottom: 10px; */
+    margin-top: 0px;
     /* margin-right: 20%; */
   }
 
@@ -95,7 +96,8 @@
     width: 1em;
     height: 1em;
     color: #fff;
-    margin-right: 8px;
+    margin-left: 4px;
+    margin-bottom: 12px;
   }
 
   .deliveryData {
@@ -119,8 +121,8 @@
   }
 
   .addToCartButton{
-    background-color: #fff;
-    color: #590209;
+    background-color: #590209;
+    color: #fff;
     margin-left: 25%;
     padding: 8px 18px;
     border: #fff solid 2px;
@@ -180,8 +182,30 @@
 
     @media (max-width: 768px) {
         .productList {
-          grid-auto-columns: calc(60% - 10px); 
-          height: 26rem;
+          grid-auto-columns: calc(80% - 10px); 
+          max-height: 25em;
+          height: 25rem;
+          overflow-y: hidden;
+        }
+        .product{
+          max-height: 100%;
+          height: 24rem;
+        }
+        .productImage{
+          height: 14em;
+        }
+        .productSubheader{
+          margin-bottom: -5px;
+        }
+        .productName{
+          margin-right: 10px;
+          font-size: 1.2rem;
+        }
+        .category{
+          font-size: 1.5rem;
+        }
+        .deliveryData{
+          margin-top: 0;
         }
         .scrollButton{
           display: none;
@@ -190,11 +214,15 @@
           margin-left: 16%;
           padding: 2px 4px;
         }
+        .addToCartButton{
+          margin-bottom: -20px;
+          margin-top: 10px;
+        }
       }
       
       @media (max-width: 480px) {
         .productList {
-          grid-auto-columns: calc(80% - 10px); 
+          grid-auto-columns: calc(100% - 10px); 
           height: 26rem;
         }
         .scrollButton{

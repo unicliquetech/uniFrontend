@@ -1,4 +1,4 @@
-"use client"
+// "use client"
 import React, { useEffect, useState } from 'react';
 import styles from '../styles/Product.module.css';
 const crypto = require('crypto');
@@ -10,7 +10,7 @@ interface Product {
   name: string;
   price: number;
   rating: number;
-  deliveryTime: string;
+  deliveryTime: string[];
   deliveryNote: string;
   category: string;
   productId: string;
