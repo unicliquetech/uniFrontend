@@ -160,10 +160,10 @@ const AddressStep = () => {
             <small className=" text-red-900 border bg-red-900 border-gray-300 rounded sm:p-4 text-white sm:px-4 sm:py-2 mr-2">{address.type}</small>
             <div>
               <button onClick={() => handleEditAddress(address._id)} className="text-red-900 hover:text-gray-700">
-                <img src="/images/Edit.svg" alt="edit" className="h-4 mr-2 sm:h-8" />
+                <img src="https://res.cloudinary.com/daqlpvggg/image/upload/v1717040725/Edit_dfef4j.svg" alt="edit" className="h-4 mr-2 sm:h-8" />
               </button>
               <button onClick={() => handleDeleteAddress(address._id)} className="text-red-900 hover:text-gray-700">
-                <img src="/images/Close.svg" alt="delete" className="h-4 mr-2 sm:h-8" />
+                <img src="https://res.cloudinary.com/daqlpvggg/image/upload/v1717040679/Close_zc2plj.svg" alt="delete" className="h-4 mr-2 sm:h-8" />
               </button>
             </div>
           </div>
@@ -385,7 +385,7 @@ const PaymentStep = () => {
   return (
     <div>
       <h2 className="text-xl font-bold mb-4">Payment Method</h2>
-      {/* Replace this with your payment form implementation */}
+      {/* Replace this with our payment form implementation */}
       <div className="mb-4">
         <label htmlFor="cardNumber" className="text-gray-700">
           Card Number
@@ -569,7 +569,7 @@ const Checkout = () => {
               </span>
               <div className="hidden sm:flex items-center">
                 <img
-                  src="/images/avatar.svg"
+                  src="https://res.cloudinary.com/daqlpvggg/image/upload/v1717040743/avatar_jznivx.png"
                   alt="Profile"
                   className="w-8 h-8 rounded-full mr-2"
                 />
@@ -579,7 +579,7 @@ const Checkout = () => {
                 </div>
               </div>
               <button className="bg-red-900 hover:bg-red-600 text-white rounded ml-2 sm:ml-4 px-2 py-2 sm:px-4 sm:py-2 hidden sm:inline-block">
-                Continue Shopping
+                <a href='/product'>Continue Shopping</a>
               </button>
             </div>
 
@@ -622,7 +622,7 @@ const Checkout = () => {
                     Profile
                   </a>
                   <a
-                    href="#"
+                    href="/product"
                     className="bg-red-900 text-white block px-3 py-2 rounded-md text-base font-medium"
                   >
                     Continue Shopping
@@ -740,7 +740,7 @@ const Checkout = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 <div>
                   <div className="flex items-center">
-                    <img src="/images/logo3.png" alt="Uniclique" className="h-8 mr-2" />
+                    <img src="https://res.cloudinary.com/daqlpvggg/image/upload/v1717040777/logo3_zd01wc.png" alt="Uniclique" className="h-16 mr-2" />
                   </div>
                   <span className="text-white mt-4 mb-2">
                     Join our newsletters to stay up to date on features and releases

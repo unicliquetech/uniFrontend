@@ -177,7 +177,7 @@ const ShoppingCart = () => {
             </span>
             <div className="hidden sm:flex items-center">
               <img
-                src="/images/avatar.png"
+                src="https://res.cloudinary.com/daqlpvggg/image/upload/v1717040743/avatar_jznivx.png"
                 alt="Profile"
                 className="w-8 h-8 rounded-full mr-2"
               />
@@ -230,7 +230,7 @@ const ShoppingCart = () => {
                     Profile
                   </a>
                   <a
-                    href="#"
+                    href="/product"
                     className="bg-red-900 text-white block px-3 py-2 rounded-md text-base font-medium"
                   >
                     Continue Shopping
@@ -375,7 +375,7 @@ const ShoppingCart = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 <div>
                   <div className="flex items-center">
-                    <img src="/images/logo3.png" alt="Uniclique" className="h-8 mr-2" />
+                    <img src="https://res.cloudinary.com/daqlpvggg/image/upload/v1717040777/logo3_zd01wc.png" alt="Uniclique" className="h-16 mr-2" />
                   </div>
                   <span className="text-white mt-4 mb-2">
                     Join our newsletters to stay up to date on features and releases

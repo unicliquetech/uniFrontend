@@ -12,7 +12,7 @@
   .productList {
     display: grid;
     grid-auto-flow: column;
-    grid-auto-columns: 25%; 
+    grid-auto-columns: 30%; 
     -ms-overflow-style: none; 
     scrollbar-width: none;
     overflow-x: auto;
@@ -22,6 +22,7 @@
     scroll-snap-align: start;
     scroll-padding: 1rem;
     max-width: 100%;
+    position: relative;
   }
 
   .product{
@@ -35,19 +36,27 @@
 
   .productHeaderContainer {
     display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 5%;
   }
-  /* h2 {
-    margin-left: 16px;
+
+  .category {
+    margin-left: 20px;
     font-size: 1.8rem;
-  } */
+    text-transform: uppercase;
+    margin-bottom: 0;
+  }
+
   .products p {
     color: #000;
     text-decoration: none;
   }
 
   .productImage {
-    width: 20em;
-    height: 13em;
+    width: 25em;
+    height: 17em;
     border: transparent solid 2px;
     border-radius: 15px;
     /* margin-bottom: 10px; */
@@ -64,9 +73,22 @@
     justify-content: space-between;
     text-decoration: none;
   }
+
+  .productSubheader{
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between; 
+    width: 100%;
+    margin-bottom: 5%;
+  }
   .productName {
     font-size: 1.3rem;
-    margin-bottom: 10px;
+    /* margin-bottom: 10px; */
+    /* margin-right: 20%; */
+  }
+
+  .price{
+    font-size: 16px;
   }
   
   .star {
@@ -82,9 +104,18 @@
     width: 100%;
     margin-top: 20px;
   }
+
+  .productRating{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
   .rating {
     display: flex;
     right: 0;
+  }
+  .vendor{
+    font-size: 12px;
   }
 
   .addToCartButton{
@@ -99,12 +130,14 @@
   }
 
   .scrollButton {
-    font-size: 4.5rem;
-    color:rgba(255, 171, 171, 0.5) ;
+    font-size: 3rem;
+    margin-top: 30%;
+    color:#590209 ;
     border: none;
     background: none;
     cursor: pointer;
     z-index: 1;
+    position: absolute;
   }
   .scrollContainer {
     display: flex;
@@ -134,7 +167,7 @@
     border-radius: 4px;
     text-decoration: none;
     transition: background-color 0.3s ease;
-    margin-left: 70%; 
+    /* margin-left: 85%;  */
     align-self: flex-end;
     right: 0;
   }

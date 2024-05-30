@@ -14,6 +14,7 @@ interface Product {
   deliveryNote: string;
   category: string;
   productId: string;
+  company: string;
 }
 
 interface ProductCardProps extends Product { }
@@ -26,6 +27,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   deliveryTime,
   deliveryNote,
   productId,
+  company,
 }) => {
   // const [minMinutes, maxMinutes] = deliveryTime;
   const [isAdded, setIsAdded] = useState(false);
@@ -65,10 +67,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
         <div className={styles.product}>
           <img src={image} alt={`${name} image`} className={styles.productImage} />
           <div className={styles.productContent}>
+            <div className={styles.productSubheader}>
             <p className={styles.productName}>
               <b>{name}</b>
             </p>
-            <p>₦{price}</p>
+            <p className={styles.price}>₦{price}</p>
+            </div>
             {/* <p>{minMinutes}-{maxMinutes} minutes</p> */}
             <p>{deliveryTime} minutes</p>
             <div className={styles.deliveryData}>
@@ -78,6 +82,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 <img src="https://res.cloudinary.com/da1l4j12k/image/upload/v1716642067/Star_1_ahpoz0.png" className={styles.star} />
               </div>
             </div>
+            {/* <p className={styles.vendor}>{company}</p> */}
             <button
               className={styles.addToCartButton}
               onClick={handleAddToCart}
@@ -126,7 +131,7 @@ const ProductList: React.FC = () => {
       {Array.from(new Set(products.map((product) => product.category))).map((category) => (
         <div className={styles.productListContainer} key={category}>
           <div className={styles.productHeaderContainer}>
-            <h2>{category}</h2>
+            <h2 className={styles.category}>{category}</h2>
             <a href="https://product-page-u6mz.vercel.app/" className={styles.viewMoreButton}>
               View More
             </a>
@@ -160,6 +165,7 @@ const ProductList: React.FC = () => {
                 deliveryNote={product.deliveryNote}
                 category={product.category}
                 productId={product.productId}
+                company={product.company}
               />
             ))}
           </div>
