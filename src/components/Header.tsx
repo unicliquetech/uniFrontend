@@ -31,7 +31,7 @@ const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
         <div className="search relative mr-2 sm:mr-4 sm:flex w-60">
-          <input type="text" placeholder="Search" className="bg-gray-200 text-gray-700 rounded-l px-4 py-2" />
+          <input type="text" placeholder="Search" className="bg-gray-200 text-gray-700 rounded-10 px-4 py-2" />
           <div className="searchIcon">
             <img src={searchIcon.src} alt="Uniclique" className="absolute h-5 border-transparent justify-self-end right-0 top-0 mt-3 mr-5" width={searchIcon.width} height={searchIcon.height} />
           </div>
@@ -47,7 +47,7 @@ const Header: React.FC<HeaderProps> = ({
       </div>
       <div className="headericon">
         <div className={styles.headerTextWrapper}>
-          <h2 className={styles.headerText}><span>GET YOUR PRODUCTS ON UNICLIQUE</span></h2>
+          <h2 className={styles.headerText}><span>SHOP NOW</span></h2>
         </div>
         <img src={headerimg.src} alt="Header" className={styles.headerimg} width={headerimg.width} height={headerimg.height}/>
       </div>

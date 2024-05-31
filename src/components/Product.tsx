@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import styles from '../styles/Product.module.css';
 import Header from '@/components/Header';
+import MainContent from '@/components/MainContent';
+import Footer from '@/components/Footer';
 
 interface Product {
   _id: string;
@@ -138,9 +140,32 @@ const ProductList: React.FC = () => {
           height: 10,
         }}
         headerimg={{
+          src: "https://res.cloudinary.com/daqlpvggg/image/upload/c_fill,g_auto,h_250,w_970/b_rgb:000000,y_-0.50/c_scale,co_rgb:ffffff,fl_relative,w_0.5,y_0.18/v1717130829/header_oqwik3.png",
+          width: 1500, 
+          height: 10,
+        }}
+      />
+      <MainContent
+        foodIcon={{ src: "https://res.cloudinary.com/daqlpvggg/image/upload/v1717137301/food_owcpar.png",}}
+        clothesIcon={{ src: "https://res.cloudinary.com/daqlpvggg/image/upload/v1717137517/plaintees_nyqg9u.png",
+        }}
+        booksIcon={{
+          src: "https://res.cloudinary.com/daqlpvggg/image/upload/v1717043246/fine-leather-journal-notebook-by-holtz-leather-co._1200x_ow6y71.jpg",
+        }}
+        footwearIcon={{
+          src: "https://res.cloudinary.com/daqlpvggg/image/upload/v1717137401/heels_fi1rzk.png",
+        }}
+        skincareIcon={{
           src: "https://res.cloudinary.com/daqlpvggg/image/upload/b_rgb:590209/c_crop,w_764,h_430,ar_16:9/v1717130829/header_oqwik3.png",
-          width: 2000, 
-          height: 50,
+        }}
+        haircareIcon={{
+          src: "https://res.cloudinary.com/daqlpvggg/image/upload/v1717137427/hairdye_dz7mxh.png",
+        }}
+        gadgetsIcon={{
+          src: "https://res.cloudinary.com/daqlpvggg/image/upload/v1717137412/gadgets_lj1j1h.png",
+        }}
+        stationeriesIcon={{
+          src: "https://res.cloudinary.com/daqlpvggg/image/upload/v1717137288/stationeries_sltpst.png",
         }}
       />
     <div>
@@ -188,6 +213,7 @@ const ProductList: React.FC = () => {
         </div>
       ))}
     </div>
+    <Footer />
     </div>
   );
 };

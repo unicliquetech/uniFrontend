@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useState, ChangeEvent } from 'react'
 import Input from '@/component/Input'
 import Image from 'next/image'
 import eyelock from '../images/eye-off.svg'
@@ -29,12 +29,9 @@ const LogIn = () => {
     setPasswordVis((prev) => !prev)
   }
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    })
-  }
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -54,14 +51,14 @@ const LogIn = () => {
       // Handle login error, e.g., show an error message
     }
   }
-
-  interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-    style?: React.CSSProperties;
-  }
+  // interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  //   style?: React.CSSProperties;
+  // }
   
-  const Input: React.FC<InputProps> = ({ style, ...rest }) => {
-    return <input style={style} {...rest} />;
-  };
+  // const Input: React.FC<InputProps> = ({ style, ...rest }) => {
+  //   return <input style={style} {...rest} />;
+  // };
+  
 
   interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     style?: React.CSSProperties;
@@ -121,7 +118,7 @@ const LogIn = () => {
             <div className="mt-[1rem] p-6 rounded-lg shadow-lg shadow-cyan-500/50 max-w-[100%] sm:w-[450px] bg-white w-full">
               <form onSubmit={handleLogin}>
                 <div className="flex flex-col gap-7">
-                  <Input
+                  <input
                     placeholder="Email Address"
                     type="email"
                     name="email"
@@ -137,7 +134,7 @@ const LogIn = () => {
                     }}
                   />
                   <div className="flex relative justify-center items-center">
-                    <Input
+                    <input
                       placeholder="Password"
                       type={passwordVis ? 'text' : 'password'}
                       name="password"
@@ -208,4 +205,4 @@ const LogIn = () => {
   )
 }
 
-export default LogIn
+export default LogIn;

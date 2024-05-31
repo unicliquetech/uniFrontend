@@ -1,0 +1,67 @@
+import React from "react";
+
+const Footer = () => {
+  return (
+    <footer className="bg-[#590209] text-white py-8 px-4">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
+        <div className="flex flex-col items-center md:items-start">
+          <img
+            src="https://res.cloudinary.com/daqlpvggg/image/upload/v1717040777/logo3_zd01wc.png"
+            alt="Uniclique"
+            width={150}
+            height={50}
+            className="mb-4"
+          />
+          <ul className="space-y-2">
+            <li>About Us</li>
+            <li>FAQs</li>
+            <li>Contact Us</li>
+          </ul>
+        </div>
+        <div className="flex flex-col md:items-start">
+          <h4 className="font-bold mb-2">Account</h4>
+          <ul className="space-y-2">
+            <li>Seller Login</li>
+            <li>Sign Up</li>
+            <li>My Orders</li>
+          </ul>
+        </div>
+        <div className="flex flex-col md:items-start">
+          <h4 className="font-bold mb-2">Products</h4>
+          <ul className="space-y-2">
+            <li>Shoes</li>
+            <li>Jewelries</li>
+            <li>Gadgets</li>
+            <li>Fitness Products</li>
+            <li>Food</li>
+            <li>Clothes</li>
+            <li>Books</li>
+          </ul>
+        </div>
+        <div className="flex flex-col md:items-start">
+          <h4 className="font-bold mb-2">Services</h4>
+          <ul className="space-y-2">
+            <li>Photography</li>
+            <li>Make-up artist</li>
+            <li>Fashion Designing</li>
+            <li>Delivery service</li>
+            <li>Laundry service</li>
+          </ul>
+        </div>
+        <div className="flex flex-col md:items-start">
+          <h4 className="font-bold mb-2">Social</h4>
+          <ul className="space-y-2">
+            <li>Instagram</li>
+            <li>Twitter</li>
+            <li>LinkedIn</li>
+          </ul>
+        </div>
+      </div>
+      <div className="mt-8 text-center">
+        &copy; 2024, All Rights Reserved Uniclique
+      </div>
+    </footer>
+  );
+};
+
+export default Footer;
