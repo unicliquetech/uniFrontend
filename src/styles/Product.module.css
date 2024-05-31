@@ -182,7 +182,7 @@
 
     @media (max-width: 768px) {
         .productList {
-          grid-auto-columns: calc(80% - 10px); 
+          grid-auto-columns: calc(65% - 10px); 
           max-height: 25em;
           height: 25rem;
           overflow-y: hidden;
@@ -222,7 +222,7 @@
       
       @media (max-width: 480px) {
         .productList {
-          grid-auto-columns: calc(100% - 10px); 
+          grid-auto-columns: calc(80% - 10px); 
           height: 26rem;
         }
         .scrollButton{

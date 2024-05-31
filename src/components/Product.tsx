@@ -1,8 +1,7 @@
-// "use client"
+"use client"
 import React, { useEffect, useState } from 'react';
 import styles from '../styles/Product.module.css';
-const crypto = require('crypto');
-// import star from '/assets/Star 1.png';
+import Header from '@/components/Header';
 
 interface Product {
   _id: string;
@@ -10,14 +9,14 @@ interface Product {
   name: string;
   price: number;
   rating: number;
-  deliveryTime: string[];
+  deliveryTime: string;
   deliveryNote: string;
   category: string;
   productId: string;
   company: string;
 }
 
-interface ProductCardProps extends Product { }
+interface ProductCardProps extends Product {}
 
 const ProductCard: React.FC<ProductCardProps> = ({
   image,
@@ -29,13 +28,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
   productId,
   company,
 }) => {
-  // const [minMinutes, maxMinutes] = deliveryTime;
+  console.log('Rendering ProductCard for:', name);
   const [isAdded, setIsAdded] = useState(false);
-
 
   const handleAddToCart = async () => {
     try {
-      const response = await fetch('https://unibackend.onrender.com/api/v1/cart', {
+      const response = await fetch('http://localhost:5000/api/v1/cart', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -60,36 +58,31 @@ const ProductCard: React.FC<ProductCardProps> = ({
     }
   };
 
-
   return (
-    <div className={styles.productCard}>
-      <div>
-        <div className={styles.product}>
-          <img src={image} alt={`${name} image`} className={styles.productImage} />
-          <div className={styles.productContent}>
-            <div className={styles.productSubheader}>
-            <p className={styles.productName}>
-              <b>{name}</b>
-            </p>
-            <p className={styles.price}>₦{price}</p>
-            </div>
-            {/* <p>{minMinutes}-{maxMinutes} minutes</p> */}
-            <p>{deliveryTime} minutes</p>
-            <div className={styles.deliveryData}>
-              <p>{deliveryNote}</p>
-              <div className={styles.rating}>
-                <p>{rating}</p>
-                <img src="https://res.cloudinary.com/da1l4j12k/image/upload/v1716642067/Star_1_ahpoz0.png" className={styles.star} />
+    <div>
+      <div className={styles.productCard}>
+        <div>
+          <div className={styles.product}>
+            <img src={image} alt={`${name} image`} className={styles.productImage} />
+            <div className={styles.productContent}>
+              <div className={styles.productSubheader}>
+                <p className={styles.productName}>
+                  <b>{name}</b>
+                </p>
+                <p className={styles.price}>₦{price}</p>
               </div>
+              <p>{deliveryTime} minutes</p>
+              <div className={styles.deliveryData}>
+                <p>{deliveryNote}</p>
+                <div className={styles.rating}>
+                  <p>{rating}</p>
+                  <img src="https://res.cloudinary.com/da1l4j12k/image/upload/v1716642067/Star_1_ahpoz0.png" className={styles.star} alt="Rating" />
+                </div>
+              </div>
+              <button className={styles.addToCartButton} onClick={handleAddToCart} disabled={isAdded}>
+                {isAdded ? 'Added to Cart' : 'Add to Cart'}
+              </button>
             </div>
-            {/* <p className={styles.vendor}>{company}</p> */}
-            <button
-              className={styles.addToCartButton}
-              onClick={handleAddToCart}
-              disabled={isAdded}
-            >
-              {isAdded ? 'Added to Cart' : 'Add to Cart'}
-            </button>
           </div>
         </div>
       </div>
@@ -104,7 +97,7 @@ const ProductList: React.FC = () => {
   useEffect(() => {
     const fetchProductData = async () => {
       try {
-        const response = await fetch('https://unibackend.onrender.com/api/v1/products');
+        const response = await fetch('http://localhost:5000/api/v1/products');
         const data = await response.json();
         setProducts(data.products);
       } catch (error) {
@@ -127,6 +120,29 @@ const ProductList: React.FC = () => {
   };
 
   return (
+    <div>
+      <Header
+        logo={{ src: "https://res.cloudinary.com/daqlpvggg/image/upload/v1717040777/Union_2_calbcm.svg", width: 100, height: 50,}}
+        cart={{ src: "https://res.cloudinary.com/daqlpvggg/image/upload/v1717107545/Frame_13_mmlp5r.svg",
+          width: 100, 
+          height: 50,
+        }}
+        user={{
+          src: "https://res.cloudinary.com/daqlpvggg/image/upload/v1717107544/Frame_12_gqu2ll.png",
+          width: 100, 
+          height: 50,
+        }}
+        searchIcon={{
+          src: "https://res.cloudinary.com/daqlpvggg/image/upload/v1717107952/serachIcon_dpnikd.png",
+          width: 20, 
+          height: 10,
+        }}
+        headerimg={{
+          src: "https://res.cloudinary.com/daqlpvggg/image/upload/b_rgb:590209/c_crop,w_764,h_430,ar_16:9/v1717130829/header_oqwik3.png",
+          width: 2000, 
+          height: 50,
+        }}
+      />
     <div>
       {Array.from(new Set(products.map((product) => product.category))).map((category) => (
         <div className={styles.productListContainer} key={category}>
@@ -172,7 +188,11 @@ const ProductList: React.FC = () => {
         </div>
       ))}
     </div>
+    </div>
   );
 };
 
 export default ProductList;
+
+
+

@@ -1,49 +1,55 @@
 import React from 'react';
-import styles from '../styles/Header.module.css';
+import styles from '@/styles/Header.module.css'
 
-// Import the image types
-import { StaticImageData } from 'next/image';
+interface ImageProps {
+  src: string;
+  width: number;
+  height: number;
+}
 
 interface HeaderProps {
-  logo: StaticImageData;
-  cart: StaticImageData;
-  user: StaticImageData;
-  headerimg: StaticImageData;
-  searchIcon: StaticImageData;
+  logo: ImageProps;
+  cart: ImageProps;
+  user: ImageProps;
+  searchIcon: ImageProps;
+  headerimg: ImageProps;
 }
 
 const Header: React.FC<HeaderProps> = ({
   logo,
   cart,
   user,
-  headerimg,
   searchIcon,
+  headerimg
 }) => {
   return (
-    <header className={styles.header}>
-      <div className={styles.headerbar}>
-        <div className={styles.logo}>
-          {/* Use the next/image component for static images */}
-          {/* <img src={logo.src} alt="Uniclique" /> */}
+    <header className="header">
+      <div className="headerbar flex justify-between items-center bg-white py-4 px-4 sm:px-6 lg:px-8">
+        <div className="logo">
+          <div className="logo">
+            <img src={logo.src} alt="Uniclique" className="w-10" width={logo.width} height={logo.height} />
+          </div>
         </div>
-        <div className={styles.search}>
-          <input type="text" placeholder="Search" />
-          {/* <img src={searchIcon.src} className={styles.searchIcon} alt="Search Icon" /> */}
+        <div className="search relative mr-2 sm:mr-4 sm:flex w-60">
+          <input type="text" placeholder="Search" className="bg-gray-200 text-gray-700 rounded-l px-4 py-2" />
+          <div className="searchIcon">
+            <img src={searchIcon.src} alt="Uniclique" className="absolute h-5 border-transparent justify-self-end right-0 top-0 mt-3 mr-5" width={searchIcon.width} height={searchIcon.height} />
+          </div>
         </div>
-        <div className={styles.icons}>
-          <button className={styles.cartIcon}>
-            {/* <img src={cart.src} alt="Cart" /> */}
+        <div className="icons flex justify-between items-center">
+          <button className="bg-transparent border-none cursor-pointer mr-4">
+            <img src={cart.src} alt="Cart" className="w-6" width={cart.width} height={cart.height}/>
           </button>
-          <button className={styles.userIcon}>
-            {/* <img src={user.src} alt="User" /> */}
+          <button className="bg-transparent border-none cursor-pointer">
+            <img src={user.src} alt="User" className="w-6" width={user.width} height={user.height}/>
           </button>
         </div>
       </div>
-      <div className={styles.headericon}>
+      <div className="headericon">
         <div className={styles.headerTextWrapper}>
-          <h2 className={styles.headerText}>GET YOUR PRODUCTS ON UNICLIQUE</h2>
+          <h2 className={styles.headerText}><span>GET YOUR PRODUCTS ON UNICLIQUE</span></h2>
         </div>
-        {/* <img src={headerimg.src} alt="Header" className={styles.headerImage} /> */}
+        <img src={headerimg.src} alt="Header" className={styles.headerimg} width={headerimg.width} height={headerimg.height}/>
       </div>
     </header>
   );

@@ -1,13 +1,14 @@
 /* src/styles/Header.module.css */
 .header {
     align-items: center;
-    background-color: #fff; 
+    background-color: #590209; 
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     box-sizing: border-box;  
     color: #fff;
     justify-content: space-between;
     max-width: 100vw;
-    overflow-x: hidden; 
+    overflow-x: hidden;
+    overflow-y: visible; 
   }
 
   .headerbar{
@@ -36,7 +37,7 @@
   }
   
   .headerText span {
-    color: #590209;
+    color: #fff;
     font-size: 2.4rem;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
   }
@@ -96,6 +97,13 @@
       height: 18px;
       margin: 0;
     }
+    .headerTextWrapper{
+      top: 35%;
+    }
+    .headerText span{
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
   
     .search {
       width: 30%;
@@ -125,7 +133,7 @@
     }
   }
   
-  @media (min-width: 375px) {
+  @media (max-width: 370px) and (min-width: 420px){
     .headerbar {
       align-items: center;
       /* padding: 0.5rem; */
@@ -134,7 +142,47 @@
     .logo img {
       height: 20px;
     }
+    .headerTextWrapper{
+      top: 35%;
+    }
+    .headerText span{
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+    .search {
+      width: 55%;
+      margin: 0.03rem 4rem 0.4rem 2rem;
+      padding: 0.08rem 0.6rem;
+    }
   
+  }
+
+  @media (max-width: 435px)and (min-width: 376px) {
+    .headerTextWrapper{
+      top: 20%;
+    }
+    .headerText span{
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+  }
+
+  @media (max-width: 370px)and (min-width: 320px) {
+    .headerbar {
+      align-items: center;
+      /* padding: 0.5rem; */
+    }
+  
+    .logo img {
+      height: 20px;
+    }
+    .headerTextWrapper{
+      top: 25%;
+    }
+    .headerText span{
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
     .search {
       width: 55%;
       margin: 0.03rem 4rem 0.4rem 2rem;
