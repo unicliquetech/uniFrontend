@@ -35,9 +35,10 @@ const ShoppingCart = () => {
   };
 
   const deliveryPrice = (400);
-  // const productTotals = cartItems.map(item => item.price * item.quantity);
-  const itemTotal = cartItems.reduce((acc, item) => item.price * item.quantity, 0);
-  // const subtotal = total.reduce((acc, total) => acc + total, 0);
+  const productTotals = cartItems.map(item => ({
+    ...item,
+    itemTotal: item.price * item.quantity
+  }));
 
   const itemTotals = cartItems.map(item => item.price * item.quantity);
   const total = itemTotals.reduce((acc, itemTotal) => acc + itemTotal, 0);
@@ -61,9 +62,9 @@ const ShoppingCart = () => {
     try {
       await axios.delete(`https://unibackend.onrender.com/api/v1/cart/${productId}`);
 
-    // Filter out the removed product from the cartItems state
-    const updatedCartItems = cartItems.filter((item) => item.productId !== productId);
-    setCartItems(updatedCartItems);
+      // Filter out the removed product from the cartItems state
+      const updatedCartItems = cartItems.filter((item) => item.productId !== productId);
+      setCartItems(updatedCartItems);
     } catch (error) {
       console.error('Error removing cart item:', error);
     }
@@ -84,32 +85,32 @@ const ShoppingCart = () => {
       console.error('Error adding to cart:', error);
     }
   };
-  
+
   // interface DeliveryOptionsProps {
   //   subtotal: number;
   // }
-  
+
   // const DeliveryOptions = ({shippingPrice} ) => {
   //   const [deliveryPrice, setShippingPrice] = useState(0);
-  
+
   //   const handleStorePickup = () => {
   //     const [shippingPrice, setShippingPrice] = useState(0);
   //     setShippingPrice(0);
   //   };
-  
+
   //   const handleHomeDelivery = () => {
   //     setShippingPrice(2000);
   //   };
   // };
 
-  
 
 
-  
+
+
   return (
     <div className="container">
       <div className="bg-white rounded-lg shadow-md p-6">
-      <header className="flex justify-between items-center bg-white py-4 px-4 sm:px-6 lg:px-8">
+        <header className="flex justify-between items-center bg-white py-4 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center">
             <img src="/images/logo1.png" alt="Uniclique" className="h-6 mr-2 sm:h-8" />
             <h1 className="text-xl mr-6  font-bold text-red-900 sm:text-2xl">Uniclique</h1>
@@ -199,46 +200,46 @@ const ShoppingCart = () => {
               aria-controls="mobile-menu"
               aria-expanded={isMobileMenuOpen}
               onClick={toggleMobileMenu}
+            >
+              <span className="sr-only">Open main menu</span>
+              <svg
+                className="block h-6 w-6"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
               >
-                <span className="sr-only">Open main menu</span>
-                <svg
-                  className="block h-6 w-6"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  aria-hidden="true"
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            </button>
+          </div>
+
+          {/* Mobile menu */}
+          {isMobileMenuOpen && (
+            <div className="sm:hidden" id="mobile-menu">
+              <div className="px-2 pt-2 pb-3 space-y-1">
+                <a
+                  href="#"
+                  className="bg-gray-200 text-gray-700 block px-3 py-2 rounded-md text-base font-medium"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
-              </button>
-            </div>
-  
-            {/* Mobile menu */}
-            {isMobileMenuOpen && (
-              <div className="sm:hidden" id="mobile-menu">
-                <div className="px-2 pt-2 pb-3 space-y-1">
-                  <a
-                    href="#"
-                    className="bg-gray-200 text-gray-700 block px-3 py-2 rounded-md text-base font-medium"
-                  >
-                    Profile
-                  </a>
-                  <a
-                    href="/product"
-                    className="bg-red-900 text-white block px-3 py-2 rounded-md text-base font-medium"
-                  >
-                    Continue Shopping
-                  </a>
-                </div>
+                  Profile
+                </a>
+                <a
+                  href="/product"
+                  className="bg-red-900 text-white block px-3 py-2 rounded-md text-base font-medium"
+                >
+                  Continue Shopping
+                </a>
               </div>
-            )}
-          </header>
+            </div>
+          )}
+        </header>
 
         <h2 className="text-2xl font-bold mb-6 text-center font-poppins">My Cart</h2>
         <table className="w-full table-auto">
@@ -289,7 +290,7 @@ const ShoppingCart = () => {
 
                 <td className="px-4 py-2 align-top relative">
                   <div className="mobilediv">
-                    ₦{itemTotal}
+                        <p>₦{item.price * item.quantity}</p>
                     <div className="px-4 py-2 align-top quantitybtn">
                       <button
                         className=" py-1 px-2 rounded-l qtybtn"
@@ -320,122 +321,122 @@ const ShoppingCart = () => {
         </table>
 
         <div className="mt-4 bg-pink-100 p-4 rounded-lg">
-            <p className="text-lg font-semibold">Choose Delivery Method:</p>
-      <div className="mt-2">
-        <label className="inline-flex items-center">
-          <input
-            type="radio"
-            name="delivery"
-            value="homeDelivery"
-            className="form-radio"
-            // onChange={handle}
-          />
-          <span className="ml-2">Express (In 15 minutes) • ₦800</span>
-        </label>
-        <div className="mt-2">
-        <label className="inline-flex items-center">
-          <input
-            type="radio"
-            name="delivery"
-            value="storePickup"
-            defaultChecked
-            className="form-radio"
-            // onChange={handleStorePickup}
-          />
-          <span className="ml-2">Regular Delivery (In 30 min) • ₦400</span>
-        </label>
-      </div>
-      <div className="mt-2">
-        <label className="inline-flex items-center">
-          <input
-            type="radio"
-            name="delivery"
-            value="schedule"
-            defaultChecked
-            className="form-radio"
-            // onChange={handleStorePickup}
-          />
-          <span className="ml-2">Schedule (In 2-4 days) • ₦500</span>
-        </label>
-      </div>
-      </div>
-            <div className="mt-4 text-right">
-              <p className="text-sm">SUB TOTAL: ₦{subtotal.toLocaleString()}</p>
-              <p className="text-sm">SHIPPING: ₦{deliveryPrice.toLocaleString()}</p>
-              <p className="text-sm">SERVICE FEE: ₦{serviceFee.toLocaleString()}</p>
-              <p className="text-lg font-semibold mt-2">TOTAL: ₦{Total.toLocaleString()}</p>
-              <button className="bg-red-900 hover:bg-red-600 text-white py-2 px-4 rounded mt-4 checkout-btn">
-                <a href='/checkout' > CHECKOUT ₦{Total.toLocaleString()} </a>
-              </button>
+          <p className="text-lg font-semibold">Choose Delivery Method:</p>
+          <div className="mt-2">
+            <label className="inline-flex items-center">
+              <input
+                type="radio"
+                name="delivery"
+                value="homeDelivery"
+                className="form-radio"
+              // onChange={handle}
+              />
+              <span className="ml-2">Express (In 15 minutes) • ₦800</span>
+            </label>
+            <div className="mt-2">
+              <label className="inline-flex items-center">
+                <input
+                  type="radio"
+                  name="delivery"
+                  value="storePickup"
+                  defaultChecked
+                  className="form-radio"
+                // onChange={handleStorePickup}
+                />
+                <span className="ml-2">Regular Delivery (In 30 min) • ₦400</span>
+              </label>
+            </div>
+            <div className="mt-2">
+              <label className="inline-flex items-center">
+                <input
+                  type="radio"
+                  name="delivery"
+                  value="schedule"
+                  defaultChecked
+                  className="form-radio"
+                // onChange={handleStorePickup}
+                />
+                <span className="ml-2">Schedule (In 2-4 days) • ₦500</span>
+              </label>
             </div>
           </div>
-  
-          <footer className="bg-red-900 text-white py-8 mt-0">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div>
-                  <div className="flex items-center">
-                    <img src="https://res.cloudinary.com/daqlpvggg/image/upload/v1717040777/logo3_zd01wc.png" alt="Uniclique" className="h-16 mr-2" />
-                  </div>
-                  <span className="text-white mt-4 mb-2">
-                    Join our newsletters to stay up to date on features and releases
-                  </span>
-                  <div className=" grid items-center mb-10 mt-10">
-                    <input
-                      type="text"
-                      placeholder="Enter your email"
-                      className="bg-gray-200 text-gray-700 rounded-l px-4 py-2 mr-2"
-                    />
-                    <span className="text-white mt-4 mr-2">Subscribe</span>
-                  </div>
-                  <span
-          className="text-white"
-          style={{
-            overflowWrap: 'break-word',
-            maxWidth: '150px',
-            fontSize: '0.65rem',
-          }}
-        >
-          By subscribing, you agree to our privacy policy and provide consent to
-          receive updates from our company.
-        </span>
-      </div>
-      <div className="ml-6">
-        <h3 className="text-xl font-semibold mb-4">Products</h3>
-        <ul>
-          <li>Shoes</li>
-          <li>Jewelries</li>
-          <li>Gadgets</li>
-          <li>Wellness Products</li>
-          <li>Food</li>
-          <li>Clothes</li>
-          <li>Books</li>
-        </ul>
-      </div>
-      <div>
-        <h3 className="text-xl font-semibold mb-4">Services</h3>
-        <ul>
-          <li>Photography</li>
-          <li>Barter</li>
-          <li>Make-up artist</li>
-          <li>Fashion Designing</li>
-          <li>Tour Wine</li>
-          <li>Delivery service</li>
-          <li>Laundry service</li>
-        </ul>
-      </div>
-      <div>
-        <h3 className="text-xl font-semibold mb-4">Pricing | Career</h3>
-        <ul>
-          <li>Contacts</li>
-          <li>+234-9265356777</li>
-          <li>info@uniclique.com</li>
-        </ul>
-      </div>
-    </div>
-    <p className="mt-8 text-center">© 2023. All rights reserved. Uniclique</p>
-  </div>
-</footer>
+          <div className="mt-4 text-right">
+            <p className="text-sm">SUB TOTAL: ₦{subtotal.toLocaleString()}</p>
+            <p className="text-sm">SHIPPING: ₦{deliveryPrice.toLocaleString()}</p>
+            <p className="text-sm">SERVICE FEE: ₦{serviceFee.toLocaleString()}</p>
+            <p className="text-lg font-semibold mt-2">TOTAL: ₦{Total.toLocaleString()}</p>
+            <button className="bg-red-900 hover:bg-red-600 text-white py-2 px-4 rounded mt-4 checkout-btn">
+              <a href='/checkout' > CHECKOUT ₦{Total.toLocaleString()} </a>
+            </button>
+          </div>
+        </div>
+
+        <footer className="bg-red-900 text-white py-8 mt-0">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div>
+                <div className="flex items-center">
+                  <img src="https://res.cloudinary.com/daqlpvggg/image/upload/v1717040777/logo3_zd01wc.png" alt="Uniclique" className="h-16 mr-2" />
+                </div>
+                <span className="text-white mt-4 mb-2">
+                  Join our newsletters to stay up to date on features and releases
+                </span>
+                <div className=" grid items-center mb-10 mt-10">
+                  <input
+                    type="text"
+                    placeholder="Enter your email"
+                    className="bg-gray-200 text-gray-700 rounded-l px-4 py-2 mr-2"
+                  />
+                  <span className="text-white mt-4 mr-2">Subscribe</span>
+                </div>
+                <span
+                  className="text-white"
+                  style={{
+                    overflowWrap: 'break-word',
+                    maxWidth: '150px',
+                    fontSize: '0.65rem',
+                  }}
+                >
+                  By subscribing, you agree to our privacy policy and provide consent to
+                  receive updates from our company.
+                </span>
+              </div>
+              <div className="ml-6">
+                <h3 className="text-xl font-semibold mb-4">Products</h3>
+                <ul>
+                  <li>Shoes</li>
+                  <li>Jewelries</li>
+                  <li>Gadgets</li>
+                  <li>Wellness Products</li>
+                  <li>Food</li>
+                  <li>Clothes</li>
+                  <li>Books</li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold mb-4">Services</h3>
+                <ul>
+                  <li>Photography</li>
+                  <li>Barter</li>
+                  <li>Make-up artist</li>
+                  <li>Fashion Designing</li>
+                  <li>Tour Wine</li>
+                  <li>Delivery service</li>
+                  <li>Laundry service</li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold mb-4">Pricing | Career</h3>
+                <ul>
+                  <li>Contacts</li>
+                  <li>+234-9265356777</li>
+                  <li>info@uniclique.com</li>
+                </ul>
+              </div>
+            </div>
+            <p className="mt-8 text-center">© 2023. All rights reserved. Uniclique</p>
+          </div>
+        </footer>
       </div>
     </div>
   );
