@@ -38,7 +38,7 @@ const Header: React.FC<HeaderProps> = ({
         </div>
         <div className="icons flex justify-between items-center">
           <button className="bg-transparent border-none cursor-pointer mr-4">
-            <img src={cart.src} alt="Cart" className="w-6" width={cart.width} height={cart.height}/>
+            <a href='/'><img src={cart.src} alt="Cart" className="w-6" width={cart.width} height={cart.height}/></a>
           </button>
           <button className="bg-transparent border-none cursor-pointer">
             <img src={user.src} alt="User" className="w-6" width={user.width} height={user.height}/>
