@@ -344,7 +344,7 @@ const DeliveryStep: React.FC = () => {
             onClick={() => handleDeliveryChange('free')}
           ></div>
           <span className="deliverytext text-gray-700">Free Regular shipment</span>
-          <span className="deliverytext text-gray-500 ml-auto">25 Oct, 2024</span>
+          <span className="deliverytext text-gray-500 ml-auto">30 minutes</span>
         </label>
       </div>
       <div className="mb-4 border border-gray-300 rounded p-4">
@@ -354,7 +354,7 @@ const DeliveryStep: React.FC = () => {
             onClick={() => handleDeliveryChange('express')}
           ></div>
           <span className="deliverytext text-gray-700">#2,000 Get your delivery as soon as possible</span>
-          <span className="deliverytext text-gray-500 ml-auto">19 May, 2024</span>
+          <span className="deliverytext text-gray-500 ml-auto">15 minutes</span>
         </label>
       </div>
       <div className="mb-4 border border-gray-300 rounded py-4">
