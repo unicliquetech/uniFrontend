@@ -12,18 +12,23 @@ import { useRouter } from 'next/navigation'
 import eyeOpen from '../images/eye-off (1).svg'
 import axios from 'axios'
 
+interface LoginFormProps {
+  onLogin: (authToken: string) => void;
+}
+
 interface FormData {
   email: string
   password: string
 }
 
-const LogIn = () => {
+const LoginForm: React.FC<LoginFormProps> = ({ onLogin })=> {
   const router = useRouter()
   const [passwordVis, setPasswordVis] = useState<boolean>(false)
   const [formData, setFormData] = useState<FormData>({
     email: '',
     password: '',
   })
+  const [error, setError] = useState('');
 
   const PasswordVis = () => {
     setPasswordVis((prev) => !prev)
@@ -48,7 +53,7 @@ const LogIn = () => {
       router.push('/checkout')
     } catch (err) {
       console.error('Login error:', err)
-      // Handle login error, e.g., show an error message
+      setError('Invalid email or password. Please try again.');
     }
   }
   // interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -116,6 +121,11 @@ const LogIn = () => {
               Please sign into your account
             </h2>
             <div className="mt-[1rem] p-6 rounded-lg shadow-lg shadow-cyan-500/50 max-w-[100%] sm:w-[450px] bg-white w-full">
+            {error && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4" role="alert">
+                {error}
+              </div>
+            )}
               <form onSubmit={handleLogin}>
                 <div className="flex flex-col gap-7">
                   <input
@@ -205,4 +215,4 @@ const LogIn = () => {
   )
 }
 
-export default LogIn;
+export default LoginForm;

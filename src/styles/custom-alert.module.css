@@ -1,0 +1,27 @@
+.custom-alert {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    color: #333;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    max-width: 400px;
+    padding: 20px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+  }
+  
+  .custom-alert-header {
+    background-color: #f8f8f8;
+    border-bottom: 1px solid #ccc;
+    font-weight: bold;
+    padding: 10px;
+  }
+  
+  .custom-alert-body {
+    padding: 10px;
+  }

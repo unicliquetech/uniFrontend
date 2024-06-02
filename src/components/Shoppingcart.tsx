@@ -1,6 +1,46 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import DatePicker, { ReactDatePickerProps } from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+
+interface DeliveryDatePickerProps extends Omit<ReactDatePickerProps, 'onChange' | 'value'> {
+  value?: Date | null;
+  onChange?: (date: Date | null, event?: React.SyntheticEvent<any, Event> | undefined) => void;
+}
+
+const DeliveryDatePicker: React.FC<DeliveryDatePickerProps> = ({
+  value,
+  onChange,
+  ...props
+}) => {
+  const [selectedDate, setSelectedDate] = useState<Date | null>(
+    value ? new Date(value) : null
+  );
+
+  const handleDateChange = (date: Date | null, event?: React.SyntheticEvent<any, Event> | undefined) => {
+    setSelectedDate(date);
+    if (onChange) {
+      onChange(date, event);
+    }
+  };
+
+  return (
+    <div>
+      <DatePicker
+        selected={selectedDate}
+        onChange={handleDateChange}
+        dateFormat="yyyy-MM-dd"
+        placeholderText="Select Date"
+        minDate={new Date()}
+        {...props}
+      />
+    </div>
+  );
+};
+
+
+
 
 interface Item {
   _id: string;
@@ -16,6 +56,32 @@ interface Item {
 const ShoppingCart = () => {
   const [cartItems, setCartItems] = useState<Item[]>([]);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+  const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState('');
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [deliveryPrice, setDeliveryPrice] = useState(400);
+
+  const handleExpressDelivery = () => {
+    setSelectedDeliveryMethod('express');
+    setDeliveryPrice(800);
+    setSelectedDate(null);
+  };
+
+  const handleRegularDelivery = () => {
+    setSelectedDeliveryMethod('regular');
+    setDeliveryPrice(400);
+    setSelectedDate(null);
+  };
+
+  const handleScheduleDelivery = () => {
+    setSelectedDeliveryMethod('schedule');
+    setDeliveryPrice(500);
+    setSelectedDate(null);
+  };
+
+  const handleDateChange = (date: Date | null) => {
+    setSelectedDate(date);
+  };
+
 
   useEffect(() => {
     const fetchCartData = async () => {
@@ -33,12 +99,6 @@ const ShoppingCart = () => {
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
-
-  const deliveryPrice = (400);
-  const productTotals = cartItems.map(item => ({
-    ...item,
-    itemTotal: item.price * item.quantity
-  }));
 
   const itemTotals = cartItems.map(item => item.price * item.quantity);
   const total = itemTotals.reduce((acc, itemTotal) => acc + itemTotal, 0);
@@ -86,30 +146,10 @@ const ShoppingCart = () => {
     }
   };
 
-  // interface DeliveryOptionsProps {
-  //   subtotal: number;
-  // }
-
-  // const DeliveryOptions = ({shippingPrice} ) => {
-  //   const [deliveryPrice, setShippingPrice] = useState(0);
-
-  //   const handleStorePickup = () => {
-  //     const [shippingPrice, setShippingPrice] = useState(0);
-  //     setShippingPrice(0);
-  //   };
-
-  //   const handleHomeDelivery = () => {
-  //     setShippingPrice(2000);
-  //   };
-  // };
-
-
-
-
 
   return (
-    <div className="container">
-      <div className="bg-white rounded-lg shadow-md p-6">
+    // <div className="container">
+      <div>
         <header className="flex justify-between items-center bg-white py-4 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center">
             <img src="/images/logo1.png" alt="Uniclique" className="h-6 mr-2 sm:h-8" />
@@ -323,41 +363,47 @@ const ShoppingCart = () => {
         <div className="mt-4 bg-pink-100 p-4 rounded-lg">
           <p className="text-lg font-semibold">Choose Delivery Method:</p>
           <div className="mt-2">
+          <label className="inline-flex items-center">
+            <input
+              type="radio"
+              name="delivery"
+              value="homeDelivery"
+              className="form-radio"
+              checked={selectedDeliveryMethod === 'express'}
+              onChange={handleExpressDelivery}
+            />
+            <span className="ml-2">Express (In 15 minutes) • ₦800</span>
+          </label>
+            <div className="mt-2">
             <label className="inline-flex items-center">
               <input
                 type="radio"
                 name="delivery"
-                value="homeDelivery"
+                value="storePickup"
                 className="form-radio"
-              // onChange={handle}
+                checked={selectedDeliveryMethod === 'regular'}
+                onChange={handleRegularDelivery}
               />
-              <span className="ml-2">Express (In 15 minutes) • ₦800</span>
+              <span className="ml-2">Regular Delivery (In 30 min) • ₦400</span>
             </label>
-            <div className="mt-2">
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  name="delivery"
-                  value="storePickup"
-                  defaultChecked
-                  className="form-radio"
-                // onChange={handleStorePickup}
-                />
-                <span className="ml-2">Regular Delivery (In 30 min) • ₦400</span>
-              </label>
             </div>
             <div className="mt-2">
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  name="delivery"
-                  value="schedule"
-                  defaultChecked
-                  className="form-radio"
-                // onChange={handleStorePickup}
-                />
-                <span className="ml-2">Schedule (In 2-4 days) • ₦500</span>
-              </label>
+            <label className="inline-flex items-center">
+              <input
+                type="radio"
+                name="delivery"
+                value="schedule"
+                className="form-radio"
+                checked={selectedDeliveryMethod === 'schedule'}
+                onChange={handleScheduleDelivery}
+              />
+              <span className="ml-2">
+                Schedule (In 2-4 days) • ₦500{' '}
+                {selectedDeliveryMethod === 'schedule' && (
+                  <DeliveryDatePicker value={selectedDate} onChange={handleDateChange} />
+                )}
+              </span>
+            </label>
             </div>
           </div>
           <div className="mt-4 text-right">
@@ -438,7 +484,7 @@ const ShoppingCart = () => {
           </div>
         </footer>
       </div>
-    </div>
+    // </div>
   );
 };
 

@@ -1,11 +1,40 @@
 "use client"
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import DatePicker, { ReactDatePickerProps } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import axios, { AxiosResponse } from 'axios';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
 
+function showCustomAlert(message: string) {
+  const alertContainer = document.createElement('div');
+  alertContainer.classList.add('custom-alert');
+
+  const alertHeader = document.createElement('div');
+  alertHeader.classList.add('custom-alert-header');
+  alertHeader.textContent = 'Alert';
+
+  const alertBody = document.createElement('div');
+  alertBody.classList.add('custom-alert-body');
+  alertBody.textContent = message;
+
+  alertContainer.appendChild(alertHeader);
+  alertContainer.appendChild(alertBody);
+
+  document.body.appendChild(alertContainer);
+
+  setTimeout(() => {
+    document.body.removeChild(alertContainer);
+  }, 100000); // Adjust the duration (in milliseconds) to control how long the alert should be displayed
+}
+
+interface CartItem {
+  id: number;
+  name: string;
+  price: number;
+  quantity: number;
+}
 
 
 interface Address {
@@ -19,11 +48,15 @@ interface Address {
   type: 'HOSTEL' | 'DEPARTMENT';
 }
 
+interface AddressStepProps {
+  selectedAddress: Address | null;
+  setSelectedAddress: (address: Address) => void;
+  onAddressSelect: (address: Address) => void;
+}
 
-
-
-const AddressStep = () => {
+const AddressStep: React.FC<AddressStepProps> = ({ selectedAddress, setSelectedAddress, onAddressSelect }) => {
   const [addresses, setAddresses] = useState<Address[]>([]);
+  // const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [newAddress, setNewAddress] = useState<Address>({
     _id: '',
     id: 1, // You may want to initialize this with a reasonable value or remove it
@@ -50,6 +83,8 @@ const AddressStep = () => {
     const userId = decodedToken?.userId;
 
     if (!userId) {
+      showCustomAlert("Please proceed to re-login, as your session has expired.");
+      window.location.href = '/login';
       throw new Error('Invalid token');
     }
     return {
@@ -90,6 +125,7 @@ const AddressStep = () => {
       );
       const newAddressWithId = response.data;
       setAddresses([...addresses, newAddressWithId]);
+      setSelectedAddress(newAddressWithId);
       setNewAddress({
         _id: '',
         id: 0,
@@ -153,6 +189,8 @@ const AddressStep = () => {
                 type="radio"
                 name="address"
                 value={address.id}
+                checked={selectedAddress === address}
+                onChange={() => onAddressSelect(address)}
                 className="w-4 h-4 text-red-900 bg-red-900 border-gray-300 focus:ring-red-900"
               />
               <span className="text-red-900 ml-2">{address.location}</span>
@@ -275,112 +313,163 @@ const AddressStep = () => {
 
 ////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////
-///////               DELIVERY  STEP                    ////////////
+///////               SUMMARY  STEP                    ////////////
 ////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////
+type DeliveryOption = 'express' | 'regular' | 'schedule';
 
-interface DeliveryDatePickerProps extends Omit<ReactDatePickerProps, 'onChange' | 'value'> {
-  value?: Date;
-  onChange?: (date: Date | null, event?: React.SyntheticEvent<any, Event> | undefined) => void;
+interface SummaryStepProps {
+  cartItems: CartItem[];
+  setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>;
+  selectedAddress: Address | null;
+  selectedDeliveryMethod: DeliveryOption;
+  setSelectedDeliveryMethod: React.Dispatch<React.SetStateAction<DeliveryOption>>;
+  selectedDate: Date | null;
+  setSelectedDate: React.Dispatch<React.SetStateAction<Date | null>>;
 }
 
-const DeliveryDatePicker: React.FC<DeliveryDatePickerProps> = ({
-  value,
-  onChange,
-  ...props
+const SummaryStep: React.FC<SummaryStepProps> = ({
+  cartItems,
+  setCartItems,
+  selectedAddress,
+  selectedDeliveryMethod,
+  setSelectedDeliveryMethod,
+  selectedDate,
+  setSelectedDate,
 }) => {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(value ? new Date(value) : null);
+  const [selectedDeliveryTime, setSelectedDeliveryTime] = useState<string>('9:00');
 
-  const handleDateChange = (date: Date | null, event?: React.SyntheticEvent<any, Event> | undefined) => {
-    setSelectedDate(date);
-    if (onChange) {
-      onChange(date, event);
+  const handleDeliveryTimeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedDeliveryTime(event.target.value);
+  };
+
+  const deliveryTimes = ['9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'];
+
+
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      try {
+        const response = await axios.get<CartItem[]>('https://unibackend.onrender.com/api/v1/cart');
+        setCartItems(response.data); // Update the cartItems state
+      } catch (error) {
+        console.error('Error fetching cart items:', error);
+      }
+    };
+
+    fetchCartItems();
+  }, []);
+
+  const handleDeliveryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const newDeliveryMethod = event.target.value as DeliveryOption;
+    setSelectedDeliveryMethod(newDeliveryMethod);
+    if (newDeliveryMethod === 'schedule') {
+      setSelectedDate(null); // Reset the selected date when switching to schedule delivery
     }
   };
 
+  const calculateTotal = () => {
+    let total = 0;
+    cartItems.forEach((item) => {
+      total += item.price * item.quantity;
+    });
+    return total;
+  };
+  const deliveryFee =
+    selectedDeliveryMethod === 'express'
+      ? 800
+      : selectedDeliveryMethod === 'regular'
+        ? 400
+        : 500;
+  const serviceFee = 50;
+  const totalCost = calculateTotal() + deliveryFee + serviceFee;
+
   return (
     <div>
-      <DatePicker
-        selected={selectedDate}
-        onChange={handleDateChange}
-        dateFormat="yyyy-MM-dd"
-        placeholderText="Select Date"
-        minDate={new Date()}
-        // value={string}
-        {...props}
-      />
+      <h2 className="text-xl font-bold mb-4">Summary</h2>
+      <div>
+        <h3 className="text-lg font-semibold mb-2">Cart Items</h3>
+        {cartItems.map((item) => (
+          <div key={item.id} className="flex justify-between mb-2">
+            <span>{item.name}</span>
+            <span>₦{item.price * item.quantity}</span>
+          </div>
+        ))}
+      </div>
+      <div className="mt-4">
+        <h3 className="text-lg font-semibold mb-2">Delivery Address</h3>
+        {selectedAddress ? (
+          <div>
+            <p>{selectedAddress.location}</p>
+            <p>{selectedAddress.university}</p>
+            <p>{selectedAddress.city}, {selectedAddress.country}</p>
+            <p>{selectedAddress.phone}</p>
+          </div>
+        ) : (
+          <p>No address selected</p>
+        )}
+      </div>
+      <div className="mt-4">
+        <h3 className="text-lg font-semibold mb-2">Delivery Method</h3>
+        <select
+          value={selectedDeliveryMethod}
+          onChange={handleDeliveryChange}
+          className="border p-2 rounded"
+        >
+          <option value="express">Express (₦800)</option>
+          <option value="regular">Regular Delivery (₦400)</option>
+          <option value="schedule">Schedule (₦500)</option>
+        </select>
+        {selectedDeliveryMethod === 'schedule' && (
+          <div className="mt-2">
+            <label htmlFor="deliveryDate" className="block">
+              Delivery Date
+            </label>
+            <input
+              type="date"
+              id="deliveryDate"
+              value={selectedDate ? selectedDate.toISOString().split('T')[0] : ''}
+              onChange={(e) => setSelectedDate(e.target.value ? new Date(e.target.value) : null)}
+              className="border p-2 rounded"
+            />
+          </div>
+        )}
+
+        <select
+          value={selectedDeliveryTime}
+          onChange={handleDeliveryTimeChange}
+          className="border p-2 rounded"
+        >
+          {deliveryTimes.map((time) => (
+            <option key={time} value={time}>
+              {time}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="mt-4">
+        <h3 className="text-lg font-semibold mb-2">Service Fee</h3>
+        <p>₦{serviceFee}</p>
+      </div>
+      <div className="mt-4">
+        <h3 className="text-lg font-semibold mb-2">Total Cost</h3>
+        <p>₦{totalCost}</p>
+      </div>
     </div>
   );
 };
 
-type DeliveryOption = 'free' | 'express' | 'schedule';
-
-const DeliveryStep: React.FC = () => {
-  const [selectedDelivery, setSelectedDelivery] = useState<DeliveryOption>('free');
-  const [selectedDate, setSelectedDate] = useState<string>('');
-
-  const handleDeliveryChange = (delivery: DeliveryOption) => {
-    setSelectedDelivery(delivery);
-    if (delivery !== 'schedule') {
-      setSelectedDate('');
-    }
-  };
-
-  const handleDateChange = (date: Date | null, event?: React.SyntheticEvent<any, Event> | undefined) => {
-    if (date) {
-      setSelectedDate(date.toISOString().split('T')[0]);
-    } else {
-      setSelectedDate('');
-    }
-  };
-
-  return (
-    <div>
-      <h2 className="text-xl font-bold mb-4">Delivery Method</h2>
-      <div className="mb-4 border border-gray-300 rounded p-4">
-        <label className="flex items-center">
-          <div
-            className={`w-4 h-4 rounded-full border-2 border-gray-400 mr-2 ${selectedDelivery === 'free' ? 'bg-red-600' : 'bg-white'}`}
-            onClick={() => handleDeliveryChange('free')}
-          ></div>
-          <span className="deliverytext text-gray-700">Free Regular shipment</span>
-          <span className="deliverytext text-gray-500 ml-auto">30 minutes</span>
-        </label>
-      </div>
-      <div className="mb-4 border border-gray-300 rounded p-4">
-        <label className="flex items-center">
-          <div
-            className={`w-4 h-4 rounded-full border-2 border-gray-400 mr-2 ${selectedDelivery === 'express' ? 'bg-red-600' : 'bg-white'}`}
-            onClick={() => handleDeliveryChange('express')}
-          ></div>
-          <span className="deliverytext text-gray-700">#2,000 Get your delivery as soon as possible</span>
-          <span className="deliverytext text-gray-500 ml-auto">15 minutes</span>
-        </label>
-      </div>
-      <div className="mb-4 border border-gray-300 rounded py-4">
-        <label className="flex items-center">
-          <div
-            className={`w-4 h-4 rounded-full border-2 border-gray-400 mr-2 ${selectedDelivery === 'schedule' ? 'bg-red-600' : 'bg-white'
-              }`}
-            onClick={() => handleDeliveryChange('schedule')}
-          ></div>
-          <span className="deliverytext text-gray-700">Schedule</span>
-          <DeliveryDatePicker
-            className="ml-4 text-red-900 w-15"
-            value={selectedDate ? new Date(selectedDate) : undefined}
-            onChange={handleDateChange}
-            disabled={selectedDelivery !== 'schedule'}
-          />
-        </label>
-      </div>
-    </div>
-  );
-};
 
 
 
 
 
+
+
+
+///////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
+/////////////        PAYMENT STEP            ////////////////////
+////////////////////////////////////////////////////////////////
 const PaymentStep = () => {
   return (
     <div>
@@ -431,26 +520,87 @@ const PaymentStep = () => {
 };
 
 
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+////////        CHECKOUT COMPONENT          /////////////
+////////////////////////////////////////////////////////
+
+
 const Checkout = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [currentStep, setCurrentStep] = useState('address');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [addresses, setAddresses] = useState<Address[]>([]);
+  const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
+  // const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState<DeliveryOption>('regular');
+  // const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [lastLoginTime, setLastLoginTime] = useState<null | number>(null);
+  const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState<DeliveryOption>('regular');
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
       setIsAuthenticated(true);
+      const lastLoginTimeFromStorage = localStorage.getItem("lastLoginTime");
+      const currentTime = new Date().getTime();
+      if (lastLoginTimeFromStorage) {
+        const sixHoursInMillis = 6 * 60 * 60 * 1000;
+        const timeSinceLastLogin = currentTime - parseInt(lastLoginTimeFromStorage);
+        if (timeSinceLastLogin > sixHoursInMillis) {
+          // It has been more than 6 hours since the last login
+          localStorage.removeItem("token");
+          localStorage.removeItem("lastLoginTime");
+          setIsAuthenticated(false);
+          alert("Please proceed to re-login, as your session has expired.");
+        } else {
+          setLastLoginTime(parseInt(lastLoginTimeFromStorage));
+        }
+      } else {
+        localStorage.setItem("lastLoginTime", currentTime.toString());
+        setLastLoginTime(currentTime);
+      }
     }
   }, []);
+
+
+
+
+  const handleDeliveryMethodChange = (method: DeliveryOption) => {
+    setSelectedDeliveryMethod(method);
+    if (method !== 'schedule') {
+      setSelectedDate(null);
+    }
+  };
+
+  const handleDateChange = (date: Date | null) => {
+    setSelectedDate(date);
+  };
 
   const renderStep = () => {
     switch (currentStep) {
       case 'address':
-        return <AddressStep />;
-      case 'delivery':
-        return <DeliveryStep />;
+        return <AddressStep
+          selectedAddress={selectedAddress}
+          setSelectedAddress={setSelectedAddress}
+          onAddressSelect={(address) => setSelectedAddress(address)}
+        />;
       case 'payment':
         return <PaymentStep />;
+      case 'summary':
+        return (
+          <SummaryStep
+            cartItems={cartItems}
+            setCartItems={setCartItems}
+            selectedAddress={selectedAddress}
+            selectedDeliveryMethod={selectedDeliveryMethod}
+            setSelectedDeliveryMethod={setSelectedDeliveryMethod}
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+          />
+        );
       default:
         return null;
     }
@@ -459,12 +609,11 @@ const Checkout = () => {
   const handleNextStep = () => {
     switch (currentStep) {
       case 'address':
-        setCurrentStep('delivery');
+        setCurrentStep('summary');
         break;
-      case 'delivery':
+      case 'summary':
         setCurrentStep('payment');
         break;
-      // Handle payment step or any other logic
       default:
         break;
     }
@@ -472,11 +621,15 @@ const Checkout = () => {
 
   const handleBackStep = () => {
     switch (currentStep) {
-      case 'delivery':
+      case 'summary':
         setCurrentStep('address');
         break;
+      case 'address':
+        // Navigate to the login page
+        window.location.href = '/';
+        break;
       case 'payment':
-        setCurrentStep('delivery');
+        setCurrentStep('summary');
         break;
       default:
         break;
@@ -728,7 +881,7 @@ const Checkout = () => {
 
             {/* Next button to navigate to the next step */}
             <div className="flex justify-between mt-8 mb-5">
-              <button className="bg-red-900 text-white px-4 py-2 rounded" onClick={handleBackStep} disabled={currentStep === 'address'}>Back</button>
+              <button className="bg-red-900 text-white px-4 py-2 rounded" onClick={handleBackStep}>Back</button>
               <button className="bg-red-900 text-white px-4 py-2 rounded" onClick={handleNextStep}>Next</button>
             </div>
           </div>
