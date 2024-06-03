@@ -59,14 +59,8 @@ const SignUp = () => {
         try {
             const response = await axios.post('http://localhost:5000/api/v1/user/register', formData);
             console.log(response.data); // Handle the response as needed
-            // const { token } = response.data
 
-            // // Store the token in localStorage or a cookie
-            // localStorage.setItem('token', token)
-
-
-            // Redirect to the desired page or show a success message
-            router.push('/checkout')
+            router.push('/verify')
         } catch (error) {
             console.error(error);
         }
