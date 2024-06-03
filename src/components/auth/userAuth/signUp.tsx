@@ -1,20 +1,35 @@
-"use client";
-import React, { useState, ChangeEvent } from 'react';
-import axios, {AxiosError} from 'axios';
-import Input from '@/component/Input';
-import Image from 'next/image';
-import eyelock from '@/images/eye-off.svg';
-import Button from '@/component/button';
-import bg from '@/images/Group12.png';
-import bgg from '@/images/Group9.svg';
-import logo from '@/images/Union (2).svg';
-import Form from '@/component/form';
-import emoji from '@/images/emojipng 1.svg';
-import eyeOpen from '@/images/eye-off (1).svg';
-import { useRouter } from 'next/navigation';
+"use client"
+import React, { useState, ChangeEvent } from 'react'
+import Image from 'next/image'
+import eyelock from '@/images/eye-off.svg'
+// import Button from '@/component/button'
+import bg from '@/images/Group12.png'
+import bgg from '@/images/Group9.svg'
+import logo from '@/images/Union (2).svg'
+import emoji from '@/images/emojipng 1.svg'
+import eyeOpen from '@/images/eye-off (1).svg'
+import { useRouter } from 'next/navigation'
+import axios from 'axios'
+
+
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+    style?: React.CSSProperties;
+    text: string;
+}
+
+const Button: React.FC<ButtonProps> = ({ style, text, ...rest }) => {
+    return (
+        <button style={style} {...rest}>
+            {text}
+        </button>
+    );
+};
+
 
 const SignUp = () => {
-    const router = useRouter();
+    const router = useRouter()
+    const [passwordVisible, setPasswordVisible] = useState(false)
+    const [confirmpasswordVisible, setConfirmPasswordVisible] = useState(false)
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -22,167 +37,132 @@ const SignUp = () => {
         phoneNumber: '',
         password: '',
         confirmPassword: '',
-    });
+    })
 
-    const [passwordVisible, setPasswordVisible] = useState(false);
-    const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
-
-    const togglePasswordVisibility = () => {
+    const togPasswordVis = () => {
         setPasswordVisible((prev) => !prev);
     };
 
-    const toggleConfirmPasswordVisibility = () => {
-        setConfirmPasswordVisible((prev) => !prev);
-    };
+    const togConfirm = () => {
+        setConfirmPasswordVisible((prev) => !prev)
+    }
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+
+
+    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleRegistration = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if (formData.password !== formData.confirmPassword) {
-            console.error('Passwords do not match');
-            return;
-        }
-
         try {
-            console.log('Form Data:', formData);
             const response = await axios.post('http://localhost:5000/api/v1/user/register', formData);
+            console.log(response.data); // Handle the response as needed
+            // const { token } = response.data
 
-            // Handle the successful response
-            if (response.data.msg === 'Verification email sent') {
-                console.log('Registration successful, verification email sent');
-                router.push('/verification');
-            } else {
-                console.error('Registration failed:', response.data.msg);
-            }
-        } catch (error: unknown) {
-            if (axios.isAxiosError(error)) {
-                // The request was made and the server responded with a status code
-                console.error('Error:', error.response?.status, error.response?.data);
-              } else {
-                console.error('Error:', error);
-              }
-            }
+            // // Store the token in localStorage or a cookie
+            // localStorage.setItem('token', token)
+
+
+            // Redirect to the desired page or show a success message
+            router.push('/checkout')
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     return (
-        <div
-            style={{
-                backgroundImage: `url(${bg.src})`,
+        <div style={{
+            backgroundImage: `url(${bg.src})`,
+            width: '100%',
+            height: '140vh',
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: 'left',
+        }} className='outer-container'>
+            <section className='bg-left flex justify-center w-full bg-gradient-to-r relative inner-container h-[100vh]' style={{
+                backgroundImage: `url(${bgg.src})`,
                 width: '100%',
                 height: '140vh',
                 backgroundRepeat: "no-repeat",
-                backgroundPosition: 'left',
-            }}
-            className="outer-container"
-        >
-            <section
-                className="bg-left flex justify-center w-full bg-gradient-to-r relative inner-container h-[100vh]"
-                style={{
-                    backgroundImage: `url(${bgg.src})`,
-                    width: '100%',
-                    height: '140vh',
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: 'right',
-                }}
-            >
-                <div className="sm:flex justify-center sm:w-fit w-[90%] mt-[3rem]">
-                    <div className="absolute left-[3%] md:top-2 top-3 justify-center items-center flex-col max-[420px]:hidden">
-                        <Image src={logo} alt="" width={120} height={120} className="md:w-[120px] md:h-[120px] sm:w-[55px] sm:h-[55px] w-[60px] h-[60px]" />
-                        <p className="md:text-[20px] text-[15px] font-[700] max-[420px]:text-[12px]">Uniclique</p>
+                backgroundPosition: 'right'
+            }} >
+                <div className='sm:flex justify-center sm:w-fit w-[90%] mt-[3rem]'>
+                    <div className='absolute left-[3%] md:top-2 top-3 justify-center items-center flex-col max-[420px]:hidden'>
+                        <Image src={logo} alt='' width={120} height={120} className='md:w-[120px] md:h-[120px] sm:w-[55px] sm:h-[55px] w-[60px] h-[60px]' />
+                        <p className='md:text-[20px] text-[15px] font-[700] max-[420px]:text-[12px]'>Uniclique</p>
                     </div>
 
-                    <div className="flex items-center flex-col mt-[0rem]">
-                        <h1 className="md:text-[2.5rem] text-[1.5rem] font-fold font-[700] flex gap-1 items-center">
-                            Get Started <Image src={emoji} alt="" width={50} height={50} />
-                        </h1>
-                        <h2 className="md:text-[1rem] text-[.8rem] text-color1 font-[500]">Create an account as a user.</h2>
-                        <div className="mt-[1rem] p-6 rounded-lg shadow-lg shadow-cyan-500/50 max-w-[100%] sm:w-[450px] bg-white w-full flex flex-col gap-7">
-                            <form onSubmit={handleRegistration}>
+                    <div className='flex items-center flex-col mt-[0rem]'>
+                        <h1 className='md:text-[2.5rem] text-[1.5rem] font-fold font-[700] flex gap-1 items-center'>Get Started <Image src={emoji} alt='' width={50} height={50} /></h1>
+                        <h2 className='md:text-[1rem] text-[.8rem] text-color1 font-[500]'>Create an account as a user.</h2>
+                        <form onSubmit={handleSubmit}>
+                            <div className='mt-[1rem] p-6 rounded-lg shadow-lg shadow-cyan-500/50 max-w-[100%] sm:w-[450px] bg-white w-full flex flex-col gap-7' >
                                 <input
                                     type="text"
                                     name="firstName"
-                                    placeholder="First Name"
                                     value={formData.firstName}
-                                    onChange={handleChange}
+                                    onChange={handleInputChange}
+                                    placeholder="First Name"
+                                    className="input-field"
                                 />
                                 <input
                                     type="text"
                                     name="lastName"
-                                    placeholder="Last Name"
                                     value={formData.lastName}
-                                    onChange={handleChange}
+                                    onChange={handleInputChange}
+                                    placeholder="Last Name"
+                                    className="input-field"
                                 />
                                 <input
                                     type="email"
                                     name="email"
-                                    placeholder="Email Address"
                                     value={formData.email}
-                                    onChange={handleChange}
+                                    onChange={handleInputChange}
+                                    placeholder="Email Address"
+                                    className="input-field"
                                 />
                                 <input
-                                    type="tel"
+                                    type="text"
                                     name="phoneNumber"
-                                    placeholder="Phone No."
                                     value={formData.phoneNumber}
-                                    onChange={handleChange}
+                                    onChange={handleInputChange}
+                                    placeholder="Phone No."
+                                    className="input-field"
                                 />
-                                <div>
+                                <div className='relative'>
                                     <input
-                                        type="password"
+                                        type={passwordVisible ? 'text' : 'password'}
                                         name="password"
-                                        placeholder="Password"
                                         value={formData.password}
-                                        onChange={handleChange}
+                                        onChange={handleInputChange}
+                                        placeholder="Password"
+                                        className="input-field"
                                     />
-
-                                    <Image
-                                        src={passwordVisible ? eyeOpen : eyelock}
-                                        alt=""
-                                        width={15}
-                                        height={15}
-                                        onClick={togglePasswordVisibility}
-                                        className="absolute right-[2%] flex justify-center items-center top-[57%]"
-                                    />
+                                    <Image src={passwordVisible ? eyeOpen : eyelock} alt='' width={15} height={15} onClick={togPasswordVis} className='absolute right-[2%] flex justify-center items-center top-[57%]' />
                                 </div>
-                                <div>
+                                <div className='relative'>
                                     <input
-                                        type="password"
+                                        type={confirmpasswordVisible ? 'text' : 'password'}
                                         name="confirmPassword"
-                                        placeholder="Confirm Password"
                                         value={formData.confirmPassword}
-                                        onChange={handleChange}
+                                        onChange={handleInputChange}
+                                        placeholder="Confirm Password"
+                                        className="input-field"
                                     />
-                                    <Image
-                                        src={confirmPasswordVisible ? eyeOpen : eyelock}
-                                        alt=""
-                                        width={15}
-                                        height={15}
-                                        onClick={toggleConfirmPasswordVisibility}
-                                        className="absolute right-[2%] flex justify-center items-center top-[57%]"
-                                    />
+                                    <Image src={confirmpasswordVisible ? eyeOpen : eyelock} alt='' width={15} height={15} onClick={togConfirm} className='absolute right-[2%] flex justify-center items-center top-[57%]' />
                                 </div>
-                                <button type="submit">Sign Up</button>
-                            </form>
-                        </div>
+                            </div>
+                        <Button style={{ backgroundColor: "#590209", fontSize: "12px", font: 'bold', padding: "15px", color: '#fff', width: '90%', marginTop: "20px", borderRadius: '10px' }}
+                            text='Sign Up'
+                            type='submit' />
+                        <Button style={{ backgroundColor: "#590209", fontSize: "12px", font: 'bold', padding: "15px", color: '#fff', width: '90%', marginTop: "2px", borderRadius: '10px' }} text='Already have an account? Sign In' onClick={() => router.push('/login')} />
+                        </form>
                     </div>
-                    <Button
-                        style={{ backgroundColor: "#590209", fontSize: "12px", font: 'bold', padding: "15px", color: '#fff', width: '90%', marginTop: "20px", borderRadius: '10px' }}
-                        text="Sign Up"
-                        // onClick={() => handleRegistration()}
-                    />
-                    <Button
-                        style={{ backgroundColor: "#590209", fontSize: "12px", font: 'bold', padding: "15px", color: '#fff', width: '90%', marginTop: "2px", borderRadius: '10px' }}
-                        text="Already have an account? Sign In"
-                        onClick={() => router.push('/signin')}
-                    />
                 </div>
-            </section >
-        </div >
-    );
-};
+            </section>
+        </div>
+    )
+}
 
-export default SignUp;
+export default SignUp

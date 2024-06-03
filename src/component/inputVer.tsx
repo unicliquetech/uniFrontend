@@ -57,8 +57,8 @@ const InputVer: React.ForwardRefRenderFunction<HTMLInputElement, InputVerProps> 
       onChange={handleChange}
       onFocus={handleFocus}
       onBlur={handleBlur}
-      className={`inputVer rounded-lg border-2 border-color1 text-center ${
-        value ? 'bg-color1 text-white' : ''
+      className={`inputVer rounded-lg border-2 border-color1 text-center h-8 w-8 sm:h-16 sm:w-16 ${
+        value ? 'bg-color1 text-red' : ''
       }`}
     />
   );
