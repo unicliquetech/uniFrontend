@@ -98,7 +98,7 @@
       margin: 0;
     }
     .headerTextWrapper{
-      top: 20%;
+      top: 25%;
     }
     .headerText span{
       font-size: 1.5rem;
@@ -116,7 +116,7 @@
       height: 20px;
     }
     .headerTextWrapper{
-      top: 20%;
+      top: 25%;
     }
     .headerText span{
       font-size: 1.2rem;
@@ -136,7 +136,7 @@
 
   @media (max-width: 370px)and (min-width: 320px) {
     .headerTextWrapper{
-      top: 10%;
+      top: 15%;
     }
     .headerText span{
       font-size: 1.2rem;
