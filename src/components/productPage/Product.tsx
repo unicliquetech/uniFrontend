@@ -1,9 +1,9 @@
 "use client"
 import React, { useEffect, useState } from 'react';
-import styles from '../styles/Product.module.css';
-import Header from '@/components/Header';
-import MainContent from '@/components/MainContent';
-import Footer from '@/components/Footer';
+import styles from '@/styles/Product.module.css';
+import Header from '@/components/productPage/Header';
+import MainContent from '@/components/productPage/MainContent';
+import Footer from '@/components/productPage/Footer';
 
 interface Product {
   _id: string;

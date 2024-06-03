@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../styles/MainContent.module.css';
+import styles from '@/styles/MainContent.module.css';
 
 interface ImageProps {
     src: string;

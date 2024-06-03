@@ -1,16 +1,16 @@
 "use client";
 import React, { useState, ChangeEvent } from 'react';
 import axios, {AxiosError} from 'axios';
-import Input from '../component/Input';
+import Input from '@/component/Input';
 import Image from 'next/image';
-import eyelock from '../images/eye-off.svg';
-import Button from '../component/button';
-import bg from '../images/Group12.png';
-import bgg from '../images/Group9.svg';
-import logo from '../images/Union (2).svg';
-import Form from '../component/form';
-import emoji from '../images/emojipng 1.svg';
-import eyeOpen from '../images/eye-off (1).svg';
+import eyelock from '@/images/eye-off.svg';
+import Button from '@/component/button';
+import bg from '@/images/Group12.png';
+import bgg from '@/images/Group9.svg';
+import logo from '@/images/Union (2).svg';
+import Form from '@/component/form';
+import emoji from '@/images/emojipng 1.svg';
+import eyeOpen from '@/images/eye-off (1).svg';
 import { useRouter } from 'next/navigation';
 
 const SignUp = () => {
