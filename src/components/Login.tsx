@@ -13,7 +13,7 @@ import eyeOpen from '../images/eye-off (1).svg'
 import axios from 'axios'
 
 interface LoginFormProps {
-  onLogin: (authToken: string) => void;
+  
 }
 
 interface FormData {
@@ -21,7 +21,7 @@ interface FormData {
   password: string
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ onLogin })=> {
+const LoginForm: React.FC<LoginFormProps> = ()=> {
   const router = useRouter()
   const [passwordVis, setPasswordVis] = useState<boolean>(false)
   const [formData, setFormData] = useState<FormData>({
