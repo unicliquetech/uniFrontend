@@ -30,12 +30,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
   productId,
   company,
 }) => {
-  console.log('Rendering ProductCard for:', name);
   const [isAdded, setIsAdded] = useState(false);
 
   const handleAddToCart = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/v1/cart', {
+      const response = await fetch('https://unibackend.onrender.com/api/v1/cart', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -50,8 +49,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
       });
 
       if (response.ok) {
-        setIsAdded(true);
+        const { cartId } = await response.json(); // Get the cartId from the response
+
+      // Store the cartId in localStorage
+      localStorage.setItem('cartId', cartId);
+
+      setIsAdded(true);
         // You can also show a success message or update the cart count here
+        
       } else {
         console.error('Failed to add product to cart');
       }

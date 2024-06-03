@@ -32,6 +32,7 @@ function showCustomAlert(message: string) {
 interface CartItem {
   id: number;
   name: string;
+  image: string;
   price: number;
   quantity: number;
 }
@@ -390,6 +391,7 @@ const SummaryStep: React.FC<SummaryStepProps> = ({
         <h3 className="text-lg font-semibold mb-2">Cart Items</h3>
         {cartItems.map((item) => (
           <div key={item.id} className="flex justify-between mb-2">
+            <img src={item.image} alt={item.name} className='h-14'/>
             <span>{item.name}</span>
             <span>₦{item.price * item.quantity}</span>
           </div>
@@ -643,15 +645,15 @@ const Checkout = () => {
 
 
   return (
-    <div className="container">
+    <div className="checkout-container">
       {isAuthenticated ? (
         null
       ) : <div>
-        <a href='/login' className='text-white border bg-red-900 border-gray-300 rounded p-1.5 sm:p-4 text-white sm:px-4 sm:py-2 mr-2'>Login</a>
+        <a href='/login' className='text-white border bg-red-900 border-gray-300 rounded p-1.5 sm:p-4 text-white sm:px-4 sm:py-2'>Login</a>
       </div>}
 
       {isAuthenticated ? (
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="container-div">
 
 
           <header className="flex justify-between items-center bg-white py-4 px-4 sm:px-6 lg:px-8">
@@ -814,9 +816,9 @@ const Checkout = () => {
                 </div>
               </button>
               <button
-                className={`mr-4 ${currentStep === 'delivery' ? 'text-red-600 font-bold' : 'text-gray-400'}`}
-                onClick={() => setCurrentStep('delivery')}
-                disabled={currentStep !== 'address'}
+                className={`mr-4 ${currentStep === 'summary' ? 'text-red-600 font-bold' : 'text-gray-400'}`}
+                onClick={() => setCurrentStep('summary')}
+                // disabled={currentStep !== 'address'}
               >
                 <div className="flex sm:ml-40 ml-2">
                   <svg
@@ -835,14 +837,14 @@ const Checkout = () => {
                   </svg>
                   <div className="grid sm:mr-40 mr-2">
                     <small className='step-content'>Step 2</small>
-                    <span className="ml-4 step-content font-semibold style={{fontSize: '0.45rem'}}">Delivery</span>
+                    <span className="ml-4 step-content font-semibold style={{fontSize: '0.45rem'}}">Summary</span>
                   </div>
                 </div>
               </button>
               <button
                 className={`mr-4 ${currentStep === 'payment' ? 'text-red-600 font-bold' : 'text-gray-400'}`}
                 onClick={() => setCurrentStep('payment')}
-                disabled={currentStep !== 'delivery'}
+                disabled={currentStep !== 'summary'}
               >
                 <div className="flex sm:ml-40 ml-0">
                   <svg
