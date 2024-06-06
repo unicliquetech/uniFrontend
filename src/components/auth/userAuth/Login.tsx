@@ -56,13 +56,6 @@ const LoginForm: React.FC<LoginFormProps> = ()=> {
       setError('Invalid email or password. Please try again.');
     }
   }
-  // interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  //   style?: React.CSSProperties;
-  // }
-  
-  // const Input: React.FC<InputProps> = ({ style, ...rest }) => {
-  //   return <input style={style} {...rest} />;
-  // };
   
 
   interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -114,7 +107,7 @@ const LoginForm: React.FC<LoginFormProps> = ()=> {
           </div>
 
           <div className="flex items-center flex-col justify-center h-screen">
-            <h1 className="md:text-[2.5rem] text-[1.5rem] font-fold font-[700]">
+            <h1 className="md:text-[2.5rem] text-[1.5rem] font-fold font-[700]" style={{ color: '#590209'}}>
               Welcome Back! <span>👋</span>
             </h1>
             <h2 className="md:text-[1rem] text-[.8rem] text-color1 font-[500]">
@@ -168,7 +161,7 @@ const LoginForm: React.FC<LoginFormProps> = ()=> {
                   </div>
                   <p
                     className="text-[0.6rem] text-color1 font-bold font-fold flex justify-end cursor-pointer mt-[-13px]"
-                    onClick={() => router.push('/forgotPas')}
+                    onClick={() => router.push('/forgotPassword')}
                   >
                     Forgot Password?
                   </p>

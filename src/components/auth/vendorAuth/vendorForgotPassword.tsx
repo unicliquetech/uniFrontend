@@ -19,7 +19,7 @@ interface ForgotPasswordProps {}
 //     email: string,
 // }
 
-const ForgotPassword: React.FC<ForgotPasswordProps> = () => {
+const VendorForgotPassword: React.FC<ForgotPasswordProps> = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -36,11 +36,14 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = () => {
 
 
     try {
-      const response = await axios.post("https://unibackend.onrender.com/api/v1/user/reset-password-email", {email});
-      setMessage(response.data.msg);
+      const response = await axios.post("http://localhost:5000/api/v1/vendor/reset-password", {email});
+      setMessage(response.data.message);
+      if (response.data.message === 'Password reset email sent') {
+        router.push('/vendorResetPassword');
+      }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        setMessage(error.response?.data.msg || "An error occurred");
+        setMessage(error.response?.data.message || "An error occurred");
       } else {
         setMessage("An unexpected error occurred");
       }
@@ -131,4 +134,4 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = () => {
   );
 };
 
-export default ForgotPassword;
+export default VendorForgotPassword;

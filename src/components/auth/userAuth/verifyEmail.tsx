@@ -1,5 +1,6 @@
 "use client"
 import React, { useState, useRef, useEffect } from 'react';
+import jwt from 'jsonwebtoken'
 import bg from '@/images/BG-st-3.svg'
 import bgg from '@/images/BG-secondtype.svg'
 import logo from '@/images/Union (2).svg'
@@ -11,6 +12,27 @@ import arrowRight from '@/images/arrow-right (1).svg'
 import { useRouter } from 'next/navigation'
 import axios from 'axios';
 
+function showCustomAlert(message: string) {
+  const alertContainer = document.createElement('div');
+  alertContainer.classList.add('custom-alert');
+
+  const alertHeader = document.createElement('div');
+  alertHeader.classList.add('custom-alert-header');
+  alertHeader.textContent = 'Alert';
+
+  const alertBody = document.createElement('div');
+  alertBody.classList.add('custom-alert-body');
+  alertBody.textContent = message;
+
+  alertContainer.appendChild(alertHeader);
+  alertContainer.appendChild(alertBody);
+
+  document.body.appendChild(alertContainer);
+
+  setTimeout(() => {
+    document.body.removeChild(alertContainer);
+  }, 100000); // Adjust the duration (in milliseconds) to control how long the alert should be displayed
+}
 
 
 interface ApiResponse {
@@ -27,6 +49,22 @@ const EmailVerification = () => {
   const [apiResponse, setApiResponse] = useState<ApiResponse | null>(null);
 
   const router = useRouter()
+
+
+  const getEmailHeaders = () => {
+    const email = localStorage.getItem('email');
+
+    if (!email) {
+      showCustomAlert("Error occurred. Please proceed to re-signup.");
+      window.location.href = '/signup';
+      throw new Error('Invalid auth token');
+    }
+    return {
+      headers: {
+        'email': email,
+      },
+    };
+  };
 
   const handleInputFilled = (value: string) => {
     setOtp(prevOtp => prevOtp + value);
@@ -53,13 +91,27 @@ const EmailVerification = () => {
 
   const handleVerifyEmail = async () => {
     try {
-      const response = await axios.post('https://unibackend.onrender.com/api/v1/user/verify-email', { otp });
+      const response = await axios.post('https://unibackend.onrender.com/api/v1/user/verify-email', { otp }, );
       setApiResponse(response.data);
       if (response.data.message === 'Email verified successfully') {
-        router.push('/newPass');
+        router.push('/login');
       }
     } catch (error) {
       console.error('Error verifying email:', error);
+      setApiResponse({ error: 'An error occurred' });
+    }
+  };
+
+  const handleresendEmail = async () => {
+    try {
+      const headers = getEmailHeaders();
+      const response = await axios.post('https://unibackend.onrender.com/api/v1/user/resend-otp', null, headers);
+      setApiResponse(response.data);
+      if (response.data.message === 'OTP sent to Email') {
+        router.push('/verify');
+      }
+    } catch (error) {
+      console.error('Error sending email:', error);
       setApiResponse({ error: 'An error occurred' });
     }
   };
@@ -94,6 +146,14 @@ const EmailVerification = () => {
         <div className='flex w-full justify-center items-center md:mt-[1rem] mt-[0.1rem] flex-col '>
           <div className={openSus ? 'mt-[5rem]' : 'flex items-center flex-col mt-[0.2rem]'}>
             <h2 className=' text-center font-mon'><b>Email Verification</b></h2>
+
+            {apiResponse && (
+            <div className="mt-4">
+              {apiResponse.message && <p className="text-green-500">{apiResponse.message}</p>}
+              {apiResponse.error && <p className="text-red-500">{apiResponse.error}</p>}
+            </div>
+          )}
+          
             <h4 className=' text-center font-mon md-2'><b>Enter your OTP code here</b></h4>
           </div>
           <div className="flex w-6 justify-center md:gap-10 gap-5 items-center md:mt-[2.5rem] mt-[2.75rem]">
@@ -107,16 +167,16 @@ const EmailVerification = () => {
                 />
               ))}
           </div>
-          <p className='md:text-[15px] text-[12px] text-color1 mt-[2rem]'>Didn&apos;t you receive any code?</p>
-          <p className='md:text-[15px] text-[12px] text-color1 font-bold mt-[0.5rem]'>Resend a new code.</p>
-
-          <div
-            className='flex justify-center items-center px-[5rem]  py-2 gap-2 bg-color1 pointer text-white mb-[2rem] md:mt-[3rem] mt-[2rem] rounded-3xl cursor-pointer'
+          <button
+            className='flex justify-center mt-[2rem] items-center  bg-color-red pointer text-color1  rounded-3xl cursor-pointer'
             onClick={handleVerifyEmail}
-          >
-            <p>Next</p>
-            <Image src={arrowRight} alt='' width={20} height={20} />
-          </div>
+          > Next
+            {/* <Image src={arrowRight} alt='' width={20} height={20} /> */} </button>
+
+          <p className='md:text-[15px] text-[12px] text-color1 mt-[2rem]'>Didn&apos;t you receive any code?</p>
+          <p className='md:text-[15px] text-[12px] text-color1 font-bold mt-[0.5rem]' onClick={handleresendEmail}>
+            Resend a new code.</p>
+
 
           {apiResponse && (
             <div className="mt-4">

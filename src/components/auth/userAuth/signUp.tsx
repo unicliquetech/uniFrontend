@@ -10,6 +10,7 @@ import emoji from '@/images/emojipng 1.svg'
 import eyeOpen from '@/images/eye-off (1).svg'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
+import jwt from 'jsonwebtoken'
 
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -24,6 +25,28 @@ const Button: React.FC<ButtonProps> = ({ style, text, ...rest }) => {
         </button>
     );
 };
+
+function showCustomAlert(message: string) {
+    const alertContainer = document.createElement('div');
+    alertContainer.classList.add('custom-alert');
+  
+    const alertHeader = document.createElement('div');
+    alertHeader.classList.add('custom-alert-header');
+    alertHeader.textContent = 'Alert';
+  
+    const alertBody = document.createElement('div');
+    alertBody.classList.add('custom-alert-body');
+    alertBody.textContent = message;
+  
+    alertContainer.appendChild(alertHeader);
+    alertContainer.appendChild(alertBody);
+  
+    document.body.appendChild(alertContainer);
+  
+    setTimeout(() => {
+      document.body.removeChild(alertContainer);
+    }, 100000); // Adjust the duration (in milliseconds) to control how long the alert should be displayed
+  }
 
 
 const SignUp = () => {
@@ -47,7 +70,12 @@ const SignUp = () => {
         setConfirmPasswordVisible((prev) => !prev)
     }
 
+    interface DecodedToken {
+        email: string;
+      }
+    
 
+    
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -57,8 +85,13 @@ const SignUp = () => {
         e.preventDefault();
 
         try {
-            const response = await axios.post('http://localhost:5000/api/v1/user/register', formData);
+            const response = await axios.post('https://unibackend.onrender.com/api/v1/user/register', formData )
             console.log(response.data); // Handle the response as needed
+
+            if (response.data.email) {
+                localStorage.setItem('email', response.data.email);
+                // You can also store other user information from the response if needed
+              }
 
             router.push('/verify')
         } catch (error) {

@@ -4,6 +4,8 @@ interface InputPassProps {
   placeholder: string;
   style?: React.CSSProperties; 
   type: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const InputPass: React.FC<InputPassProps> = ({placeholder, type, style}) => {
