@@ -38,7 +38,7 @@ const LoginVendor = () => {
     e.preventDefault()
 
     try {
-      const response = await axios.post('http://localhost:5000/api/v1/vendor/login', formData)
+      const response = await axios.post('https://unibackend.onrender.com/api/v1/vendor/login', formData)
       const { token } = response.data
 
       // Store the token in localStorage or a cookie

@@ -36,7 +36,7 @@ const VendorForgotPassword: React.FC<ForgotPasswordProps> = () => {
 
 
     try {
-      const response = await axios.post("http://localhost:5000/api/v1/vendor/reset-password", {email});
+      const response = await axios.post("https://unibackend.onrender.com/api/v1/vendor/reset-password", {email});
       setMessage(response.data.message);
       if (response.data.message === 'Password reset email sent') {
         router.push('/vendorResetPassword');
