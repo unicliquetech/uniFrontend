@@ -153,7 +153,7 @@ const Aside = () => {
       </div>
 
       {/* Mobile menu toggle button */}
-      <div className={`${isOpen ? 'hidden' : 'flex'} fixed top-0 left-0 h-[1000] w-[95%] z-10 `}>
+      <div className={`${isOpen ? 'hidden' : 'flex'} justify-center items-center h-full`}>
         <MdMenu size={24} onClick={toggleMenu} className="cursor-pointer" />
       </div>
     </section>

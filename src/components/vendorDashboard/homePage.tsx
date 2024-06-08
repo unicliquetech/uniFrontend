@@ -1,5 +1,6 @@
 "use client";
 import React, { useRef, useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Chart from '@/components/vendorDashboard/chart'
 import Nav from '@/components/vendorDashboard/nav';
 import Button from './Button';
@@ -14,6 +15,7 @@ import total from '@/Images/productT.svg'
 import cat from '@/Images/category.svg'
 
 const Homepage = () => {
+    const router = useRouter();
     const orders = [
         {
             id: 1,
@@ -86,8 +88,15 @@ const Homepage = () => {
         };
     }, []);
 
+    useEffect(() => {
+        const vendorEmail = localStorage.getItem('vendorEmail');
+        if (!vendorEmail) {
+            router.push('/loginVendor');
+        }
+    }, [router]);
+
     return (
-        <main className='w-[80%] flex flex-col'>
+        <main className='sm: w-[80%] w-[100%] bg-red-500 flex flex-col'>
             <Nav />
             <div className='mt-[5rem] flex flex-col'>
                 <div className='flex justify-between p-4 items-center w-full'>
@@ -117,11 +126,11 @@ const Homepage = () => {
                 </div>
                 <button onClick={scrollRight} className="absolute right-[10px] p-2 bg-white shadow-xl rounded-full"><MdOutlineChevronRight size={30} color='#AAA6A6' /></button>
             </div>
-            <div className='flex p-4 gap-4 items-center mt-[2rem] justify-between w-full'>
-                <div className='w-3/4'>
+            <div className='flex flex-col md:flex-row p-4 gap-4 items-center mt-[2rem] justify-between w-full'>
+                <div className='w-full md:w-3/4'>
                     <Chart />
                 </div>
-                <div className='flex flex-col gap-10 w-1/4 justify-between'>
+                <div className='flex flex-col gap-10 w-full md:w-1/4 justify-between'>
                     <div className='flex items-center p-7 rounded-md bg-[#8C3926] gap-4'>
                         <Image src={total} alt='' width={50} height={50} className='p-3 bg-white shadow-xl rounded-full' />
                         <div className='flex flex-col gap-2'>

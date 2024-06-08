@@ -46,7 +46,7 @@ const LoginVendor = () => {
 
 
       // Redirect to the desired page or show a success message
-      router.push('/')
+      router.push('/vendorDashboard')
     } catch (err) {
       console.error('Login error:', err)
       setError('Invalid email or password. Please try again.');
