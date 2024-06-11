@@ -1,9 +1,9 @@
 import Image from 'next/image';
 import React, { useState } from 'react';
 import { MdSearch, MdMessage, MdDoorbell, MdMenu } from "react-icons/md";
-import ava from '@/Images/avatar.svg';
-import bell from '@/Images/bell (1).svg';
-import message from '@/Images/Vector (40).svg';
+import ava from '@/images/avatar.svg';
+import bell from '@/images/bell (1).svg';
+import message from '@/images/Vector (40).svg';
 import Aside from '@/components/vendorDashboard/Aside'; // Import the Aside component
 
 interface NavProps {

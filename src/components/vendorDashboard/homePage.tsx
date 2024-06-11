@@ -5,15 +5,15 @@ import Chart from '@/components/vendorDashboard/chart'
 import Nav from '@/components/vendorDashboard/nav';
 import Aside from '@/components/vendorDashboard/Aside';
 import Button from './Button';
-import all from '@/Images/Shopping Cart.svg';
-import pending from '@/Images/Sand Watch.svg';
-import completed from '@/Images/Task Completed.svg';
-import newOrder from '@/Images/New.svg';
+import all from '@/images/Shopping Cart.svg';
+import pending from '@/images/Sand Watch.svg';
+import completed from '@/images/Task Completed.svg';
+import newOrder from '@/images/New.svg';
 import { MdCancel, MdOutlineChevronRight, MdOutlineChevronLeft } from "react-icons/md";
 import Image from 'next/image';
-import cancel from '@/Images/bx-x-circle.svg'
-import total from '@/Images/productT.svg'
-import cat from '@/Images/category.svg'
+import cancel from '@/images/bx-x-circle.svg'
+import total from '@/images/productT.svg'
+import cat from '@/images/category.svg'
 
 const Homepage = () => {
     const router = useRouter();
