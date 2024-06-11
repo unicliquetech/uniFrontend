@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Nav from '@/components/vendorDashboard/nav';
+import Aside from '@/components/vendorDashboard/Aside';
 import styles from '@/styles/MessageList.module.css';
 import axios from 'axios';
 
@@ -19,6 +20,11 @@ interface Message {
   }
   
   const MessageItem: React.FC<MessageItemProps> = ({ message }) => {
+    const [isMobileVisible, setIsMobileVisible] = useState<boolean>(false);
+
+    const toggleMobileVisibility = () => {
+      setIsMobileVisible(!isMobileVisible);
+    };
     return (
       <div className="message-item bg-white rounded-lg shadow-md p-4 mb-4">
         <div className="flex justify-between items-center mb-2">
@@ -112,6 +118,11 @@ const MessagingLayout: React.FC = () => {
   const [currentCategory, setCurrentCategory] = useState<'all' | 'read' | 'unread' | 'archived'>('all');
   const [currentMessage, setCurrentMessage] = useState<Message | null>(null);
   const [currentRecipient, setCurrentRecipient] = useState<string | null>(null);
+  const [isMobileVisible, setIsMobileVisible] = useState<boolean>(false);
+
+    const toggleMobileVisibility = () => {
+      setIsMobileVisible(!isMobileVisible);
+    };
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -123,6 +134,12 @@ const MessagingLayout: React.FC = () => {
   }, []);
 
   const sendMessage = async (content: string, documents: string[]) => {
+    const [isMobileVisible, setIsMobileVisible] = useState<boolean>(false);
+
+    const toggleMobileVisibility = () => {
+      setIsMobileVisible(!isMobileVisible);
+    };
+
     const newMessage: Omit<Message, 'id'> = {
       sender: 'user123', // Replace with the actual user ID
       recipient: 'user456', // Replace with the desired recipient ID
@@ -169,7 +186,8 @@ const MessagingLayout: React.FC = () => {
 
   return (
     <div className="messaging-layout w-[100%] h-screen bg-gray-100 font-sans">
-        <Nav />
+        <Nav toggleMobileVisibility={toggleMobileVisibility} />
+        <Aside isMobileVisible={isMobileVisible} />
         <div className='ml-8 mr-4'>
         <h1 className='text-red-900 mt-8 mb-2 font-bolder'>Messaging</h1>
         <p>Check here for your messages</p>

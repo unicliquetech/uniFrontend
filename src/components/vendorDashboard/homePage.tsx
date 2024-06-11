@@ -3,6 +3,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Chart from '@/components/vendorDashboard/chart'
 import Nav from '@/components/vendorDashboard/nav';
+import Aside from '@/components/vendorDashboard/Aside';
 import Button from './Button';
 import all from '@/Images/Shopping Cart.svg';
 import pending from '@/Images/Sand Watch.svg';
@@ -16,6 +17,11 @@ import cat from '@/Images/category.svg'
 
 const Homepage = () => {
     const router = useRouter();
+    const [isMobileVisible, setIsMobileVisible] = useState<boolean>(false);
+
+  const toggleMobileVisibility = () => {
+    setIsMobileVisible(!isMobileVisible);
+  };
     const orders = [
         {
             id: 1,
@@ -96,8 +102,9 @@ const Homepage = () => {
     }, [router]);
 
     return (
-        <main className='sm: w-[80%] w-[100%] bg-red-500 flex flex-col'>
-            <Nav />
+        <main className='sm: w-[100%] w-[100%] flex flex-col'>
+            <Nav toggleMobileVisibility={toggleMobileVisibility} />
+            <Aside isMobileVisible={isMobileVisible} />
             <div className='mt-[5rem] flex flex-col'>
                 <div className='flex justify-between p-4 items-center w-full'>
                     <p className='md:text-[18px] text-[17px] font-bold'>Welcome Ayotunde!</p>
@@ -160,3 +167,4 @@ const Homepage = () => {
 }
 
 export default Homepage;
+ 

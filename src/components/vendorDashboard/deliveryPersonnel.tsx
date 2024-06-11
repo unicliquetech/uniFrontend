@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { DeliveryPersonnelType } from '@/types/types';
 import Nav from '@/components/vendorDashboard/nav';
+import Aside from '@/components/vendorDashboard/Aside';
 
 
 interface DeliveryPersonnelListProps {
@@ -95,6 +96,11 @@ const DeliveryPersonnelTable: React.FC<DeliveryPersonnelTableProps> = ({
     const [itemsPerPage] = useState(10);
     const [filterOptions, setFilterOptions] = useState({ location: '', vehicle: '', type: '' });
     const [filter, setFilter] = useState<boolean>(false);
+    const [isMobileVisible, setIsMobileVisible] = useState<boolean>(false);
+
+    const toggleMobileVisibility = () => {
+      setIsMobileVisible(!isMobileVisible);
+    };
 
 
     const applyFilters = (person: DeliveryPersonnelType) => {
@@ -122,7 +128,7 @@ const DeliveryPersonnelTable: React.FC<DeliveryPersonnelTableProps> = ({
         if (vehicle) filterParams.append('vehicle', vehicle);
         if (type) filterParams.append('type', type);
 
-        const res = await fetch(`http://localhost:5000/api/v1/deliveryPersonnel/filter?${filterParams.toString()}`);
+        const res = await fetch(`https://unibackend.onrender.com/api/v1/deliveryPersonnel/filter?${filterParams.toString()}`);
         const data = await res.json();
         onPersonnelSelect(data);
     };
@@ -305,10 +311,15 @@ const DeliveryPersonnelTable: React.FC<DeliveryPersonnelTableProps> = ({
 const DeliveryPersonnel: React.FC = () => {
     const [deliveryPersonnel, setDeliveryPersonnel] = useState<DeliveryPersonnelType[]>([]);
     const [selectedPersonnel, setSelectedPersonnel] = useState<DeliveryPersonnelType | null>(null);
+    const [isMobileVisible, setIsMobileVisible] = useState<boolean>(false);
+
+    const toggleMobileVisibility = () => {
+      setIsMobileVisible(!isMobileVisible);
+    };
 
     useEffect(() => {
         // Fetch delivery personnel data from the API
-        fetch('http://localhost:5000/api/v1/deliveryPersonnel')
+        fetch('https://unibackend.onrender.com/api/v1/deliveryPersonnel')
             .then((res) => res.json())
             .then((data) => setDeliveryPersonnel(data));
     }, []);
@@ -319,7 +330,8 @@ const DeliveryPersonnel: React.FC = () => {
 
     return (
         <div>
-            <Nav />
+            <Nav toggleMobileVisibility={toggleMobileVisibility} />
+            <Aside isMobileVisible={isMobileVisible} />
             <div className="grid bg-white w-{100%}">
                 <div className=" p-4 w-{100%}" style={{width: 1200}}>
                     <DeliveryPersonnelTable

@@ -6,19 +6,19 @@ import bell from '@/Images/bell (1).svg';
 import message from '@/Images/Vector (40).svg';
 import Aside from '@/components/vendorDashboard/Aside'; // Import the Aside component
 
-const Nav = () => {
+interface NavProps {
+    toggleMobileVisibility: () => void;
+  }
+  
+  const Nav: React.FC<NavProps> = ({ toggleMobileVisibility }) => {
     const [isAsideOpen, setIsAsideOpen] = useState(false);
-
-    const toggleAside = () => {
-        setIsAsideOpen(!isAsideOpen);
-    };
 
     return (
         <div className="relative">
             <section className='flex justify-between items-center w-full px-4 py-2 bg-white shadow-xl'>
-                {/* <div className='flex items-center lg:hidden'>
-                    <MdMenu size={24} onClick={toggleAside} className="cursor-pointer" />
-                </div> */}
+                <div className='flex items-center'>
+                    <MdMenu size={24} onClick={toggleMobileVisibility} className="cursor-pointer" />
+                </div>
                 <div className='flex flex-col justify-start gap-1 lg:flex'>
                     <p className='md:text-[17px] text-[15px] font-bold'>Dashboard</p>
                     <p className='md:text-[12.5px] text-[12px]'>11 May 2024, Saturday</p>
@@ -50,7 +50,7 @@ const Nav = () => {
                 </div>
             </section>
             {/* {isAsideOpen && (
-                <div className="fixed top-0 left-0 h-screen w-[75vw] bg-gray-900 bg-opacity-50 z-10">
+                <div className="fixed bg-red-900 text-white top-0 left-0 h-screen w-[75vw]">
                     <Aside />
                 </div>
             )} */}

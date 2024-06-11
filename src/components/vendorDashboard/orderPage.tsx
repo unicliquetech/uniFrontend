@@ -1,10 +1,11 @@
 "use client"
 import React, { useState } from 'react'
 import Nav from '@/components/vendorDashboard/nav'
+import Aside from '@/components/vendorDashboard/Aside';
 import Image from 'next/image'
 import Orders from '@/data/order'
 // import prev from "../images/";
-import next from "@/Images/Vector (21).svg";
+import next from "@/images/Vector (21).svg";
 import { useRouter } from 'next/navigation';
 
 
@@ -12,6 +13,11 @@ const Order = () => {
     const router = useRouter()
     const [activeNumber, setActiveNumber] = useState(1);
     const [activeTab, setActiveTab] = useState('All');
+    const [isMobileVisible, setIsMobileVisible] = useState<boolean>(false);
+
+    const toggleMobileVisibility = () => {
+      setIsMobileVisible(!isMobileVisible);
+    };
 
     const handleClick = (number: any, tab: any) => {
         setActiveNumber(number);
@@ -52,7 +58,8 @@ const Order = () => {
 
     return (
         <main className='w-[100%] flex flex-col'>
-            <Nav />
+            <Nav toggleMobileVisibility={toggleMobileVisibility} />
+            <Aside isMobileVisible={isMobileVisible} />
         <section className='p-4 w-full flex flex-col gap-7 relative'>
             <h1 className='text-red-900 font-semibold md:text-2xl text-xl'>My Orders</h1>
             <div className='bg-white rounded-md shadow-sm mb-12'>
@@ -66,12 +73,13 @@ const Order = () => {
                             {tab}
                         </h1>
                     ))}
+
                 </div>
                 <hr className='bg-red-900 mt-1' />
-                <div className='overflow-x-auto'>
-                    <table className='min-w-full bg-white border border-gray-200'>
+                <div className='overflow-x-auto md:overflow-x-visible'>
+                    <table className='min-w-full md:min-w-0 bg-white border border-gray-200'>
                         <thead>
-                            <tr className='bg-color1 text-red-900 md:text-[13px] text-sm'>
+                            <tr className='bg-color1 text-red-900'>
                                 <th className='py-4 px-6 text-left'>Customer</th>
                                 <th className='py-4 px-6 text-left'>Location</th>
                                 <th className='py-4 px-6 text-left'>Order Details</th>
@@ -116,7 +124,7 @@ const Order = () => {
                     </table>
                 </div>
             </div>
-            <div className="bottom-3 absolute flex flex-col md:flex-row items-end right-2 gap-4 md:gap-10">
+            <div className="bottom-3 absolute flex flex-col items-end right-2 gap-4">
                 <h1 className="text-sm font-medium text-color1">Showing 1 page of 5 entries</h1>
                 <div className="flex gap-4">
                     <div className="flex items-center gap-3 cursor-pointer">

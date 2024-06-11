@@ -1,0 +1,9 @@
+.mobile-visible {
+    width: 75vw; /* 75% of the viewport width */
+  }
+  
+  @media (min-width: 768px) {
+    .mobile-visible {
+      width: 25%; /* Reset the width for larger screens */
+    }
+  }

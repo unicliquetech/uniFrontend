@@ -282,19 +282,19 @@ const ShoppingCart = () => {
         </header>
 
         <h2 className="text-2xl font-bold mb-6 text-center font-poppins">My Cart</h2>
-        <table className="w-full table-auto">
-          <thead>
-            <tr className="bg-white-200 border-b border-red-800 py-2 px-4">
-              <th className="px-4 py-6 text-left">PRODUCT</th>
-              <th className="px-4 py-2 text-left">PRICE</th>
-              <th className="px-4 py-2 text-left">QTY</th>
-              <th className="px-4 py-2 text-left">TOTAL</th>
+        <table className="carttable w-full">
+          <thead className='cartTableHead'>
+            <tr className=" tableheaddiv bg-white-200 border-b border-red-800 py-2 px-4">
+              <th className="tablehead px-4 py-6 text-left">PRODUCT</th>
+              <th className="tablehead px-4 py-2 text-left">PRICE</th>
+              <th className="tablehead px-4 py-2 text-left">QTY</th>
+              <th className="tablehead px-4 py-2 text-left">TOTAL</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody  className='cartBody'>
             {cartItems.map((item, index) => (
-              <tr key={index} className="border-b border-red-800">
-                <td className="px-4 py-2 flex items-center">
+              <tr key={index} className="tableheaddiv border-b border-red-800">
+                <td className="tablecontent px-4 py-2 flex items-center">
                   <img
                     src={item.image}
                     alt={item.name}
@@ -310,8 +310,8 @@ const ShoppingCart = () => {
                     )}
                   </div>
                 </td>
-                <td className="px-4 py-2 align-top productPrice">₦{item.price.toLocaleString()}</td>
-                <td className="px-4 py-2 align-top quantitydiv">
+                <td className=" px-4 py-2 align-top productPrice hidden">₦{item.price.toLocaleString()}</td>
+                <td className=" px-4 py-2 align-top quantitydiv">
                   <button
                     className="bg-gray-200 hover:bg-gray-300 text-red-800 font-bold py-1 px-2 rounded-l"
                     onClick={() => handleQuantityChange(item.productId, item.quantity - 1)}
@@ -328,7 +328,7 @@ const ShoppingCart = () => {
                   </button>
                 </td>
 
-                <td className="px-4 py-2 align-top relative">
+                <td className="tablecontent w-[100%] px-4 py-2 align-top relative">
                   <div className="mobilediv">
                         <p>₦{item.price * item.quantity}</p>
                     <div className="px-4 py-2 align-top quantitybtn">

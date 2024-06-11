@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import AddProductModal from '@/components/vendorDashboard/addProductModal';
 import Nav from '@/components/vendorDashboard/nav';
+import Aside from '@/components/vendorDashboard/Aside';
 
 interface ProductCardProps {
     product: {
@@ -14,6 +15,7 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+
     return (
         <div className="bg-white rounded-lg shadow-md relative">
             {product.sponsored && (
@@ -105,6 +107,11 @@ const VendorProducts: React.FC = () => {
     const totalProducts = products.length;
     const totalPages = Math.ceil(totalProducts / productsPerPage);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isMobileVisible, setIsMobileVisible] = useState<boolean>(false);
+
+    const toggleMobileVisibility = () => {
+      setIsMobileVisible(!isMobileVisible);
+    };
 
 
     const handlePageChange = (pageNumber: number) => {
@@ -134,7 +141,8 @@ const VendorProducts: React.FC = () => {
     return (
         <main className='w-[100%] flex flex-col'>
             <div>
-                <Nav />
+            <Nav toggleMobileVisibility={toggleMobileVisibility} />
+            <Aside isMobileVisible={isMobileVisible} />
                 <div className="mt-8">
                     <div className="flex justify-between items-center mb-8">
                         <h1 className="text-2xl font-bold">My Product Catalogue</h1>

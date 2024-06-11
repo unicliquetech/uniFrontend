@@ -43,23 +43,23 @@
 
 
   /* Table */
-  table {
+  .carttable {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
   }
 
-  th {
+  .tablehead {
     margin-bottom: 20px;
   }
 
   /* Product row */
-  td:first-child {
+  .tablecontent:first-child {
     display: flex;
     align-items: center;
   }
 
-  td img {
+  .tablecontent img {
     width: 80px;
     height: 80px;
     object-fit: contain;
@@ -67,7 +67,7 @@
   }
   
   /* Quantity buttons */
-  td:nth-child(3) button {
+  .tablecontent:nth-child(3) button {
     background-color: transparent;
     color: #590209;
     border: none;
@@ -75,22 +75,22 @@
     cursor: pointer;
   }
 
-  td:nth-child(3) button:hover {
+  .tablecontent:nth-child(3) button:hover {
     background-color: #590209;
     color: #fff;
   }
 
-  td:nth-child(3) span {
+  .tablecontent:nth-child(3) span {
     margin: 0 10px;
   }
 
   /* Align contents to the top */
-  td.align-top {
+  .tablecontent.align-top {
     vertical-align: top;
   }
 
   /* Remove product button */
-  td:last-child button {
+  .tablecontent:last-child button {
     font-size: 1.2rem;
     line-height: 1;
     transition: color 0.2s ease-in-out;
@@ -156,12 +156,12 @@
   }
 
   /* Adjust table layout */
-  table {
+  .carttable {
     font-size: 14px;
   }
 
   /* Adjust product image size */
-  td img {
+  .tablecontent img {
     width: 60px;
     height: 60px;
   }
@@ -205,44 +205,57 @@
 
 @media (max-width: 480px) {
   /* Adjust table layout for smaller screens */
-  table,
-  thead,
-  tbody,
-  th,
-  td,
-  tr {
+  .carttable,
+  .cartTableHead,
+  .cartBody,
+  .tablehead { 
     display: block;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .tablecontent{
+    display: grid;
+    width: 95%;
+    /* background-color: #590209; */
+  }
+
+  .carttable{
+    width: 100%;
   }
 
   /* Hide table headers */
-  thead tr {
+  .cartTableHead tr {
     position: absolute;
     top: -9999px;
     left: -9999px;
   }
 
   /* Display table rows vertically */
-  tr {
+  .tableheaddiv {
     border-top: 1px dashed #590209;
     border-bottom: none;
     padding: 5px;
+    width: 90%;
+    display: grid;
+    margin-left: 5%;
   }
 
   /* Adjust table cell styles */
-  td {
+  .tablecontent {
     border: none;
     position: relative;
-    padding-left: 20%;
+    padding-left: 5%;
   }
 
   /* Adjust product image size */
-  td img {
+  .tablecontent img {
     width: 40px;
     height: 40px;
   }
 
   /* Add label for table cells */
-  td:before {
+  .tablecontent:before {
     position: absolute;
     top: 6px;
     left: 6px;

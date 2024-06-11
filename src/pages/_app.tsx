@@ -2,6 +2,7 @@ import "@/styles/globals.css";
 import '@/styles/ShoppingCart.css';
 import '@/styles/Checkout.css';
 import '@/styles/MessageList.module.css';
+import '@/styles/vendorDashboard.module.css'
 import type { AppProps } from "next/app";
 import Modal from 'react-modal';
 

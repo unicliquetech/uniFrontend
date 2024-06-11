@@ -1,6 +1,7 @@
 "use client"
 import Image from 'next/image'
 import React, { useState } from 'react'
+import { useMediaQuery } from 'react-responsive';
 import logo from '@/Images/unilogo.svg'
 import menu from '@/Images/align-justify.svg'
 import home from '@/Images/home.svg'
@@ -17,44 +18,52 @@ import logout from '@/Images/icon.svg'
 import ava from '@/Images/avatar.svg'
 import li from '@/Images/more-vertical.svg'
 import { useRouter } from 'next/navigation'
-import { MdClose, MdMenu } from 'react-icons/md'
 
-interface AsideProps {
+
+interface AsideItemProps {
   id: number;
   image01: string;
   name: string;
   route: string;
 }
 
-const Aside = () => {
+interface AsideProps {
+  isMobileVisible: boolean;
+}
+
+const Aside: React.FC<AsideProps> = ({ isMobileVisible }) => {
   const [active, setActive] = useState<number>(0)
-  const [isOpen, setIsOpen] = useState(false)
   const router = useRouter();
 
   const handleTabClick = (index: number, route: string) => {
     setActive(index);
     router.push(route);
   };
-
-  const Pages: AsideProps[] = [
+  const Pages: AsideItemProps[] = [
     {
       id: 1,
       name: 'Home',
       image01: home,
-      route: '/vendorDashboard',
+      route: '/vendorDashboard', 
     },
     {
       id: 2,
       name: 'Order',
       image01: order,
-      route: '/vendorOrderPage',
+      route: '/vendorOrderPage', 
     },
     {
       id: 3,
       name: 'Product',
       image01: product,
-      route: '/vendorProductsPage',
+      route: '/vendorProductsPage', 
     },
+    // {
+    //   id: 4,
+    //   name: 'Customers',
+    //   image01: cust,
+    //   route: '/customers', 
+    // },
     {
       id: 5,
       name: 'Delivery',
@@ -65,21 +74,20 @@ const Aside = () => {
       id: 6,
       name: 'Messages',
       image01: message,
-      route: '/messagingPage',
+      route: '/messagingPage', 
     }
   ];
-
-  const toggleMenu = () => {
-    setIsOpen(!isOpen)
-  }
-
   return (
-    <section className={`${isOpen ? 'w-[25%]' : 'w-[5%]'} bg-red-900 text-white h-[100vh] flex justify-start items-start relative`}>
-      <div className={`${isOpen ? 'flex' : 'hidden'} justify-start items-start bg-color1 h-[100%] w-full`}>
+    <>
+      {isMobileVisible && (
+        <section
+        className={`sm:w-[55%] w-[85%] bg-red-900 text-white h-[330vh] flex justify-start items-start relative `}
+      >
+      <div className='flex justify-start items-start bg-color1 h-[100%] w-full '>
         <div className='flex justify-start w-full flex-col'>
           <div className='flex justify-between items-center w-full mt-[.8rem] p-2'>
             <Image src={logo} alt='' width={100} height={140} />
-            <MdClose size={24} onClick={toggleMenu} className="cursor-pointer" />
+            {/* <Image src={menu} alt='' width={20} height={20} /> */}
           </div>
 
           <p className='p-2 bg-color2 text-color3 md:text-[17px] text-[15px] mt-[1.5rem] text-center'>Vendor Dashboard</p>
@@ -89,7 +97,7 @@ const Aside = () => {
                 <div
                   key={i}
                   className='flex justify-start items-center mt-[0.5rem] relative px-5 cursor-pointer hover:bg-gradim p-[0.35rem] rounded-[5px]'
-                  onClick={() => handleTabClick(i, page.route)}
+                  onClick={() => handleTabClick(i, page.route)} // Use handleTabClick
                 >
                   <div className='flex gap-3 justify-start items-center w-full'>
                     <Image src={page.image01} alt='' width={20} height={20} />
@@ -149,14 +157,14 @@ const Aside = () => {
               </div>
             </div>
           </div>
+
+
+
         </div>
       </div>
-
-      {/* Mobile menu toggle button */}
-      <div className={`${isOpen ? 'hidden' : 'flex'} fixed top-0 left-0 h-[1000] w-[95%] z-10 `}>
-        <MdMenu size={24} onClick={toggleMenu} className="cursor-pointer" />
-      </div>
     </section>
+      )}
+</>
   )
 }
 

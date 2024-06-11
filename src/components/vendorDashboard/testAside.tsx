@@ -74,34 +74,35 @@ const Aside = () => {
   }
 
   return (
-    <section className={`${isOpen ? 'w-[25%]' : 'w-[5%]'} bg-red-900 text-white h-[100vh] flex justify-start items-start relative`}>
-      <div className={`${isOpen ? 'flex' : 'hidden'} justify-start items-start bg-color1 h-[100%] w-full`}>
-        <div className='flex justify-start w-full flex-col'>
-          <div className='flex justify-between items-center w-full mt-[.8rem] p-2'>
-            <Image src={logo} alt='' width={100} height={140} />
-            <MdClose size={24} onClick={toggleMenu} className="cursor-pointer" />
-          </div>
+    <div className="relative">
+      <section className={`${isOpen ? 'w-[75vw]' : 'w-[25%]'} bg-red-900 text-white h-[100vh] flex justify-start items-start`}>
+        <div className={`justify-start items-start bg-color1 h-[100%] w-full`}>
+          <div className='flex justify-start w-full flex-col'>
+            <div className='flex justify-between items-center w-full mt-[.8rem] p-2'>
+              <Image src={logo} alt='' width={100} height={140} />
+              <MdClose size={24} onClick={toggleMenu} className="cursor-pointer lg:hidden" />
+            </div>
 
-          <p className='p-2 bg-color2 text-color3 md:text-[17px] text-[15px] mt-[1.5rem] text-center'>Vendor Dashboard</p>
-          <div className='flex mt-[2rem] flex-col'>
-            {
-              Pages.map((page, i) => (
-                <div
-                  key={i}
-                  className='flex justify-start items-center mt-[0.5rem] relative px-5 cursor-pointer hover:bg-gradim p-[0.35rem] rounded-[5px]'
-                  onClick={() => handleTabClick(i, page.route)}
-                >
-                  <div className='flex gap-3 justify-start items-center w-full'>
-                    <Image src={page.image01} alt='' width={20} height={20} />
-                    <p className='text-color3 md:text-[18px] text-[15px]'>{page.name}</p>
+            <p className='p-2 bg-color2 text-color3 md:text-[17px] text-[15px] mt-[1.5rem] text-center'>Vendor Dashboard</p>
+            <div className='flex mt-[2rem] flex-col'>
+              {
+                Pages.map((page, i) => (
+                  <div
+                    key={i}
+                    className='flex justify-start items-center mt-[0.5rem] relative px-5 cursor-pointer hover:bg-gradim p-[0.35rem] rounded-[5px]'
+                    onClick={() => handleTabClick(i, page.route)}
+                  >
+                    <div className='flex gap-3 justify-start items-center w-full'>
+                      <Image src={page.image01} alt='' width={20} height={20} />
+                      <p className='text-color3 md:text-[18px] text-[15px]'>{page.name}</p>
+                    </div>
+                    <p className={`w-[0.3rem] h-5 rounded-2xl bg-color2 flex justify-end absolute right-0 ${active === i ? '' : 'hidden'}`}></p>
                   </div>
-                  <p className={`w-[0.3rem] h-5 rounded-2xl bg-color2 flex justify-end absolute right-0 ${active === i ? '' : 'hidden'}`}></p>
-                </div>
-              ))
-            }
-          </div>
+                ))
+              }
+            </div>
 
-          <div className='flex w-full justify-center'>
+            <div className='flex w-full justify-center'>
             <div className='p-3 flex gap-3 bg-red-300 text-red-900 font-semibold w-[90%] justify-items-center justify-center mt-[3rem] items-center rounded-md'>
               <div className='flex justify-center items-center flex-col w-full'>
                 <p className='md:text-[17px] text-[15px]'>Upgrade your plan to serve you more</p>
@@ -153,10 +154,21 @@ const Aside = () => {
       </div>
 
       {/* Mobile menu toggle button */}
-      <div className={`${isOpen ? 'hidden' : 'flex'} justify-center items-center h-full`}>
+      {/* <div className={`${isOpen ? 'hidden' : 'flex'} fixed top-0 left-0 h-[1000] w-[95%] z-10 `}>
+        <MdMenu size={24} onClick={toggleMenu} className="cursor-pointer" />
+      </div> */}
+    </section>
+    {/* Mobile menu toggle button */}
+    <div className={`${isOpen ? 'hidden' : 'fixed'} top-0 left-0 h-[100vh] w-[25vw] z-10 bg-red-900 flex justify-center items-center`}>
         <MdMenu size={24} onClick={toggleMenu} className="cursor-pointer" />
       </div>
-    </section>
+
+      {isOpen && (
+        <div className="fixed top-0 left-0 h-screen w-[75vw] bg-gray-900 bg-opacity-50 z-10" onClick={toggleMenu}>
+          {/* This div serves as an overlay to close the aside menu when clicked */}
+        </div>
+      )}
+    </div>
   )
 }
 
