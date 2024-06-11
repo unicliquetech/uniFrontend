@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Modal from 'react-modal';
-import Nav from '@/components/vendorDashboard/nav';
+import Nav from '@/components/vendorDashboard/nav'
 import Aside from '@/components/vendorDashboard/Aside';
 import flutterwwave from '@/images/flutterwave-3.svg';
 import paystack from '@/images/paystack-2.svg';
@@ -29,6 +29,11 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
     const [basePrice, setBasePrice] = useState<number>(460000);
     const [discountPrice, setDiscountPrice] = useState<number>(340000);
     const [showColorPicker, setShowColorPicker] = useState<boolean>(false);
+    const [isMobileVisible, setIsMobileVisible] = useState<boolean>(false);
+
+    const toggleMobileVisibility = () => {
+      setIsMobileVisible(!isMobileVisible);
+    };
 
     const handleNextStep = () => {
         setStep(step + 1);
@@ -100,9 +105,10 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
             className="fixed bg-white inset-0 z-50 max-w-[100vw] overflow-auto" // Add max-w-[90vw] max-h-[90vh] overflow-auto
             overlayClassName="fixed inset-0 bg-black bg-opacity-50"
         >
-            <Nav />
+            <Nav toggleMobileVisibility={toggleMobileVisibility} />
+            
             <div className='flex'>
-                <Aside />
+            <Aside isMobileVisible={isMobileVisible} />
                 <div className="bg-white rounded-lg shadow-md p-6 mx-auto w-full h-full">
                     <div className="flex justify-between items-center mb-4">
                         <h2 className="text-xl font-bold">Add New Product</h2>
