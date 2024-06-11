@@ -1,5 +1,5 @@
-import nikeshoe from '@/Images/nikeshoe.svg';
-import statement from '@/Images/statement.svg'
+import nikeshoe from '@/images/nikeshoe.svg';
+import statement from '@/images/statement.svg'
 
 const Orders = [
     {
