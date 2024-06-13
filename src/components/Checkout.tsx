@@ -585,11 +585,9 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
           console.log('Vendor number:', vendorWhatsappNumber)
     
           // Construct the notification message
-          const notificationMessage = `Hi I've sent the money. My cart items are: ${cartItems.map(
+          const notificationMessage = `Hi,I've sent the money./n/nMy cart items are: ${cartItems.map(
             (item) => `${item.name} (Quantity: ${item.quantity})`
-          ).join(', ')}. My total cost is: ${response.data.order.total}. My delivery time is: ${
-            response.data.order.deliveryTime
-          }.`;
+          ).join(', ')}/n/nThe total cost is: ${response.data.order.total}./nThe delivery time is: ${response.data.order.deliveryTime} minutes.`;
     
           // Send the WhatsApp notification
           sendWhatsAppNotification(vendorWhatsappNumber, notificationMessage);
