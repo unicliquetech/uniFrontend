@@ -770,7 +770,7 @@ const Checkout = () => {
       </div>}
 
       {isAuthenticated ? (
-        <div className="container-div">
+        <div className="container-div ml-4 mr-4">
 
 
           <header className="flex justify-between items-center bg-white py-4 px-4 sm:px-6 lg:px-8">
