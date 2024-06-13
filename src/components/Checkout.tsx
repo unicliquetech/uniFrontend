@@ -1,10 +1,12 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Image from 'next/image';
 import DatePicker, { ReactDatePickerProps } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import axios, { AxiosResponse } from 'axios';
 import jwt, { JwtPayload } from 'jsonwebtoken';
+import paymentImage from '@/images/paymentImage.svg';
 
 
 function showCustomAlert(message: string) {
@@ -327,6 +329,8 @@ interface SummaryStepProps {
   setSelectedDeliveryMethod: React.Dispatch<React.SetStateAction<DeliveryOption>>;
   selectedDate: Date | null;
   setSelectedDate: React.Dispatch<React.SetStateAction<Date | null>>;
+  onServiceChargeChange: (serviceCharge: number) => void;
+  onDeliveryFeeChange: (deliveryFee: number) => void;
 }
 
 const SummaryStep: React.FC<SummaryStepProps> = ({
@@ -337,6 +341,8 @@ const SummaryStep: React.FC<SummaryStepProps> = ({
   setSelectedDeliveryMethod,
   selectedDate,
   setSelectedDate,
+  onServiceChargeChange,
+  onDeliveryFeeChange,
 }) => {
   const [selectedDeliveryTime, setSelectedDeliveryTime] = useState<string>('9:00');
 
@@ -384,6 +390,11 @@ const SummaryStep: React.FC<SummaryStepProps> = ({
   const serviceFee = 50;
   const totalCost = calculateTotal() + deliveryFee + serviceFee;
 
+  useEffect(() => {
+    onServiceChargeChange(serviceFee);
+    onDeliveryFeeChange(deliveryFee);
+  }, [serviceFee, deliveryFee, onServiceChargeChange, onDeliveryFeeChange]);
+
   return (
     <div>
       <h2 className="text-xl font-bold mb-4">Summary</h2>
@@ -391,7 +402,7 @@ const SummaryStep: React.FC<SummaryStepProps> = ({
         <h3 className="text-lg font-semibold mb-2">Cart Items</h3>
         {cartItems.map((item) => (
           <div key={item.id} className="flex justify-between mb-2">
-            <img src={item.image} alt={item.name} className='h-14'/>
+            <img src={item.image} alt={item.name} className='h-14' />
             <span>{item.name}</span>
             <span>₦{item.price * item.quantity}</span>
           </div>
@@ -472,51 +483,135 @@ const SummaryStep: React.FC<SummaryStepProps> = ({
 //////////////////////////////////////////////////////////////////
 /////////////        PAYMENT STEP            ////////////////////
 ////////////////////////////////////////////////////////////////
-const PaymentStep = () => {
+interface PaymentStepProps {
+  cartItems: CartItem[];
+  selectedAddress: Address | null;
+  selectedDeliveryMethod: DeliveryOption;
+  selectedDate: Date | null;
+  serviceCharge: number;
+  deliveryFee: number;
+}
+
+const PaymentStep: React.FC<PaymentStepProps> = ({
+  cartItems,
+  selectedAddress,
+  selectedDeliveryMethod,
+  selectedDate,
+  serviceCharge,
+  deliveryFee,
+}) => {
+
+  const sendWhatsAppNotification = (vendorWhatsappNumber: string, notificationMessage: string) => {
+    const encodedMessage = encodeURIComponent(notificationMessage);
+    const whatsappUrl = `https://wa.me/${vendorWhatsappNumber}?text=${encodedMessage}`;
+  
+    try {
+      window.open(whatsappUrl, '_blank', "noopener noreferrer");
+    } catch (error) {
+      console.error('Error opening WhatsApp:', error);
+  
+      const smsUrl = `sms://${vendorWhatsappNumber}?body=${encodedMessage}`;
+      window.open(smsUrl, '_blank');
+    }
+  };
+
+  interface DecodedToken {
+    userId: string;
+  }
+
+  const getAuthHeaders = () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('Token not found');
+    }
+
+    const decodedToken = jwt.decode(token) as DecodedToken | null;
+    if (!decodedToken) {
+      showCustomAlert("Please proceed to re-login, as your session has expired.");
+      window.location.href = '/login';
+      throw new Error('Invalid token');
+    }
+    const userId = decodedToken?.userId;
+
+    if (!userId) {
+      showCustomAlert("Please proceed to re-login, as your session has expired.");
+      window.location.href = '/login';
+      throw new Error('Invalid token');
+    }
+    return {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'User-Id': userId,
+      },
+    };
+  };
+
+    const handleSendMoney = async () => {
+      const token = localStorage.getItem('token');
+  if (!token) {
+    throw new Error('Token not found');
+  }
+  const decodedToken = jwt.decode(token) as DecodedToken | null;
+  if (!decodedToken) {
+    showCustomAlert("Please proceed to re-login, as your session has expired.");
+    window.location.href = '/login';
+    throw new Error('Invalid token');
+  }
+  const userId = decodedToken?.userId;
+
+  try {
+    console.log('user id sent:', userId);
+    const orderData = {
+      userId,
+      items: cartItems,
+      selectedAddress,
+      selectedDeliveryMethod,
+      selectedDate,
+      serviceCharge,
+      deliveryFee,
+    };
+
+    const response = await axios.post(
+      'https://unibackend.onrender.com/api/v1/order/',
+      orderData,
+      getAuthHeaders()
+    );
+    
+      if (response.status === 201) {
+        // Order created successfully
+        console.log('Order created:', response.data);
+          const vendorWhatsappNumber = response.data.vendorWhatsAppNumber;
+          // const vendorWhatsappNumber = '09125740495';
+          console.log('Vendor number:', vendorWhatsappNumber)
+    
+          // Construct the notification message
+          const notificationMessage = `Hi I've sent the money. My cart items are: ${cartItems.map(
+            (item) => `${item.name} (Quantity: ${item.quantity})`
+          ).join(', ')}. My total cost is: ${response.data.order.total}. My delivery time is: ${
+            response.data.order.deliveryTime
+          }.`;
+    
+          // Send the WhatsApp notification
+          sendWhatsAppNotification(vendorWhatsappNumber, notificationMessage);
+      } else {
+        console.error('Failed to create order:', response.data);
+      }
+    } catch (error) {
+      console.error('Error adding product to cart:', error);
+    }
+
+    };
+
   return (
     <div>
-      <h2 className="text-xl font-bold mb-4">Payment Method</h2>
-      {/* Replace this with our payment form implementation */}
-      <div className="mb-4">
-        <label htmlFor="cardNumber" className="text-gray-700">
-          Card Number
-        </label>
-        <input
-          type="text"
-          id="cardNumber"
-          className="w-full border border-gray-300 rounded px-3 py-2"
-        />
-      </div>
-      <div className="mb-4">
-        <label htmlFor="expiryDate" className="text-gray-700">
-          Expiry Date
-        </label>
-        <input
-          type="text"
-          id="expiryDate"
-          className="w-full border border-gray-300 rounded px-3 py-2"
-        />
-      </div>
-      <div className="mb-4">
-        <label htmlFor="cvv" className="text-gray-700">
-          CVV
-        </label>
-        <input
-          type="text"
-          id="cvv"
-          className="w-full border border-gray-300 rounded px-3 py-2"
-        />
-      </div>
-      <div className="mb-4">
-        <label htmlFor="cardHolder" className="text-gray-700">
-          Card Holder
-        </label>
-        <input
-          type="text"
-          id="cardHolder"
-          className="w-full border border-gray-300 rounded px-3 py-2"
-        />
-      </div>
+      <Image src={paymentImage} alt='' width={40} height={40} className='p-2 bg-[#FEF0F1] sm:ml-[30%] ml-[20%] mt-2 rounded-md text-center h-[20%] flex justify-center items-center w-[40%]' />
+      <button
+        className="bg-red-900 text-white px-4 py-2 rounded sm:ml-[45%] ml-[30%] mt-4"
+        onClick={handleSendMoney}
+      >
+        I've sent the money
+      </button>
+      {/* ... */}
     </div>
   );
 };
@@ -541,6 +636,16 @@ const Checkout = () => {
   const [lastLoginTime, setLastLoginTime] = useState<null | number>(null);
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState<DeliveryOption>('regular');
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [serviceCharge, setServiceCharge] = useState<number>(0);
+  const [deliveryFee, setSelectedDeliveryFee] = useState<number>(0);
+
+  const handleServiceChargeChange = (serviceCharge: number) => {
+    setServiceCharge(serviceCharge);
+  };
+
+  const handleDeliveryFeeChange = (deliveryFee: number) => {
+    setSelectedDeliveryFee(deliveryFee);
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -590,7 +695,14 @@ const Checkout = () => {
           onAddressSelect={(address) => setSelectedAddress(address)}
         />;
       case 'payment':
-        return <PaymentStep />;
+        return <PaymentStep
+          cartItems={cartItems}
+          selectedAddress={selectedAddress}
+          selectedDeliveryMethod={selectedDeliveryMethod}
+          selectedDate={selectedDate}
+          serviceCharge={serviceCharge}
+          deliveryFee={deliveryFee}
+        />;
       case 'summary':
         return (
           <SummaryStep
@@ -601,6 +713,8 @@ const Checkout = () => {
             setSelectedDeliveryMethod={setSelectedDeliveryMethod}
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
+            onServiceChargeChange={handleServiceChargeChange}
+            onDeliveryFeeChange={handleDeliveryFeeChange}
           />
         );
       default:
@@ -616,6 +730,9 @@ const Checkout = () => {
       case 'summary':
         setCurrentStep('payment');
         break;
+      case 'payment':
+        window.location.href = '/product';
+        break;
       default:
         break;
     }
@@ -627,7 +744,7 @@ const Checkout = () => {
         setCurrentStep('address');
         break;
       case 'address':
-        // Navigate to the login page
+        // Navigate to the cart page
         window.location.href = '/';
         break;
       case 'payment':
@@ -818,7 +935,7 @@ const Checkout = () => {
               <button
                 className={`mr-4 ${currentStep === 'summary' ? 'text-red-600 font-bold' : 'text-gray-400'}`}
                 onClick={() => setCurrentStep('summary')}
-                // disabled={currentStep !== 'address'}
+              // disabled={currentStep !== 'address'}
               >
                 <div className="flex sm:ml-40 ml-2">
                   <svg

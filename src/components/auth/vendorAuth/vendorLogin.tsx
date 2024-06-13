@@ -142,7 +142,7 @@ const LoginVendor = () => {
                   </div>
                 </div>
                 <div className='flex justify-center items-center mt-[-18px] mb-[2rem] opacity '>
-                  <p className='text-[10px]'>Need an account? <button className='font-bold' onClick={() => router.push('/signUpVen')}>Create an account</button></p>
+                  <p className='text-[10px]'>Need an account? <button className='font-bold' onClick={() => router.push('/vendorSignup')}>Create an account</button></p>
                 </div>
           </div>
           </div>

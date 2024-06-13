@@ -1,6 +1,7 @@
 "use client";
 import React, { useRef, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import axios from 'axios';
 import Chart from '@/components/vendorDashboard/chart'
 import Nav from '@/components/vendorDashboard/nav';
 import Aside from '@/components/vendorDashboard/Aside';
@@ -18,10 +19,55 @@ import cat from '@/images/category.svg'
 const Homepage = () => {
     const router = useRouter();
     const [isMobileVisible, setIsMobileVisible] = useState<boolean>(false);
+    const [productCount, setProductCount] = useState(0);
+    const [vendor, setVendor] = useState({ ownerName: '', email: '' });
 
-  const toggleMobileVisibility = () => {
-    setIsMobileVisible(!isMobileVisible);
-  };
+    useEffect(() => {
+        const fetchVendorData = async () => {
+            try {
+                const vendorEmail = localStorage.getItem('vendorEmail');
+                if (vendorEmail) {
+                    const response = await fetch(`https://unibackend.onrender.com/api/v1/vendorProfile`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ vendorEmail }),
+                    });
+                    const data = await response.json();
+                    console.log('vendor data:', data.vendor.ownerName);
+                    setVendor(data.vendor);
+                }
+            } catch (error) {
+                console.error('Error fetching vendor data:', error);
+            }
+        };
+
+        fetchVendorData();
+    }, []);
+
+    const toggleMobileVisibility = () => {
+        setIsMobileVisible(!isMobileVisible);
+    };
+
+    useEffect(() => {
+        const vendorEmail = localStorage.getItem('vendorEmail');
+        if (!vendorEmail) {
+            router.push('/loginVendor');
+        } else {
+            fetchProductCount(vendorEmail);
+        }
+    }, [router]);
+
+    const fetchProductCount = async (vendorEmail: string) => {
+        try {
+            const response = await axios.get(`https://unibackend.onrender.com/api/v1/products/${vendorEmail}`);
+            setProductCount(response.data.count);
+        } catch (error) {
+            console.error('Error fetching product count:', error);
+        }
+    };
+
     const orders = [
         {
             id: 1,
@@ -107,7 +153,7 @@ const Homepage = () => {
             <Aside isMobileVisible={isMobileVisible} />
             <div className='mt-[5rem] flex flex-col'>
                 <div className='flex justify-between p-4 items-center w-full'>
-                    <p className='md:text-[18px] text-[17px] font-bold'>Welcome Ayotunde!</p>
+                    <p className='md:text-[18px] text-[17px] font-bold'>Welcome {vendor.ownerName}!</p>
                     <Button text='My Product' styles='border-2 border-[#BEBDBD] rounded-md' />
                 </div>
             </div>
@@ -141,7 +187,7 @@ const Homepage = () => {
                     <div className='flex items-center p-7 rounded-md bg-[#8C3926] gap-4'>
                         <Image src={total} alt='' width={50} height={50} className='p-3 bg-white shadow-xl rounded-full' />
                         <div className='flex flex-col gap-2'>
-                            <h1 className='text-white text-[22px]'>158</h1>
+                            <h1 className='text-white text-[22px]'>{productCount}</h1>
                             <p className='text-white text-[17px]'>Total Product</p>
                             <select name="date" id="date" className='p-1 border-[1px] border-gray-400 focus:outline-none bg-[#8C3926] text-white'>
                                 <option>May 2024</option>
@@ -167,4 +213,3 @@ const Homepage = () => {
 }
 
 export default Homepage;
- 

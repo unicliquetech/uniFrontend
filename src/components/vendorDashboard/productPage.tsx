@@ -1,107 +1,144 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import AddProductModal from '@/components/vendorDashboard/addProductModal';
 import Nav from '@/components/vendorDashboard/nav';
 import Aside from '@/components/vendorDashboard/Aside';
 
+
 interface ProductCardProps {
     product: {
+        _id: string;
         name: string;
         description: string;
         price: number;
-        imageUrl: string;
+        image: string;
         discount?: number;
         sponsored: boolean;
     };
+    
 }
 
+// interface ErrorType {
+//     message: string;
+// }
+
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+    const [products, setProducts] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<ErrorType | null>(null);
+    const [selectedProduct, setSelectedProduct] = useState<ProductCardProps['product'] | null>(null);
+
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [deletionMessage, setDeletionMessage] = useState('');
+
+    useEffect(() => {
+        const vendorEmail = localStorage.getItem('vendorEmail');
+        const fetchProducts = async () => {
+            try {
+                setIsLoading(true);
+                const response = await axios.get(`https://unibackend.onrender.com/api/v1/products/${vendorEmail}`);
+                setProducts(response.data.products);
+            } catch (err) {
+                setError(err as ErrorType);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchProducts();
+    }, []);
+
+    
+
+    // const handleEditClick = (product: ProductCardProps['product']) => {
+    //     setSelectedProduct(product);
+    //     setIsModalOpen(true);
+    //   };
+
+    // const handleEditButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    //     event.preventDefault(); // Prevent default button behavior if needed
+    //     onEdit(product);
+    //   };
+
+
+    const handleEdit = async () => {
+        try {
+          const response = await axios.patch(`https://unibackend.onrender.com/api/v1/products/${product._id}`, {
+            name: product.name,
+            price: product.price,
+          });
+    
+          console.log('Product updated:', response.data.product);
+        } catch (error) {
+          console.error('Error updating product:', error);
+        }
+      };
+
+      useEffect(() => {
+        return () => {
+          setDeletionMessage('');
+        };
+      }, []);
+    
+      const handleDelete = async () => {
+        try {
+          const response = await axios.delete(`https://unibackend.onrender.com/api/v1/products/${product._id}`);
+          console.log('Product deleted:', response.data.msg);
+          setTimeout(() => {
+            setDeletionMessage('');
+          }, 5000);
+        } catch (error) {
+          console.error('Error deleting product:', error);
+        }
+      };
 
     return (
         <div className="bg-white rounded-lg shadow-md relative">
             {product.sponsored && (
                 <span className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-md">Sponsored</span>
             )}
+            {deletionMessage && (
+            <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
+              {deletionMessage}
+            </div>
+          )}
             <a href={`/product/${product.name.replace(/\s/g, '-').toLowerCase()}`}>
-                <img src={product.imageUrl} alt={product.name} className="w-full h-48 object-cover rounded-t-lg" />
+                <img src={product.image} alt={product.name} className="w-full h-48 object-cover rounded-t-lg" />
             </a>
             <div className="p-4">
                 <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
                 <p className="text-gray-600 mb-2">
-                    Price: <span className="text-red-500 font-bold">₦{product.price.toLocaleString()}</span>
-                    <span className="line-through ml-2 text-gray-400">₦{(product.price * 1.1).toLocaleString()}</span>
+                    Price: <span className="text-red-500 font-bold">₦{product && product.price ? product.price.toLocaleString() : ''}</span>
+                    <span className="line-through ml-2 text-gray-400">₦{product && product.discount ? product.discount.toLocaleString() : ''}</span>
                 </p>
                 {product.discount && <small className="bg-red-900 px-1 rounded-md text-white mb-4"> -{product.discount}%</small>}
                 <div className="flex justify-between">
-                    <button className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors duration-300">Edit</button>
-                    <button className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 transition-colors duration-300">Delete</button>
+                    {/* <button
+                            className="bg-red-900 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors duration-300"
+                            onClick={() => setIsModalOpen(true)}
+                        >
+                            Edit
+                        </button> */}
+                    <button className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-gray-400 transition-colors duration-300"
+                        onClick={handleDelete}>
+                        Delete
+                    </button>
                 </div>
             </div>
         </div>
     );
 };
+      
 
-
-// Sample product data
-const products = [
-    {
-        name: 'MACBOOK PRO 16-INCH, APPLE M3',
-        description: 'This is a MACBOOK PRO 16-INCH, APPLE M3',
-        price: 340000,
-        imageUrl: 'https://via.placeholder.com/150',
-        discount: 10,
-        sponsored: false,
-    },
-    {
-        name: 'MACBOOK PRO 16-INCH, APPLE M3',
-        description: 'This is a MACBOOK PRO 16-INCH, APPLE M3',
-        price: 340000,
-        imageUrl: 'https://via.placeholder.com/150',
-        discount: 10,
-        sponsored: true,
-    },
-    {
-        name: 'MACBOOK PRO 16-INCH, APPLE M3',
-        description: 'This is a MACBOOK PRO 16-INCH, APPLE M3',
-        price: 340000,
-        imageUrl: 'https://via.placeholder.com/150',
-        discount: 10,
-        sponsored: false,
-    },
-    {
-        name: 'MACBOOK PRO 16-INCH, APPLE M3',
-        description: 'This is a MACBOOK PRO 16-INCH, APPLE M3',
-        price: 340000,
-        imageUrl: 'https://via.placeholder.com/150',
-        discount: 10,
-        sponsored: false,
-    },
-    {
-        name: 'MACBOOK PRO 16-INCH, APPLE M3',
-        description: 'This is a MACBOOK PRO 16-INCH, APPLE M3',
-        price: 340000,
-        imageUrl: 'https://via.placeholder.com/150',
-        discount: 10,
-        sponsored: false,
-    },
-    {
-        name: 'MACBOOK PRO 16-INCH, APPLE M3',
-        description: 'This is a MACBOOK PRO 16-INCH, APPLE M3',
-        price: 340000,
-        imageUrl: 'https://via.placeholder.com/150',
-        discount: 10,
-        sponsored: false,
-    },
-    {
-        name: 'MACBOOK PRO 16-INCH, APPLE M3',
-        description: 'This is a MACBOOK PRO 16-INCH, APPLE M3',
-        price: 340000,
-        imageUrl: 'https://via.placeholder.com/150',
-        discount: 10,
-        sponsored: false,
-    },
-];
+interface ErrorType {
+    message: string;
+}
 
 const VendorProducts: React.FC = () => {
+    const [products, setProducts] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<ErrorType | null>(null);
+    const [selectedProduct, setSelectedProduct] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const productsPerPage = 6;
     const totalProducts = products.length;
@@ -109,10 +146,27 @@ const VendorProducts: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isMobileVisible, setIsMobileVisible] = useState<boolean>(false);
 
-    const toggleMobileVisibility = () => {
-      setIsMobileVisible(!isMobileVisible);
-    };
 
+    useEffect(() => {
+        const vendorEmail = localStorage.getItem('vendorEmail');
+        const fetchProducts = async () => {
+            try {
+                setIsLoading(true);
+                const response = await axios.get(`https://unibackend.onrender.com/api/v1/products/${vendorEmail}`);
+                setProducts(response.data.products);
+            } catch (err) {
+                setError(err as ErrorType);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchProducts();
+    }, []);
+
+    const toggleMobileVisibility = () => {
+        setIsMobileVisible(!isMobileVisible);
+    };
 
     const handlePageChange = (pageNumber: number) => {
         setCurrentPage(pageNumber);
@@ -128,7 +182,7 @@ const VendorProducts: React.FC = () => {
             pageNumbers.push(
                 <span
                     key={i}
-                    className={`px-4 py-2 ${currentPage === i ? 'bg-red-500 text-white' : 'bg-white text-gray-700'}`}
+                    className={`px-4 py-2 ${currentPage === i ? 'bg-white text-red-900' : 'bg-white text-gray-700'}`}
                     onClick={() => handlePageChange(i)}
                 >
                     {i}
@@ -141,13 +195,13 @@ const VendorProducts: React.FC = () => {
     return (
         <main className='w-[100%] flex flex-col'>
             <div>
-            <Nav toggleMobileVisibility={toggleMobileVisibility} />
-            <Aside isMobileVisible={isMobileVisible} />
+                <Nav toggleMobileVisibility={toggleMobileVisibility} />
+                <Aside isMobileVisible={isMobileVisible} />
                 <div className="mt-8">
                     <div className="flex justify-between items-center mb-8">
                         <h1 className="text-2xl font-bold">My Product Catalogue</h1>
                         <button
-                            className="bg-red-500 text-white font-semibold px-4 py-2 rounded-md"
+                            className="bg-red-900 text-white font-semibold px-4 py-2 rounded-md"
                             onClick={() => setIsModalOpen(true)}
                         >
                             <b>+</b> Add Product
@@ -155,7 +209,11 @@ const VendorProducts: React.FC = () => {
 
                         <AddProductModal
                             isOpen={isModalOpen}
-                            onRequestClose={() => setIsModalOpen(false)}
+                            onRequestClose={() => {
+                              setIsModalOpen(false);
+                              setSelectedProduct(null);
+                            }}
+                            selectedProduct={selectedProduct}
                         />
 
                     </div>
@@ -188,10 +246,10 @@ const VendorProducts: React.FC = () => {
                                 <ProductCard key={index} product={product} />
                             ))}
                         </div>
-                        <div className="flex justify-center mt-8">
+                        <div className="flex justify-center mt-8 mb-8">
                             <div className="bg-white rounded-md flex gap-2 shadow-md">
                                 <button
-                                    className="px-4 py-2 rounded-l-md bg-gray-200 text-gray-700"
+                                    className="px-4 py-2 rounded-l-md bg-red-900 text-white"
                                     onClick={() => handlePageChange(currentPage - 1)}
                                     disabled={currentPage === 1}
                                 >
@@ -199,7 +257,7 @@ const VendorProducts: React.FC = () => {
                                 </button>
                                 {renderPageNumbers()}
                                 <button
-                                    className="px-4 py-2 rounded-r-md bg-gray-200 text-gray-700"
+                                    className="px-4 py-2 rounded-r-md bg-red-900 text-white"
                                     onClick={() => handlePageChange(currentPage + 1)}
                                     disabled={currentPage === totalPages}
                                 >

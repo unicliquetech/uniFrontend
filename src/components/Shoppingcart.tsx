@@ -310,8 +310,8 @@ const ShoppingCart = () => {
                     )}
                   </div>
                 </td>
-                <td className=" px-4 py-2 align-top productPrice hidden">₦{item.price.toLocaleString()}</td>
-                <td className=" px-4 py-2 align-top quantitydiv">
+                <td className=" px-4 py-2 pricediv">₦{item.price.toLocaleString()}</td>
+                <td className=" ">
                   <button
                     className="bg-gray-200 hover:bg-gray-300 text-red-800 font-bold py-1 px-2 rounded-l"
                     onClick={() => handleQuantityChange(item.productId, item.quantity - 1)}
@@ -328,10 +328,10 @@ const ShoppingCart = () => {
                   </button>
                 </td>
 
-                <td className="tablecontent w-[100%] px-4 py-2 align-top relative">
-                  <div className="mobilediv">
-                        <p>₦{item.price * item.quantity}</p>
-                    <div className="px-4 py-2 align-top quantitybtn">
+                <td className="tablecontent relative">
+                  <div className="mobilediv flex">
+                        <p className='mobiledivTotal'>₦{item.price * item.quantity}</p>
+                    <div className=" hidden">
                       <button
                         className=" py-1 px-2 rounded-l qtybtn"
                         onClick={() => handleQuantityChange(item.productId, item.quantity - 1)}
@@ -348,7 +348,7 @@ const ShoppingCart = () => {
                       </button>
                     </div>
                     <button
-                      className="absolute top-0 right-0 text-red-800 hover:text-red-600 xmark"
+                      className="absolute right-0 text-red-800 hover:text-red-600 xmark"
                       onClick={() => handleRemoveFromCart(item.productId)}
                     >
                       &times;

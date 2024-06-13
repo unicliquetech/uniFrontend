@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styles from '@/styles/Header.module.css'
 
 interface ImageProps {
@@ -13,6 +13,8 @@ interface HeaderProps {
   user: ImageProps;
   searchIcon: ImageProps;
   headerimg: ImageProps;
+  searchValue: string;
+  setSearchValue: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -20,8 +22,16 @@ const Header: React.FC<HeaderProps> = ({
   cart,
   user,
   searchIcon,
-  headerimg
+  headerimg,
+  searchValue,
+  setSearchValue,
 }) => {
+  // const [searchValue, setSearchValue] = useState('');
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(event.target.value);
+  };
+
   return (
     <header className="header">
       <div className="headerbar flex justify-between items-center bg-white py-4 px-4 sm:px-6 lg:px-8">
@@ -31,7 +41,13 @@ const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
         <div className="search relative mr-2 sm:mr-4 sm:flex w-60">
-          <input type="text" placeholder="Search" className="bg-gray-200 text-gray-700 rounded-10 px-4 py-2" />
+          <input 
+            type="text" 
+            placeholder="Search" 
+            className="bg-gray-200 text-gray-700 rounded-10 px-4 py-2"
+            value={searchValue}
+            onChange={handleSearchChange} 
+            />
           <div className="searchIcon">
             <img src={searchIcon.src} alt="searchIcon" className="absolute h-5 border-transparent justify-self-end right-0 top-0 mt-3 mr-5 sm:mr-10" width={searchIcon.width} height={searchIcon.height} />
           </div>

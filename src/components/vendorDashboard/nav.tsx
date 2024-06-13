@@ -1,17 +1,48 @@
 import Image from 'next/image';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MdSearch, MdMessage, MdDoorbell, MdMenu } from "react-icons/md";
 import ava from '@/images/avatar.svg';
 import bell from '@/images/bell (1).svg';
 import message from '@/images/Vector (40).svg';
-import Aside from '@/components/vendorDashboard/Aside'; // Import the Aside component
+import Aside from '@/components/vendorDashboard/Aside';
 
 interface NavProps {
     toggleMobileVisibility: () => void;
-  }
-  
-  const Nav: React.FC<NavProps> = ({ toggleMobileVisibility }) => {
+}
+
+interface VendorProfile {
+        businessName: string;
+        email: string;
+    // Add other properties as needed
+}
+
+const Nav: React.FC<NavProps> = ({ toggleMobileVisibility }) => {
     const [isAsideOpen, setIsAsideOpen] = useState(false);
+    const [vendor, setVendor] = useState({ businessName: '', email: '' });
+
+    useEffect(() => {
+        const fetchVendorData = async () => {
+            try {
+                const vendorEmail = localStorage.getItem('vendorEmail');
+                if (vendorEmail) {
+                    const response = await fetch(`https://unibackend.onrender.com/api/v1/vendorProfile`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ vendorEmail }),
+                    });
+                    const data = await response.json();
+                    console.log('vendor data:', data.vendor.businessName);
+                    setVendor(data.vendor);
+                }
+            } catch (error) {
+                console.error('Error fetching vendor data:', error);
+            }
+        };
+
+        fetchVendorData();
+    }, []);
 
     return (
         <div className="relative">
@@ -42,18 +73,18 @@ interface NavProps {
                     <p className='h-5 hidden lg:block'>|</p>
                     <div className='flex justify-center gap-2 items-center'>
                         <Image src={ava} alt='' width={40} height={40} />
-                        <div className='flex flex-col hidden lg:flex'>
-                            <h1 className='md:text-[15px] text-[14px] font-bold'>Ayotunde Ojay</h1>
-                            <h2 className='md:text-[13px] text-[12px]'>aojay866@gmail.com</h2>
-                        </div>
+                            <div className='flex flex-col hidden lg:flex mt-4'>
+                            <h1 className='text-[12px] text-red-900'>{vendor?.businessName || ''}</h1>
+                            <h2 className='md:text-[13px] text-[12px]'>{vendor?.email?.split('@')[0] || ''}</h2>
+                            </div>
                     </div>
                 </div>
             </section>
             {/* {isAsideOpen && (
-                <div className="fixed bg-red-900 text-white top-0 left-0 h-screen w-[75vw]">
-                    <Aside />
-                </div>
-            )} */}
+        <div className="fixed bg-red-900 text-white top-0 left-0 h-screen w-[75vw]">
+          <Aside />
+        </div>
+      )} */}
         </div>
     );
 };

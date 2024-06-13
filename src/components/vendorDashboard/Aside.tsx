@@ -74,7 +74,7 @@ const Aside: React.FC<AsideProps> = ({ isMobileVisible }) => {
       id: 6,
       name: 'Messages',
       image01: message,
-      route: '/messagingPage', 
+      route: '/vendorDashboard', 
     }
   ];
   return (
