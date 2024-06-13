@@ -396,7 +396,7 @@ const SummaryStep: React.FC<SummaryStepProps> = ({
   }, [serviceFee, deliveryFee, onServiceChargeChange, onDeliveryFeeChange]);
 
   return (
-    <div>
+    <div className='ml-4 mr-4'>
       <h2 className="text-xl font-bold mb-4">Summary</h2>
       <div>
         <h3 className="text-lg font-semibold mb-2">Cart Items</h3>
@@ -770,7 +770,7 @@ const Checkout = () => {
       </div>}
 
       {isAuthenticated ? (
-        <div className="container-div ml-4 mr-4">
+        <div className="container-div">
 
 
           <header className="flex justify-between items-center bg-white py-4 px-4 sm:px-6 lg:px-8">
