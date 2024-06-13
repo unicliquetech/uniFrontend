@@ -1,5 +1,6 @@
 "use client"
 import React, { useState, useEffect } from 'react'
+import LazyLoad from 'react-lazy-load';
 import Nav from '@/components/vendorDashboard/nav'
 import Aside from '@/components/vendorDashboard/Aside';
 import Image from 'next/image'
@@ -221,6 +222,7 @@ const Order = () => {
 
 
     return (
+      <LazyLoad>
         <main className='w-[100%] flex flex-col'>
             <Nav toggleMobileVisibility={toggleMobileVisibility} />
             <Aside isMobileVisible={isMobileVisible} />
@@ -325,6 +327,7 @@ const Order = () => {
                 </div>
             </section>
         </main>
+        </LazyLoad>
     )
 }
 
