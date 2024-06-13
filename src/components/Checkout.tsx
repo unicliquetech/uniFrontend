@@ -745,7 +745,7 @@ const Checkout = () => {
         break;
       case 'address':
         // Navigate to the cart page
-        window.location.href = '/';
+        window.location.href = '/cartPage';
         break;
       case 'payment':
         setCurrentStep('summary');

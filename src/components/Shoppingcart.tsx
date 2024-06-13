@@ -372,7 +372,7 @@ const ShoppingCart = () => {
               checked={selectedDeliveryMethod === 'express'}
               onChange={handleExpressDelivery}
             />
-            <span className="ml-2">Express (In 15 minutes) • ₦800</span>
+            <span className="ml-2">Express (In 1 hour) • ₦800</span>
           </label>
             <div className="mt-2">
             <label className="inline-flex items-center">
@@ -384,7 +384,7 @@ const ShoppingCart = () => {
                 checked={selectedDeliveryMethod === 'regular'}
                 onChange={handleRegularDelivery}
               />
-              <span className="ml-2">Regular Delivery (In 30 min) • ₦400</span>
+              <span className="ml-2">Regular Delivery (In 6 hours) • ₦400</span>
             </label>
             </div>
             <div className="mt-2">
