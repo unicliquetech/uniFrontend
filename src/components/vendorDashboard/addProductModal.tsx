@@ -267,8 +267,8 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
                         className="flex flex-col items-center justify-center h-40 border-2 border-dashed border-gray-300 rounded-md cursor-pointer"
                       >
                         {productImage ? (
-                          <img
-                            src='productImage'
+                          <Image
+                            src='productImage.src'
                             alt="Product Preview"
                             className="max-h-32 max-w-full object-contain"
                           />
