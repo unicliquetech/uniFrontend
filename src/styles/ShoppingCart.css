@@ -101,6 +101,11 @@
   /* .hidden {
     visibility: hidden;
   } */
+
+  .hiddenqtybtn{
+    margin-top: -5px;
+    margin-left: 40px;
+  }
   
   /* Delivery options */
   .delivery-options {
@@ -230,8 +235,9 @@
     /* background-color: #590209; */
     display: flex;
     flex-direction: row;
-    /* margin-top: -50px; */
-    margin-bottom: 10px;
+    /* justify-content: space-between; */
+    margin-top: 0.02px;
+    /* margin-bottom: 10px; */
   }
 
   .tablecontent{
@@ -265,8 +271,8 @@
   } */
 
   .tablecontent img {
-    width: 40px;
-    height: 40px;
+    width: 80px;
+    height: 80px;
   }
 
   .mobiledivTotal{

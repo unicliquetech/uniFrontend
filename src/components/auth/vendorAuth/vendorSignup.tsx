@@ -157,6 +157,10 @@ const SignUpVendor = () => {
                                             <option value='bags' />
                                             <option value='books' />
                                             <option value='jewelry' />
+                                            <option value='skincare' />
+                                            <option value='snacks' />
+                                            <option value='haircare' />
+                                            <option value='gadgets' />
                                         </datalist>
                                     </>
                                 ) : formData.businessType === 'service' ? (
@@ -178,6 +182,10 @@ const SignUpVendor = () => {
                                             <option value='massage therapy' />
                                             <option value='graphics design' />
                                             <option value='tutoring' />
+                                            <option value='barbing' />
+                                            <option value='hairstyling' />
+                                            <option value='hardware repairs' />
+                                            <option value='manicure & pedicure' />
                                         </datalist>
                                     </>
                                 ) : (

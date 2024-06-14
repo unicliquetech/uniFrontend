@@ -162,7 +162,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
       if (selectedProduct) {
         // Update existing product
         const response = await axios.put(
-          `http://localhost:5000/api/v1/products/${selectedProduct._id}`,
+          `https://unibackend.onrender.com/api/v1/products/${selectedProduct._id}`,
           formData,
           {
             headers: {
@@ -327,6 +327,17 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
                     <option value="fastfood">Fastfood</option>
                     <option value="haircare">Haircare</option>
                     <option value="books">Books</option>
+                    <option value="barbing">Barbing</option>
+                    <option value="hair Styling">Hairstyling</option>
+                    <option value="graphics">Graphics</option>
+                    <option value="delivery">Delivery</option>
+                    <option value="massage">Massage</option>
+                    <option value="fashion design">Fashion design</option>
+                    <option value="photography">Photography</option>
+                    <option value="laundry">Laundry</option>
+                    <option value="hardware repairs">Hardware Repairs</option>
+                    <option value="tutorials">Tutorials</option>
+                    <option value="housing">Housing</option>
                   </select>
                 </div>
                 <div className="mb-4">
