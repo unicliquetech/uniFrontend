@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Footer from '@/components/productPage/Footer'
 import DatePicker, { ReactDatePickerProps } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -40,15 +41,15 @@ const DeliveryDatePicker: React.FC<DeliveryDatePickerProps> = ({
 };
 
 const ShoppingCart = () => {
-  const [cartItems, setCartItems] = useState({
+  const [cartItems, setCartItems] = useState([{
     name: '',
-    price: 0, 
+    price: 0,
     _id: '',
     image: '',
     productId: '',
     colors: [],
     quantity: 0,
-  });
+  }]);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState('');
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -101,8 +102,19 @@ const ShoppingCart = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const itemTotal = cartItems.price * (cartItems.quantity || 0);
-  const subtotal = itemTotal;
+  // const itemTotal = cartItems.price * (cartItems.quantity || 0);
+  // // const itemTotal = item.price * item.quantity;
+  // const subtotal = itemTotal;
+  // const serviceFee = 50;
+  // const Total = subtotal + deliveryPrice + serviceFee;
+
+  let subtotal = 0;
+  const itemTotals = cartItems.map((item) => {
+    const itemTotal = item.price * (item.quantity || 0);
+    subtotal += itemTotal;
+    return itemTotal;
+  });
+
   const serviceFee = 50;
   const Total = subtotal + deliveryPrice + serviceFee;
 
@@ -119,7 +131,7 @@ const ShoppingCart = () => {
   const handleRemoveFromCart = async (productId: string) => {
     try {
       await axios.delete(`https://unibackend.onrender.com/api/v1/cart/${productId}`);
-      setCartItems({
+      setCartItems([{
         name: '',
         price: 0,
         _id: '',
@@ -127,7 +139,7 @@ const ShoppingCart = () => {
         productId: '',
         colors: [],
         quantity: 0,
-      });
+      }]);
     } catch (error) {
       console.error('Error removing cart item:', error);
     }
@@ -147,88 +159,236 @@ const ShoppingCart = () => {
 
   return (
     <div>
-      {/* Header and other components */}
+      <header className="flex justify-between items-center bg-white py-4 px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center">
+          <img src="/images/logo1.png" alt="Uniclique" className="h-6 mr-2 sm:h-8" />
+          <h1 className="text-xl mr-6  font-bold text-red-900 sm:text-2xl">Uniclique</h1>
+        </div>
+        <div className="flex items-center">
+          <div className=" hidden relative mr-2 sm:mr-4 sm:flex">
+            <input
+              type="text"
+              placeholder="Search orders"
+              className="bg-gray-200 text-gray-700 rounded-l px-4 py-2"
+            />
+            <button className="bg-gray-200 hover:bg-red-600 text-red-900 hover:text-white rounded-r px-4 py-2 absolute right-0 top-0">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </button>
+          </div>
+          <div className="flex items-center ml-6 sm:ml-4">
+            <button className="hover:bg-gray-600 text-gray-700 rounded-l px-2 py-2 sm:px-4">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                />
+              </svg>
+            </button>
+            <button className="hover:bg-gray-600 text-gray-700 rounded-r px-2 py-2 sm:px-4 ml-0 sm:ml-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                />
+              </svg>
+            </button>
+          </div>
+          <span className="text-gray-500 ml-2 sm:ml-4 mr-2 sm:mr-4 hidden sm:inline">
+            Need Help?
+          </span>
+          <div className="hidden sm:flex items-center">
+            <img
+              src="https://res.cloudinary.com/daqlpvggg/image/upload/v1717040743/avatar_jznivx.png"
+              alt="Profile"
+              className="w-8 h-8 rounded-full mr-2"
+            />
+            <div className="grid">
+              <span className="text-gray-700">Ayotunde Ojay</span>
+              <span className="text-gray-700">ayojay@gmail.com</span>
+            </div>
+          </div>
+          <button className="bg-red-900 hover:bg-red-600 text-white rounded ml-2 sm:ml-4 px-2 py-2 sm:px-4 sm:py-2 hidden sm:inline-block">
+            <a href='/product'>Continue Shopping</a>
+          </button>
+        </div>
+
+
+        {/* Hamburger menu */}
+        <div className="sm:hidden">
+          <button
+            type="button"
+            className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+            aria-controls="mobile-menu"
+            aria-expanded={isMobileMenuOpen}
+            onClick={toggleMobileMenu}
+          >
+            <span className="sr-only">Open main menu</span>
+            <svg
+              className="block h-6 w-6"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+          </button>
+        </div>
+        {/* Mobile menu */}
+        {isMobileMenuOpen && (
+          <div className="sm:hidden" id="mobile-menu">
+            <div className="px-2 pt-2 pb-3 space-y-1">
+              <a
+                href="#"
+                className="bg-gray-200 text-gray-700 block px-3 py-2 rounded-md text-base font-medium"
+              >
+                Profile
+              </a>
+              <a
+                href="/product"
+                className="bg-red-900 text-white block px-3 py-2 rounded-md text-base font-medium"
+              >
+                Continue Shopping
+              </a>
+            </div>
+          </div>
+        )}
+      </header>
 
       <h2 className="text-2xl font-bold mb-6 text-center font-poppins">My Cart</h2>
       <table className="carttable w-full">
-        <thead className='cartTableHead'>
-          <tr className=" tableheaddiv bg-white-200 border-b border-red-800 py-2 px-4">
+        <thead className="cartTableHead">
+          <tr className="tableheaddiv bg-white-200 border-b border-red-800 py-2 px-4">
             <th className="tablehead px-4 py-6 text-left">PRODUCT</th>
             <th className="tablehead px-4 py-2 text-left">PRICE</th>
             <th className="tablehead px-4 py-2 text-left">QTY</th>
             <th className="tablehead px-4 py-2 text-left">TOTAL</th>
           </tr>
         </thead>
-        <tbody className='cartBody'>
-          {Object.keys(cartItems).length > 0 ? (
-            <tr key={cartItems._id} className="tableheaddiv border-b border-red-800">
-              <td className="tablecontent px-4 py-2 flex items-center">
-                <img
-                  src={cartItems.image}
-                  alt={cartItems.name}
-                  className="w-16 h-16 object-contain mr-4"
-                />
-                <div>
-                  <p className="font-semibold productName">{cartItems.name}</p>
-                  {cartItems.productId && (
-                    <p className="text-gray-500 font-100 productId">#{cartItems.productId}</p>
-                  )}
-                  {cartItems.colors && (
-                    <p className="text-gray-500 productColor">Color: {cartItems.colors.join(', ')}</p>
-                  )}
-                </div>
-              </td>
-              <td className=" px-4 py-2 pricediv">₦{cartItems.price.toLocaleString()}</td>
-              <td className="hidden sm:table-cell">
-                <button
-                  className="bg-gray-200 hover:bg-gray-300 text-red-800 font-bold py-1 px-2 rounded-l"
-                  onClick={() => handleQuantityChange(cartItems.productId, cartItems.quantity - 1)}
-                  disabled={cartItems.quantity === 1}
-                >
-                  -
-                </button>
-                <span className="mx-1">{cartItems.quantity}</span>
-                <button
-                  className="bg-gray-200 hover:bg-gray-300 text-red-800 font-bold py-1 px-2 rounded-r"
-                  onClick={() => handleQuantityChange(cartItems.productId, cartItems.quantity + 1)}
-                >
-                  +
-                </button>
-              </td>
-              <td className="tablecontent relative">
-                <div className="mobilediv flex">
-                  <p className='mobiledivTotal'>₦{itemTotal.toLocaleString()}</p>
-                  <div className="sm:hidden ml-10 hiddenqtybtn">
+        <tbody className="cartBody">
+          {cartItems.length > 0 ? (
+            // cartItems.map((item) => {
+              cartItems.map((item, index) => {
+              return (
+                <tr key={item._id} className="tableheaddiv border-b border-red-800">
+                  <td className="tablecontent px-4 py-2 flex items-center">
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="w-16 h-16 object-contain mr-4"
+                    />
+                    <div>
+                      <p className="font-semibold productName">{item.name}</p>
+                      {item.productId && (
+                        <p className="text-gray-500 font-100 productId">
+                          #{item.productId}
+                        </p>
+                      )}
+                      {item.colors && (
+                        <p className="text-gray-500 productColor">
+                          Color: {item.colors.join(", ")}
+                        </p>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-4 py-2 pricediv">
+                    ₦{item.price.toLocaleString()}
+                  </td>
+                  <td className="hidden sm:table-cell">
                     <button
-                      className=" py-1 px-2 rounded-l qtybtn"
-                      onClick={() => handleQuantityChange(cartItems.productId, cartItems.quantity - 1)}
-                      disabled={cartItems.quantity === 1}
+                      className="bg-gray-200 hover:bg-gray-300 text-red-800 font-bold py-1 px-2 rounded-l"
+                      onClick={() =>
+                        handleQuantityChange(item.productId, item.quantity - 1)
+                      }
+                      disabled={item.quantity === 1}
                     >
                       -
                     </button>
-                    <span className="mx-1">{cartItems.quantity}</span>
+                    <span className="mx-1">{item.quantity}</span>
                     <button
-                      className=" py-1 px-2 rounded-r qtybtn"
-                      onClick={() => handleQuantityChange(cartItems.productId, cartItems.quantity + 1)}
+                      className="bg-gray-200 hover:bg-gray-300 text-red-800 font-bold py-1 px-2 rounded-r"
+                      onClick={() =>
+                        handleQuantityChange(item.productId, item.quantity + 1)
+                      }
                     >
                       +
                     </button>
-                  </div>
-                  <button
-                    className="absolute right-0 text-red-800 hover:text-red-600 xmark"
-                    onClick={() => handleRemoveFromCart(cartItems.productId)}
-                  >
-                    &times;
-                  </button>
-                </div>
-              </td>
-            </tr>
+                  </td>
+                  <td className="tablecontent relative">
+                    <div className="mobilediv flex">
+                      <p className="mobiledivTotal">₦{itemTotals[index].toLocaleString()}</p>
+                      <div className="sm:hidden ml-10 hiddenqtybtn">
+                        <button
+                          className="py-1 px-2 rounded-l qtybtn"
+                          onClick={() =>
+                            handleQuantityChange(item.productId, item.quantity - 1)
+                          }
+                          disabled={item.quantity === 1}
+                        >
+                          -
+                        </button>
+                        <span className="mx-1">{item.quantity}</span>
+                        <button
+                          className="py-1 px-2 rounded-r qtybtn"
+                          onClick={() =>
+                            handleQuantityChange(item.productId, item.quantity + 1)
+                          }
+                        >
+                          +
+                        </button>
+                      </div>
+                      <button
+                        className="absolute right-0 text-red-800 hover:text-red-600 xmark"
+                        onClick={() => handleRemoveFromCart(item.productId)}
+                      >
+                        &times;
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })
           ) : (
             <tr>
               <td colSpan={4} className="grid sm:ml-[80%] ml-[20%] sm:w-[40%] w-[60%] text-center py-4">
                 Your cart is empty
                 <button className="bg-red-900 mt-6 text-white px-4 py-2 rounded-md hover:bg-gray-400 transition-colors duration-300">
-                  <a href='/product'>Shop for Products here</a>
+                  <a href="/product">Shop for Products here</a>
                 </button>
               </td>
             </tr>
@@ -293,7 +453,7 @@ const ShoppingCart = () => {
         </div>
       </div>
 
-      {/* Footer */}
+      <Footer />
     </div>
   );
 };
