@@ -19,7 +19,7 @@ import arrowRight from '@/images/arrow-right (1).svg'
 interface ApiResponse {
     message?: string;
     error?: string;
-  }
+}
 
 const SignUpVendor = () => {
     const router = useRouter()
@@ -33,6 +33,8 @@ const SignUpVendor = () => {
         businessType: '',
         businessCategory: '',
         location: '',
+        openingHours: '',
+        closingHours: '',
         email: '',
         phoneNumber: '',
         university: '',
@@ -64,12 +66,12 @@ const SignUpVendor = () => {
             setApiResponse(response.data);
             console.log('Email data:', response.data.email);
 
-                localStorage.setItem('vendorEmail', response.data.email);
+            localStorage.setItem('vendorEmail', response.data.email);
 
 
             if (response.data.message === 'Vendor registered successfully. Please verify your email.') {
                 router.push('/vendorEmailVerification');
-              }
+            }
         } catch (error) {
             console.error(error);
             setApiResponse({ error: 'An error occurred' });
@@ -198,6 +200,52 @@ const SignUpVendor = () => {
                                     />
                                 )}
 
+                                <input
+                                    placeholder='Location'
+                                    type='option'
+                                    name='location'
+                                    value={formData.location}
+                                    onChange={handleInputChange}
+                                    list='locations'
+                                />
+                                <datalist id='locations'>
+                                    <option value='Awo Hall' />
+                                    <option value='Idia Hall' />
+                                    <option value='Bello Hall' />
+                                    <option value='Zik Hall' />
+                                    <option value='Indy Hall' />
+                                    <option value="Queen's Hall" />
+                                    <option value='Mellanby Hall' />
+                                    <option value='Tedder Hall' />
+                                    <option value='Alexander brown Hall' />
+                                    <option value='Agbowo' />
+                                    <option value='Ajibode' />
+                                    <option value='Bodija' />
+                                    <option value='Samonda' />
+                                </datalist>
+
+                                <div>
+                                    <label htmlFor="openingHours">Opening Hours:</label>
+                                    <input
+                                        id="openingHours"
+                                        type="time"
+                                        name="openingHours"
+                                        value={formData.openingHours}
+                                        onChange={handleInputChange}
+                                    />
+                                </div>
+
+                                <div>
+                                    <label htmlFor="closingHours">Closing Hours:</label>
+                                    <input
+                                        id="closingHours"
+                                        type="time"
+                                        name="closingHours"
+                                        value={formData.closingHours}
+                                        onChange={handleInputChange}
+                                    />
+                                </div>
+
                                 <input placeholder='University' type='text' name="university"
                                     value={formData.university}
                                     onChange={handleInputChange} />
@@ -236,9 +284,9 @@ const SignUpVendor = () => {
                                     <Image src={confirmpasswordVisible ? eyeOpen : eyelock} alt='' width={15} height={15} onClick={togConfirm} className='absolute right-[2%] flex justify-center items-center top-[57%]' />
                                 </div>
                             </div>
-                            <button className=' flex justify-center items-center  md:px-[5rem] w-[90%] py-[15px] gap-2 bg-color1 pointer rounded-[10px] mt-[10px] cursor-pointer' 
-                            style={{ color: '#590209' }}
-                            type='submit' >
+                            <button className=' flex justify-center items-center  md:px-[5rem] w-[90%] py-[15px] gap-2 bg-color1 pointer rounded-[10px] mt-[10px] cursor-pointer'
+                                style={{ color: '#590209' }}
+                                type='submit' >
                                 <p className=''>Next</p>
                                 <Image src={arrowRight} alt='' width={20} height={20} className='' />
                             </button>
@@ -248,11 +296,11 @@ const SignUpVendor = () => {
                 </div>
             </section>
             {apiResponse && (
-                            <div className="mt-4">
-                                {apiResponse.message && <p className="text-green-500">{apiResponse.message}</p>}
-                                {apiResponse.error && <p className="text-red-500">{apiResponse.error}</p>}
-                            </div>
-                        )} 
+                <div className="mt-4">
+                    {apiResponse.message && <p className="text-green-500">{apiResponse.message}</p>}
+                    {apiResponse.error && <p className="text-red-500">{apiResponse.error}</p>}
+                </div>
+            )}
         </div>
     )
 }
