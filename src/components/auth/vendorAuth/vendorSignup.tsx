@@ -35,6 +35,9 @@ const SignUpVendor = () => {
         location: '',
         openingHours: '',
         closingHours: '',
+        bank: '',
+        accountNumber: '',
+        accountName: '',
         email: '',
         phoneNumber: '',
         university: '',
@@ -106,7 +109,7 @@ const SignUpVendor = () => {
                     backgroundPosition: 'right',
                 }}
             >
-                <div className='sm:flex justify-center sm:w-fit w-[95%] mt-[3rem] md:items-start items-center'>
+                <div className='sm:flex justify-center sm:w-[98%] w-[100%] mt-[3rem] md:items-start items-center'>
                     <div className='absolute left-[2%] md:top-2 top-3 justify-center items-center flex-col max-[420px]:hidden'>
                         <Image src={logo} alt='' width={120} height={120} className='md:w-[120px] md:h-[120px] sm:w-[55px] sm:h-[55px] w-[60px] h-[60px]' />
                         <p className='md:text-[20px] text-[15px] font-[700] max-[420px]:text-[12px]'>Uniclique</p>
@@ -218,6 +221,14 @@ const SignUpVendor = () => {
                                     <option value='Mellanby Hall' />
                                     <option value='Tedder Hall' />
                                     <option value='Alexander brown Hall' />
+                                    <option value='Cmf Hostel' />
+                                    <option value='Talent Hostel' />
+                                    <option value='AOO Hostel' />
+                                    <option value='Iya Taofeek Hub' />
+                                    <option value='Abdulsalam' />
+                                    <option value='Kuti Hall' />
+                                    <option value='Abadina' />
+                                    <option value='CBN Hostel' />
                                     <option value='Agbowo' />
                                     <option value='Ajibode' />
                                     <option value='Bodija' />
@@ -246,6 +257,36 @@ const SignUpVendor = () => {
                                     />
                                 </div>
 
+                              <div className='mt-2 grid'>
+                                <h3 className='font-semibold'> Payment Information: </h3>
+                                <input
+                                    placeholder='Bank'
+                                    type="text"
+                                    id="bank"
+                                    name="bank"
+                                    value={formData.bank}
+                                    onChange={handleInputChange}
+                                />
+
+                                <input
+                                    placeholder='Account Number'
+                                    type="text"
+                                    id="accountNumber"
+                                    name="accountNumber"
+                                    value={formData.accountNumber}
+                                    onChange={handleInputChange}
+                                />
+
+                                <input
+                                    placeholder='Account Name'
+                                    type="text"
+                                    id="accountName"
+                                    name="accountName"
+                                    value={formData.accountName}
+                                    onChange={handleInputChange}
+                                />
+                                </div> 
+
                                 <input placeholder='University' type='text' name="university"
                                     value={formData.university}
                                     onChange={handleInputChange} />
@@ -267,7 +308,7 @@ const SignUpVendor = () => {
                                 <input placeholder='Year of Entry' type='year' name="yearOfEntry"
                                     value={formData.yearOfEntry}
                                     onChange={handleInputChange} />
-                                <input placeholder='Email' type='email' name="email"
+                                <input placeholder='School Email e.g. gadeyemi234@stu.ui.edu.ng' type='email' name="email"
                                     value={formData.email}
                                     onChange={handleInputChange} />
 
