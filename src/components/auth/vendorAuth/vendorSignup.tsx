@@ -163,8 +163,11 @@ const SignUpVendor = () => {
                                             <option value='books' />
                                             <option value='jewelry' />
                                             <option value='skincare' />
+                                            <option value='perfume' />
                                             <option value='snacks' />
                                             <option value='haircare' />
+                                            <option value='soap' />
+                                            <option value='home accessories' />
                                             <option value='gadgets' />
                                         </datalist>
                                     </>

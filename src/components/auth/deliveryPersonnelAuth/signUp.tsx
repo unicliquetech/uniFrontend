@@ -8,6 +8,7 @@ const SignUpContainer = styled.div`
   align-items: center;
   height: 100vh;
   background-color: #f2f2f2;
+  margin-top: 30%;
 `;
 
 const SignUpForm = styled.form`
