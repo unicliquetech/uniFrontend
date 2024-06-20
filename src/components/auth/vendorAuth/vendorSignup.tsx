@@ -162,6 +162,9 @@ const SignUpVendor = () => {
                                             <option value='footwear' />
                                             <option value='bags' />
                                             <option value='books' />
+                                            <option value='drinks' />
+                                            <option value='electronics' />
+                                            <option value='accessories' />
                                             <option value='jewelry' />
                                             <option value='skincare' />
                                             <option value='perfume' />

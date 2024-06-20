@@ -1,339 +1,245 @@
-// pages/vendor/[vendorName].tsx
-import { GetServerSideProps } from 'next';
 import React, { useState } from 'react';
-import styles from '@/styles/Vendor.module.css';
 import { useRouter } from 'next/router';
-import { parseCookies } from 'nookies';
+import styles from '@/styles/Vendor.module.css';
+import logo from '@/images/logo.svg';
 
 interface Product {
   name: string;
   price: number;
+  image: string;
   description: string;
 }
 
 interface Review {
-  _id: string;
+  author: string;
   rating: number;
   comment: string;
-  createdAt: string;
-  user: {
-    email: string;
-  };
 }
 
 interface VendorData {
-  vendorName: string;
-  description: string;
-  products: Product[];
+  name: string;
+  image: string;
   rating: number;
-  numReviews: number;
+  products: Product[];
   reviews: Review[];
+  description: string;
+  address: string;
+  contact: string;
 }
 
 interface VendorPageProps {
   vendor: VendorData;
-  totalPages: number;
-  currentPage: number;
-  token: string | null;
-  userEmail: string | null;
 }
 
-const VendorPage: React.FC<VendorPageProps> = ({
-  vendor,
-  totalPages,
-  currentPage,
-  token,
-  userEmail,
-}) => {
-  const { vendorName, description, products, rating, numReviews, reviews } =
-    vendor;
-  const [newReview, setNewReview] = useState({ rating: 0, comment: '' });
-  const [editReview, setEditReview] = useState<Review | null>(null);
+const VendorPage: React.FC<VendorPageProps> = ({ vendor }) => {
   const router = useRouter();
+  const [newReview, setNewReview] = useState<Review>({
+    author: '',
+    rating: 0,
+    comment: '',
+  });
+
+  const handleReviewChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setNewReview((prevReview) => ({
+      ...prevReview,
+      [name]: value,
+    }));
+  };
 
   const handleReviewSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!token) {
-      console.error('User must be logged in to submit a review.');
-      return;
-    }
-
     try {
-      const res = await fetch(`/api/v1/vendorPage/${vendorName}/reviews`, {
+      const businessName = router.query.businessName as string;
+      const { rating, comment } = newReview;
+
+      // Check if the token is available and not expired
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Please login to submit a review');
+        router.push('/login');
+      }
+
+      // Send a request to verify the token
+      const response = await fetch('https://unibackend.onrender.com/api/v1/vendorProfile/vendorPage/${businessName}/auth', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(newReview),
+        body: JSON.stringify({ token }),
       });
 
-      if (res.ok) {
-        // Reset the form
-        setNewReview({ rating: 0, comment: '' });
-        // Fetch the updated vendor data
-        router.replace(router.asPath);
-      } else {
-        console.error('Failed to submit review');
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
+      if (response.ok) {
+        const { userId } = await response.json();
 
-  const handleReviewUpdate = async (reviewId: string) => {
-    if (!token) {
-      console.error('User must be logged in to update a review.');
-      return;
-    }
-
-    try {
-      const res = await fetch(
-        `/api/v1/vendorPage/${vendorName}/reviews/${reviewId}`,
-        {
-          method: 'PUT',
+        // Submit the review with the userId
+        const reviewResponse = await fetch(`https://unibackend.onrender.com/api/v1/vendorProfile/vendorPage/${businessName}/reviews`, {
+          method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(editReview),
-        }
-      );
+          body: JSON.stringify({ rating, comment, userId }),
+        });
 
-      if (res.ok) {
-        setEditReview(null);
-        router.replace(router.asPath);
+        if (reviewResponse.ok) {
+          console.log('Review submitted successfully');
+          setNewReview({ author: '', rating: 0, comment: '' });
+        } else {
+          console.error('Failed to submit review');
+        }
       } else {
-        console.error('Failed to update review');
+        alert('Your session has expired. Please login to submit a review');
+        router.push('/login');
       }
     } catch (err) {
-      console.error(err);
+      console.error('Error submitting review:', err);
     }
   };
 
-  const handleReviewDelete = async (reviewId: string) => {
-    if (!token) {
-      console.error('User must be logged in to delete a review.');
-      return;
-    }
+  if (!vendor) {
+    return <div className={styles.container}>Loading...</div>;
+  }
 
-    try {
-      const res = await fetch(
-        `/api/v1/vendorPage/${vendorName}/reviews/${reviewId}`,
-        {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (res.ok) {
-        router.replace(router.asPath);
-      } else {
-        console.error('Failed to delete review');
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handlePaginationClick = (page: number) => {
-    router.push(
-      {
-        pathname: `/vendor/${vendorName}`,
-        query: { page: page.toString() },
-      },
-      undefined,
-      { shallow: true }
-    );
-  };
+  const { name, rating, products, reviews, image, description, address, contact } = vendor;
 
   return (
     <div className={styles.container}>
-      <h1>{vendorName}</h1>
-      <div className={styles.vendorInfo}>
-        <p className={styles.vendorDescription}>{description}</p>
-        <div className={styles.rating}>
-          {rating.toFixed(1)} ★
+      <div className={styles.header}>
+        <img src={logo} alt={name} className={styles.vendorImage} />
+        <div className={styles.vendorInfo}>
+          <h1 className={styles.vendorName}>{name}</h1>
+          <div className={styles.rating}>
+            <span className={styles.ratingValue}>{rating}</span>
+            <span className={styles.stars}>
+              {Array(5)
+                .fill(null)
+                .map((_, index) =>
+                  index < rating ? (
+                    <span key={index}>&#9733;</span>
+                  ) : (
+                    <span key={index}>&#9734;</span>
+                  )
+                )}
+            </span>
+          </div>
+          <p className={styles.vendorDescription}>{description}</p>
+          <p className={styles.vendorAddress}>{address}</p>
+          <p className={styles.vendorContact}>{contact}</p>
         </div>
-        <p>Based on {numReviews} reviews</p>
+      </div>
+      <div className={styles.products}>
+        <h2 className={styles.sectionTitle}>Products</h2>
+        <div className={styles.productList}>
+          {products.length === 0 ? (
+            <p>No products available</p>
+          ) : (
+            products.map((product) => (
+              <div key={product.name} className={styles.productCard}>
+                <img
+                  className={styles.productImage}
+                  src={product.image}
+                  alt={product.name}
+                />
+                <div className={styles.productDetails}>
+                  <h3 className={styles.productName}>{product.name}</h3>
+                  <p className={styles.productDescription}>
+                    {product.description}
+                  </p>
+                  <p className={styles.productPrice}>
+                    ₦{product.price.toFixed(2)}
+                  </p>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </div>
 
-      <div className={styles.productList}>
-        {products.map((product) => (
-          <div key={product.name} className={styles.productCard}>
-            <h3>{product.name}</h3>
-            <p>{product.description}</p>
-            <p className={styles.price}>${product.price.toFixed(2)}</p>
-          </div>
-        ))}
-      </div>
 
       <div className={styles.reviewSection}>
-        <h2>Reviews</h2>
-        {token ? (
-          <>
-            <h3>Leave a Review</h3>
-            <form onSubmit={handleReviewSubmit}>
-              <div>
-                <label htmlFor="rating">Rating:</label>
-                <select
-                  id="rating"
-                  value={newReview.rating}
-                  onChange={(e) =>
-                    setNewReview({ ...newReview, rating: parseInt(e.target.value) })
-                  }
-                >
-                  <option value={0}>Select a rating</option>
-                  <option value={1}>1 ★</option>
-                  <option value={2}>2 ★</option>
-                  <option value={3}>3 ★</option>
-                  <option value={4}>4 ★</option>
-                  <option value={5}>5 ★</option>
-                </select>
-              </div>
-              <div>
-                <label htmlFor="comment">Comment:</label>
-                <textarea
-                  id="comment"
-                  value={newReview.comment}
-                  onChange={(e) =>
-                    setNewReview({ ...newReview, comment: e.target.value })
-                  }
-                />
-              </div>
-              <button type="submit">Submit Review</button>
-            </form>
-          </>
-        ) : (
-          <p>Please log in to leave a review.</p>
-        )}
-        {reviews.map((review) => (
-          <div key={review._id} className={styles.review}>
-            <div className={styles.reviewHeader}>
-              <div>
-                <span className={styles.reviewRating}>
-                  {review.rating.toFixed(1)} ★
-                </span>
-                <span> by {review.user.email}</span>
-              </div>
-              <div>
-                {userEmail === review.user.email && (
-                  <>
-                    <button
-                      onClick={() => setEditReview(review)}
-                      className={styles.editButton}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleReviewDelete(review._id)}
-                      className={styles.deleteButton}
-                    >
-                      Delete
-                    </button>
-                  </>
-                )}
-              </div>
+        <div className={styles.reviews}>
+          <h2 className={styles.sectionTitle}>Reviews</h2>
+          <div className={styles.reviewList}>
+            {reviews.length === 0 ? (
+              <p>No reviews available</p>
+            ) : (
+              reviews.map((review, index) => (
+                <div key={index} className={styles.review}>
+                  <div className={styles.reviewHeader}>
+                    <span className={styles.reviewAuthor}>{review.author}</span>
+                    <span className={styles.reviewRating}>
+                      {Array(5)
+                        .fill(null)
+                        .map((_, index) =>
+                          index < review.rating ? (
+                            <span key={index}>&#9733;</span>
+                          ) : (
+                            <span key={index}>&#9734;</span>
+                          )
+                        )}
+                    </span>
+                  </div>
+                  <p className={styles.reviewComment}>{review.comment}</p>
+                </div>
+              ))
+            )}
+          </div>
+
+          <form onSubmit={handleReviewSubmit} className={styles.reviewForm}>
+          {/* <form className={styles.reviewForm}> */}
+            <h3 className={styles.formTitle}>Add a Review</h3>
+            <div className={styles.formGroup}>
+              <label htmlFor="author" className={styles.formLabel}>
+                Name:
+              </label>
+              <input
+                type="text"
+                id="author"
+                name="author"
+                value={newReview.author}
+                onChange={handleReviewChange}
+                className={styles.formInput}
+                required
+              />
             </div>
-            {editReview?._id === review._id ? (
-              <div className={styles.editReviewForm}>
-                <label htmlFor="editRating">Rating:</label>
-                <select
-                  id="editRating"
-                  value={editReview.rating}
-                  onChange={(e) =>
-                    setEditReview({
-                      ...editReview,
-                      rating: parseInt(e.target.value),
-                    })
-                  }
-                >
-                  <option value={1}>1 ★</option>
-                  <option value={2}>2 ★</option>
-                  <option value={3}>3 ★</option>
-                  <option value={4}>4 ★</option>
-<option value={5}>5 ★</option>
-</select>
-<label htmlFor="editComment">Comment:</label>
-<textarea
-  id="editComment"
-  value={editReview.comment}
-  onChange={(e) =>
-    setEditReview({
-      ...editReview,
-      comment: e.target.value,
-    })
-  }
-/>
-<button
-  onClick={() => handleReviewUpdate(editReview._id)}
-  className={styles.updateButton}
->
-  Update Review
-</button>
-<button
-  onClick={() => setEditReview(null)}
-  className={styles.cancelButton}
->
-  Cancel
-</button>
-</div>
-) : (
-<p className={styles.reviewComment}>{review.comment}</p>
-)}
-<p className={styles.reviewDate}>
-  {new Date(review.createdAt).toLocaleDateString()}
-</p>
-</div>
-))}
-<div className={styles.pagination}>
-  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-    <button
-      key={page}
-      onClick={() => handlePaginationClick(page)}
-      className={page === currentPage ? styles.activePage : ''}
-    >
-      {page}
-    </button>
-  ))}
-</div>
-</div>
-</div>
-);
-};
-
-export const getServerSideProps: GetServerSideProps<VendorPageProps> = async (
-  context
-) => {
-  const businessName = context.params?.businessName as string;
-  const page = parseInt(context.query.page as string) || 1;
-  const limit = 5; // Number of reviews per page
-  const skip = (page - 1) * limit;
-
-  const res = await fetch(
-    `http://localhost:3000/api/v1/vendorPage/${businessName}?page=${page}&limit=${limit}`
+            <div className={styles.formGroup}>
+              <label htmlFor="rating" className={styles.formLabel}>
+                Rating:
+              </label>
+              <input
+                type="number"
+                id="rating"
+                name="rating"
+                value={newReview.rating}
+                onChange={handleReviewChange}
+                min="1"
+                max="5"
+                className={styles.formInput}
+                required
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label htmlFor="comment" className={styles.formLabel}>
+                Comment:
+              </label>
+              <textarea
+                id="comment"
+                name="comment"
+                value={newReview.comment}
+                onChange={handleReviewChange}
+                className={styles.formTextarea}
+                required
+              ></textarea>
+            </div>
+            <button type="submit" className={styles.reviewButton}>
+              Submit Review
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
   );
-  const vendor = await res.json();
-
-  const cookies = parseCookies(context);
-  const token = cookies.token || null;
-  const userEmail = cookies.userEmail || null;
-
-  const totalReviews = vendor.reviews.length;
-  const totalPages = Math.ceil(totalReviews / limit);
-
-  return {
-    props: {
-      vendor,
-      totalPages,
-      currentPage: page,
-      token,
-      userEmail,
-    },
-  };
 };
 
 export default VendorPage;

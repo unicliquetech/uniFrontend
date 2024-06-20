@@ -107,7 +107,7 @@ const LoginForm: React.FC<LoginFormProps> = ()=> {
           </div>
 
           <div className="flex items-center flex-col justify-center h-screen">
-            <h1 className="md:text-[2.5rem] text-[1.5rem] font-fold font-[700]" style={{ color: '#590209'}}>
+            <h1 className="md:text-[2.5rem] text-red-900 text-[1.5rem] font-fold font-[700]" style={{ color: '#590209'}}>
               Welcome Back! <span>👋</span>
             </h1>
             <h2 className="md:text-[1rem] text-[.8rem] text-color1 font-[500]">
