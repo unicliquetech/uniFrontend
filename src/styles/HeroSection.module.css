@@ -1,0 +1,51 @@
+.hero_section {
+    background-color: #590209;
+    color: white;
+    padding: 4rem 2rem;
+  }
+  
+  .hero_container {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  
+  .vendor_name {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+  
+  .vendor_description {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+  }
+  
+  .rating {
+    font-size: 1.5rem;
+  }
+  
+  .rating_value {
+    margin-right: 0.5rem;
+  }
+  
+  .stars {
+    color: gold;
+  }
+
+  @media (max-width: 768px) {
+    .vendor_name {
+      font-size: 2rem;
+    }
+    .vendor_description {
+      font-size: 1rem;
+    }
+    .rating {
+      font-size: 1.2rem;
+    }
+  }
+
+  @media (max-width: 320px) { 
+    .hero_section {
+      width: 120%;
+    }
+  }

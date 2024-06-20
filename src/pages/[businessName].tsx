@@ -10,13 +10,14 @@ interface Product {
 }
 
 interface Review {
-  author: string;
-  rating: number;
+  userName: string;
+  rating: Number;
   comment: string;
 }
 
 interface VendorData {
   name: string;
+  description: string;
   rating: number;
   products: Product[];
   reviews: Review[];
@@ -26,30 +27,29 @@ interface VendorPageProps {
   vendor: VendorData;
 }
 
-export const getServerSideProps: GetServerSideProps<VendorPageProps> = async (context) => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   const businessName = context.params?.businessName as string;
-
   try {
-    // Make an API call to fetch the vendor data
-    const response = await fetch(`https://unibackend.onrender.com/api/v1/vendorProfile/vendorPage/${businessName}`);
+    const response = await fetch(`https://unibackend.onrender.com/api/v1/vendorProfile/vendorPage/${encodeURIComponent(businessName)}`);
     const vendorData = await response.json();
 
-    // Extract the necessary data from the API response
     const vendor: VendorData = {
-      name: vendorData.vendor.businessName,
-      rating: vendorData.vendor.rating,
-      products: vendorData.products.map((product: any) => ({
-        name: product.name,
-        image: product.image,
-        price: product.price,
-        description: product.description,
+      name: vendorData.vendor.businessName || '',
+      rating: vendorData.vendor.rating || 0,
+      description: vendorData.vendor.businessDescription || '',
+      products: (vendorData.products || []).map((product: any) => ({
+        name: product.name || '',
+        image: product.image || '',
+        price: product.price || 0,
+        description: product.description || '',
       })),
-      reviews: vendorData.vendor.reviews.map((review: any) => ({
-        author: review.user.email,
-        rating: review.rating,
-        comment: review.comment,
+      reviews: (vendorData.vendor.reviews || []).map((review: any) => ({
+        userName: review.userName || null,
+        rating: review.rating || 0,
+        comment: review.comment || '',
       })),
     };
+
 
     return {
       props: {

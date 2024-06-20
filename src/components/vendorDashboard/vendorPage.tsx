@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 import styles from '@/styles/Vendor.module.css';
+import HeroSection from './HeroSection';
+import Footer from '@/components/productPage/Footer';
 import logo from '@/images/logo.svg';
 
 interface Product {
@@ -11,7 +14,7 @@ interface Product {
 }
 
 interface Review {
-  author: string;
+  userName: string;
   rating: number;
   comment: string;
 }
@@ -34,10 +37,11 @@ interface VendorPageProps {
 const VendorPage: React.FC<VendorPageProps> = ({ vendor }) => {
   const router = useRouter();
   const [newReview, setNewReview] = useState<Review>({
-    author: '',
+    userName: '',
     rating: 0,
     comment: '',
   });
+
 
   const handleReviewChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -53,10 +57,11 @@ const VendorPage: React.FC<VendorPageProps> = ({ vendor }) => {
     try {
       const businessName = router.query.businessName as string;
       const { rating, comment } = newReview;
+      console.log(newReview.rating);
 
       // Check if the token is available and not expired
-      const token = localStorage.getItem('token');
-      if (!token) {
+      const email = localStorage.getItem('email');
+      if (!email) {
         alert('Please login to submit a review');
         router.push('/login');
       }
@@ -67,7 +72,7 @@ const VendorPage: React.FC<VendorPageProps> = ({ vendor }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ token }),
+        body: JSON.stringify({ email }),
       });
 
       if (response.ok) {
@@ -84,7 +89,7 @@ const VendorPage: React.FC<VendorPageProps> = ({ vendor }) => {
 
         if (reviewResponse.ok) {
           console.log('Review submitted successfully');
-          setNewReview({ author: '', rating: 0, comment: '' });
+          setNewReview({ userName: '', rating: 0, comment: '' });
         } else {
           console.error('Failed to submit review');
         }
@@ -104,30 +109,15 @@ const VendorPage: React.FC<VendorPageProps> = ({ vendor }) => {
   const { name, rating, products, reviews, image, description, address, contact } = vendor;
 
   return (
-    <div className={styles.container}>
+    <div className='w-full mt-4 '>
       <div className={styles.header}>
-        <img src={logo} alt={name} className={styles.vendorImage} />
-        <div className={styles.vendorInfo}>
-          <h1 className={styles.vendorName}>{name}</h1>
-          <div className={styles.rating}>
-            <span className={styles.ratingValue}>{rating}</span>
-            <span className={styles.stars}>
-              {Array(5)
-                .fill(null)
-                .map((_, index) =>
-                  index < rating ? (
-                    <span key={index}>&#9733;</span>
-                  ) : (
-                    <span key={index}>&#9734;</span>
-                  )
-                )}
-            </span>
-          </div>
-          <p className={styles.vendorDescription}>{description}</p>
-          <p className={styles.vendorAddress}>{address}</p>
-          <p className={styles.vendorContact}>{contact}</p>
+        <div>
+          <Image src={logo} alt={name} className={styles.logo} />
         </div>
+        <a href='/vendorSignup'> <b>Sell with Uniclique </b> </a>
       </div>
+      <HeroSection name={name} description={description} rating={rating} />
+
       <div className={styles.products}>
         <h2 className={styles.sectionTitle}>Products</h2>
         <div className={styles.productList}>
@@ -164,40 +154,52 @@ const VendorPage: React.FC<VendorPageProps> = ({ vendor }) => {
             {reviews.length === 0 ? (
               <p>No reviews available</p>
             ) : (
-              reviews.map((review, index) => (
-                <div key={index} className={styles.review}>
-                  <div className={styles.reviewHeader}>
-                    <span className={styles.reviewAuthor}>{review.author}</span>
-                    <span className={styles.reviewRating}>
-                      {Array(5)
-                        .fill(null)
-                        .map((_, index) =>
-                          index < review.rating ? (
-                            <span key={index}>&#9733;</span>
-                          ) : (
-                            <span key={index}>&#9734;</span>
-                          )
-                        )}
-                    </span>
+              (() => {
+                const uniqueReviews = new Set();
+                return reviews.filter(review => {
+                  const reviewKey = `${review.userName}-${review.rating}-${review.comment}`;
+                  if (!uniqueReviews.has(reviewKey)) {
+                    uniqueReviews.add(reviewKey);
+                    return true;
+                  }
+                  return false;
+                }).map((review, index) => (
+                  <div key={index} className={styles.review}>
+                    <div className={styles.reviewHeader}>
+                      <span className={styles.reviewName}>{review.userName}</span>
+                      <span className={styles.reviewRating}>
+                        {Array(5)
+                          .fill(null)
+                          .map((_, i) =>
+                            i < review.rating ? (
+                              <span key={i}>&#9733;</span>
+                            ) : (
+                              <span key={i}>&#9734;</span>
+                            )
+                          )}
+                      </span>
+                    </div>
+                    <p className={styles.reviewComment}>{review.comment}</p>
                   </div>
-                  <p className={styles.reviewComment}>{review.comment}</p>
-                </div>
-              ))
+                ))
+              })()
             )}
           </div>
 
+
+
           <form onSubmit={handleReviewSubmit} className={styles.reviewForm}>
-          {/* <form className={styles.reviewForm}> */}
+            {/* <form className={styles.reviewForm}> */}
             <h3 className={styles.formTitle}>Add a Review</h3>
             <div className={styles.formGroup}>
-              <label htmlFor="author" className={styles.formLabel}>
+              <label htmlFor="userName" className={styles.formLabel}>
                 Name:
               </label>
               <input
                 type="text"
-                id="author"
-                name="author"
-                value={newReview.author}
+                id="userName"
+                name="userName"
+                value={newReview.userName}
                 onChange={handleReviewChange}
                 className={styles.formInput}
                 required
@@ -238,6 +240,10 @@ const VendorPage: React.FC<VendorPageProps> = ({ vendor }) => {
           </form>
         </div>
       </div>
+
+      <footer className='footer bg-red-900'>
+        <Footer />
+      </footer>
     </div>
   );
 };
