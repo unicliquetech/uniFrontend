@@ -7,7 +7,7 @@ const Hero = () => {
     return (
         <section className='grid lg:grid-cols-2 md:grid-cols-1 gap-10 mx-auto md:px-[3rem] sm:px-10 px-5 mt-[4rem] '>
             <div className='flex flex-col justify-center gap-5 md:order-1 order-1'>
-                <h1 className='text-black md:text-[2.4rem] text-[1.5rem] font-bold md:w-fit w-full'><span className='text-[#F29F05]'>Uniclique</span> made university retail easy for you by <span className='text-[#8C3926]'>creating custom website</span></h1>
+                <h1 className='text-black md:text-[2.4rem] text-[1.5rem] font-bold md:w-fit w-full'><span className='text-[#F29F05]'>Uniclique</span> university retail made easy with <span className='text-[#8C3926]'> custom websites and storefront </span></h1>
                 <p className='text-black text-[.9rem] poppins-bold md:w-[80%] w-full'>Discover a tailor-made website for your business – shop and sell with ease from those you know and trust!</p>
                 <div className='flex gap-5 items-center'>
                     <a href="/vendorSignup">

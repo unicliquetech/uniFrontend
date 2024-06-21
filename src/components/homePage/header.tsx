@@ -46,19 +46,19 @@ const Header = () => {
                         <p className="text-[#590209] poppins-semibold text-[18px] cursor-pointer hover:text-[#590209]">
                             Home
                         </p>
-                        <div className="flex items-center cursor-pointer">
+                        <div className="flex items-center cursor-pointer ml-3">
                             <a href='/product' className="text-[#0D0D0D] poppins-regular text-[18px] hover:text-[#590209]">
                                 Products
                             </a>
-                            <MdKeyboardArrowDown size={20} color="#0D0D0D" className="ml-1" />
+                            {/* <MdKeyboardArrowDown size={20} color="#0D0D0D" className="ml-1" /> */}
                         </div>
-                        <div className="flex items-center cursor-pointer">
+                        <div className="flex items-center cursor-pointer ml-3">
                             <a href='product' className="text-[#0D0D0D] poppins-regular text-[18px] hover:text-[#590209]">
                                 Services
                             </a>
-                            <MdKeyboardArrowDown size={20} color="#0D0D0D" className="ml-1" />
+                            {/* <MdKeyboardArrowDown size={20} color="#0D0D0D" className="ml-1" /> */}
                         </div>
-                        <p className="text-[#0D0D0D] poppins-regular text-[18px] cursor-pointer hover:text-[#590209]">
+                        <p className="text-[#0D0D0D] poppins-regular text-[18px] cursor-pointer hover:text-[#590209] ml-3">
                             Pricing
                         </p>
                     </div>
@@ -88,13 +88,13 @@ const Header = () => {
                 </div>
                 <div className="menu flex flex-col gap-[20px] items-center justify-center p-6 h-[100vh] ">
                     <ul className="text-[20px] text-start mt-10">
-                        <a href="#">
+                        <a href="/">
                             <li className="text-main-color-gray cursor-pointer hover:scale-105 mt-10">Home</li>
                         </a>
                         <a href="#about">
                             <li className="text-main-color-gray cursor-pointer hover:scale-105 mt-10">About Us</li>
                         </a>
-                        <a href="#skill">
+                        <a href="/product">
                             <li className="text-main-color-gray cursor-pointer hover:scale-105 mt-10">Services</li>
                         </a>
                         <a href="#portfolio">
