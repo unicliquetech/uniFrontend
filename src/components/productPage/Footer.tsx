@@ -21,9 +21,9 @@ const Footer = () => {
         <div className="flex flex-col md:items-start">
           <h4 className="font-bold mb-2">Account</h4>
           <ul className="space-y-2">
-            <li>Seller Login</li>
-            <li>Sign Up</li>
-            <li>My Orders</li>
+            <li><a href="/loginVendor">Seller Login</a></li>
+            <li><a href="/vendorSignup">Sign Up</a></li>
+            <li><a href="/cartPage">My Orders</a></li>
           </ul>
         </div>
         <div className="flex flex-col md:items-start">

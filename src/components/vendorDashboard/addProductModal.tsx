@@ -341,10 +341,15 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
                     <option value="massage">Massage</option>
                     <option value="fashion design">Fashion design</option>
                     <option value="photography">Photography</option>
+                    <option value="videography/animations">Videography/Animations</option>
                     <option value="laundry">Laundry</option>
                     <option value="surprise packages">Surprise packages</option>
                     <option value="hardware repairs">Hardware Repairs</option>
                     <option value="printing">Printing</option>
+                    <option value="writing">Writing</option>
+                    <option value="content creation">Content creation</option>
+                    <option value="artwork">Artwork</option>
+                    <option value="lingerie">Lingerie</option>
                     <option value="tutorials">Tutorials</option>
                     <option value="housing">Housing</option>
                   </select>
