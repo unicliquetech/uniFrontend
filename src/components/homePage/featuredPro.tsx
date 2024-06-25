@@ -60,7 +60,7 @@ const FeaturedPro: React.FC = () => {
         <section className='flex flex-col justify-start gap-3 mt-[5rem]'>
             <div className='flex flex-col gap-3'>
                 <div className='sm:px-10 px-5'>
-                    <h1 className='md:text-[1.5rem] font-[700]'>Featured Products</h1>
+                    <h1 className='md:text-[1.5rem] text-red-900 font-[700]'>Featured Products</h1>
                 </div>
                 <div className='md:pl-[3rem] pl-[0rem] overflow-x-auto'>
                     <div className='flex gap-6 p-4'>
