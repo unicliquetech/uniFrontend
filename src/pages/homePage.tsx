@@ -2,11 +2,14 @@ import React from 'react';
 import Header from '@/components/homePage/header'
 import Category from '@/components/homePage/category'
 import Hero from '@/components/homePage/hero';
-// import Stat from '@/components/homePage/stat';
+import Stat from '@/components/homePage/stat';
 import Why from '@/components/homePage/why';
 import Product from '@/components/homePage/product'
-// import ProPage from '@/components/homePage/proPage'
+import ProPage from '@/components/homePage/proPage'
 import Footer from '@/components/productPage/Footer';
+import Service from '@/components/homePage/service';
+import FeaturedPro from '@/components/homePage/featuredPro';
+// import { motion, useViewportScroll, useTransform } from "framer-motion";
 const HomePage = () => {
   return (
     <div>
@@ -14,9 +17,11 @@ const HomePage = () => {
      <Category />
      <Hero />
      <Product />
-     {/* <Stat /> */}
+     <Stat />
      <Why />
-     {/* <ProPage /> */}
+     <ProPage />
+     <Service />
+     <FeaturedPro />
      <Footer />
     </div>
   );

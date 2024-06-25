@@ -1,38 +1,34 @@
 import React from 'react';
-import LazyLoad from 'react-lazy-load';
-import Header from '@/components/homePage/header'
-import Category from '@/components/homePage/category'
-import Hero from '@/components/homePage/hero';
-// import Stat from '@/components/homePage/stat';
-import Why from '@/components/homePage/why';
-import Product from '@/components/homePage/product'
-// import ProPage from '@/components/homePage/proPage'
-import Footer from '@/components/productPage/Footer';
+import { Suspense, lazy } from 'react';
+
+const Header = lazy(() => import('@/components/homePage/header'));
+const Category = lazy(() => import('@/components/homePage/category'));
+const Hero = lazy(() => import('@/components/homePage/hero'));
+const Stat = lazy(() => import('@/components/homePage/stat'));
+const Product = lazy(() => import('@/components/homePage/product'));
+const Why = lazy(() => import('@/components/homePage/why'));
+const ProPage = lazy(() => import('@/components/homePage/proPage'));
+const Footer = lazy(() => import('@/components/productPage/Footer'));
+const Service = lazy(() => import('@/components/homePage/service'));
+const FeaturedPro = lazy(() => import('@/components/homePage/featuredPro'));
+
 const HomePage = () => {
   return (
     <div>
-      <LazyLoad>
-     <Header /> 
-     </LazyLoad>
-     <LazyLoad>
-     <Category />
-     </LazyLoad>
-     <LazyLoad>
-     <Hero />
-     </LazyLoad>
-     <LazyLoad>
-     <Product />
-     </LazyLoad>
-     {/* <Stat /> */}
-     <LazyLoad>
-     <Why />
-     </LazyLoad>
-     {/* <ProPage /> */}
-     <LazyLoad>
-     <Footer />
-     </LazyLoad>
+      <Suspense fallback={<div>Loading...</div>}> 
+        <Header />
+        <Category />
+        <Hero />
+        <Stat />
+        <Product />
+        <Why />
+        <ProPage />
+        <Service />
+        <FeaturedPro />
+        <Footer />
+      </Suspense>
     </div>
   );
-}
+};
 
 export default HomePage;
