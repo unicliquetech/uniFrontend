@@ -30,38 +30,38 @@ interface ImageProps {
   return (
     <div className={styles.mainContent}>
       <div className={styles.categoryIcons}>
-        <div className={`${styles.categoryIcon} ${styles.categoryIcon1}`}>
+        <a href='/category-products?category=fastfood' className={`${styles.categoryIcon} ${styles.categoryIcon1}`}>
           <img src={foodIcon.src} alt="Food" />
           <h3>Food</h3>
-        </div>
-        <div className={`${styles.categoryIcon} ${styles.categoryIcon3}`}>
+        </a>
+        <a href='/category-products?category=clothes' className={`${styles.categoryIcon} ${styles.categoryIcon3}`}>
           <img src={clothesIcon.src} alt="Clothes" />
           <h3>Clothes</h3>
-        </div>
-        <div className={`${styles.categoryIcon} ${styles.categoryIcon4}`}>
+        </a>
+        <a href='/category-products?category=books' className={`${styles.categoryIcon} ${styles.categoryIcon4}`}>
           <img src={booksIcon.src} alt="Books" />
           <h3>Books</h3>
-        </div>
-        <div className={`${styles.categoryIcon} ${styles.categoryIcon2}`}>
+        </a>
+        <a href='/category-products?category=footwear' className={`${styles.categoryIcon} ${styles.categoryIcon2}`}>
           <img src={footwearIcon.src} alt="Footwear" />
           <h3>Footwear</h3>
-        </div>
-        <div className={`${styles.categoryIcon} ${styles.categoryIcon3}`}>
+        </a>
+        <a href='/category-products?category=skincare' className={`${styles.categoryIcon} ${styles.categoryIcon3}`}>
           <img src={skincareIcon.src} alt="Skincare" />
           <h3>Skincare</h3>
-        </div>
-        <div className={`${styles.categoryIcon1} ${styles.categoryIcon}`}>
+        </a>
+        <a href='/category-products?category=haircare' className={`${styles.categoryIcon1} ${styles.categoryIcon}`}>
           <img src={haircareIcon.src} alt="Haircare" />
           <h3>Haircare</h3>
-        </div>
-        <div className={`${styles.categoryIcon} ${styles.categoryIcon4}`}>
+        </a>
+        <a href='/category-products?category=gadgets' className={`${styles.categoryIcon} ${styles.categoryIcon4}`}>
           <img src={gadgetsIcon.src} alt="Gadgets" />
           <h3>Gadgets</h3>
-        </div>
-        <div className={`${styles.categoryIcon} ${styles.categoryIcon2}`}>
+        </a>
+        <a href='/category-products?category=stationeries' className={`${styles.categoryIcon} ${styles.categoryIcon2}`}>
           <img src={stationeriesIcon.src} alt="Stationeries" />
           <h3>Stationeries</h3>
-        </div>
+        </a>
       </div>
     </div>
   );

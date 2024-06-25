@@ -92,7 +92,7 @@ const CategoryProducts: React.FC = () => {
         />
       </LazyLoad>
 
-      <h1 className='text-red-900 uppercase text-4xl font-bold text-center text-red-900 my-8 uppercase tracking-wider'>{category} Products</h1>
+      <h1 className='text-red-900 uppercase text-4xl font-bold text-center text-red-900 my-8 uppercase tracking-wider'>{category}</h1>
       <ProductGrid products={filteredProducts} />
 
       <LazyLoad>

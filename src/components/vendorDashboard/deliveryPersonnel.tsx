@@ -39,6 +39,7 @@ const DeliveryPersonnelDetails: React.FC<DeliveryPersonnelDetailsProps> = ({
         <div>
             <h2>{personnel.name}</h2>
             <p>Location: {personnel.location}</p>
+            <p>Phone Number: {personnel.phoneNumber}</p>
             <p>Email: {personnel.email}</p>
             <p>Fee: {personnel.fee}</p>
             <p>Service Area: {personnel.serviceArea}</p>
@@ -64,14 +65,15 @@ const MessagePanel: React.FC<MessagePanelProps> = ({ personnel }) => {
     return (
         <div>
             {personnel ? (
-                <div>
-                    <h2>Send Message to {personnel.name}</h2>
+                <div className='mt-6'>
+                    <h2>Call {personnel.name} to handle your delivery </h2>
+                    {/* <h2>Send Message to {personnel.name}</h2>
                     <textarea
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                         placeholder="Enter your message"
                     ></textarea>
-                    <button onClick={handleSendMessage}>Send</button>
+                    <button onClick={handleSendMessage}>Send</button> */}
                 </div>
             ) : (
                 <p>Select a delivery personnel to send a message</p>

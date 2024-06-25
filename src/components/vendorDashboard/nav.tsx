@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import { MdSearch, MdMessage, MdDoorbell, MdMenu } from "react-icons/md";
+import logo from '@/images/logo.svg';
 import ava from '@/images/avatar.svg';
 import bell from '@/images/bell (1).svg';
 import message from '@/images/Vector (40).svg';
@@ -72,7 +73,7 @@ const Nav: React.FC<NavProps> = ({ toggleMobileVisibility }) => {
                     <p className='md:text-[15px] text-[14px] ml-3 mr-2 hidden lg:block'>Need Help?</p>
                     <p className='h-5 hidden lg:block'>|</p>
                     <div className='flex justify-center gap-2 items-center'>
-                        <Image src={ava} alt='' width={40} height={40} />
+                        <Image src={logo} alt='' width={40} height={40} />
                             <div className='flex flex-col hidden lg:flex mt-4'>
                             <h1 className='text-[12px] text-red-900'>{vendor?.businessName || ''}</h1>
                             <h2 className='md:text-[13px] text-[12px]'>{vendor?.email?.split('@')[0] || ''}</h2>

@@ -12,6 +12,7 @@ interface Product {
   image: string;
   name: string;
   price: number;
+  discountPrice?: number;
   rating: number;
   deliveryTime: string;
   deliveryNote: string;
@@ -124,6 +125,7 @@ const ProductList: React.FC = () => {
                   image={product.image}
                   name={product.name}
                   price={product.price}
+                  discountPrice={product.discountPrice}
                   rating={product.rating}
                   deliveryTime={product.deliveryTime}
                   deliveryNote={product.deliveryNote}

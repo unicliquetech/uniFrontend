@@ -200,8 +200,41 @@ const Homepage = () => {
                             <h1 className='text-white text-[20px]'></h1>
                             <p className='text-white text-[20px]'>Product Category</p>
                             <select name="date" id="date" className='p-1 border-[1px] border-gray-400 focus:outline-none bg-[#8C3926] text-white'>
-                                <option>Gadget</option>
-                                <option>Food</option>
+                            <option value="gadgets">Gadgets</option>
+                    <option value="footwear">Footwear</option>
+                    <option value="clothes">Clothes</option>
+                    <option value="cakes">Cakes</option>
+                    <option value="fan">Fan</option>
+                    <option value="raw materials">Raw materials </option>
+                    <option value="skincare">Skincare</option>
+                    <option value="soap">Soap</option>
+                    <option value="perfume">Perfume</option>
+                    <option value="drinks">Drinks</option>
+                    <option value="home accessories">Home accessories</option>
+                    <option value="stationery">Stationery</option>
+                    <option value="snacks">Snacks</option>
+                    <option value="cakes">Cakes</option>
+                    <option value="fastfood">Fastfood</option>
+                    <option value="haircare">Haircare</option>
+                    <option value="books">Books</option>
+                    <option value="barbing">Barbing</option>
+                    <option value="hair Styling">Hairstyling</option>
+                    <option value="graphics">Graphics</option>
+                    <option value="delivery">Delivery</option>
+                    <option value="massage">Massage</option>
+                    <option value="fashion design">Fashion design</option>
+                    <option value="photography">Photography</option>
+                    <option value="videography/animations">Videography/Animations</option>
+                    <option value="laundry">Laundry</option>
+                    <option value="surprise packages">Surprise packages</option>
+                    <option value="hardware repairs">Hardware Repairs</option>
+                    <option value="printing">Printing</option>
+                    <option value="writing">Writing</option>
+                    <option value="content creation">Content creation</option>
+                    <option value="artwork">Artwork</option>
+                    <option value="lingerie">Lingerie</option>
+                    <option value="tutorials">Tutorials</option>
+                    <option value="housing">Housing</option>
                             </select>
                         </div>
                     </div>
