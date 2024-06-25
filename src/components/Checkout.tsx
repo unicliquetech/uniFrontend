@@ -354,16 +354,21 @@ const SummaryStep: React.FC<SummaryStepProps> = ({
 
 
   useEffect(() => {
-    const fetchCartItems = async () => {
+    const fetchCartData = async () => {
       try {
-        const response = await axios.get<CartItem[]>('https://unibackend.onrender.com/api/v1/cart');
-        setCartItems(response.data); // Update the cartItems state
+        const cartId = localStorage.getItem('cartId');
+        
+        const response = await axios.post('https://unibackend.onrender.com/api/v1/cart/items', {
+          cartId: cartId
+        });
+        
+        setCartItems(response.data);
       } catch (error) {
-        console.error('Error fetching cart items:', error);
+        console.error('Error fetching cart data:', error);
       }
     };
-
-    fetchCartItems();
+  
+    fetchCartData();
   }, []);
 
   const handleDeliveryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
