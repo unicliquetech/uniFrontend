@@ -36,11 +36,16 @@ interface VendorPageProps {
 
 const VendorPage: React.FC<VendorPageProps> = ({ vendor }) => {
   const router = useRouter();
+  const [fullImage, setFullImage] = useState<string | null>(null);
   const [newReview, setNewReview] = useState<Review>({
     userName: '',
     rating: 0,
     comment: '',
   });
+
+  const handleImageClick = (imageUrl: string) => {
+    setFullImage(imageUrl);
+  };
 
 
   const handleReviewChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -130,6 +135,7 @@ const VendorPage: React.FC<VendorPageProps> = ({ vendor }) => {
                   className={styles.productImage}
                   src={product.image}
                   alt={product.name}
+                  onClick={() => handleImageClick(product.image)}
                 />
                 <div className={styles.productDetails}>
                   <h3 className={styles.productName}>{product.name}</h3>
@@ -137,7 +143,7 @@ const VendorPage: React.FC<VendorPageProps> = ({ vendor }) => {
                     {product.description}
                   </p>
                   <p className={styles.productPrice}>
-                    ₦{product.price.toFixed(2)}
+                    ₦{product.price}
                   </p>
                 </div>
               </div>
@@ -189,7 +195,6 @@ const VendorPage: React.FC<VendorPageProps> = ({ vendor }) => {
 
 
           <form onSubmit={handleReviewSubmit} className={styles.reviewForm}>
-            {/* <form className={styles.reviewForm}> */}
             <h3 className={styles.formTitle}>Add a Review</h3>
             <div className={styles.formGroup}>
               <label htmlFor="userName" className={styles.formLabel}>
@@ -244,6 +249,12 @@ const VendorPage: React.FC<VendorPageProps> = ({ vendor }) => {
       <footer className='footer bg-red-900'>
         <Footer />
       </footer>
+
+      {fullImage && (
+        <div className={styles.fullImageOverlay} onClick={() => setFullImage(null)}>
+          <img src={fullImage} alt="Full size image" className={styles.fullImage} />
+        </div>
+      )}
     </div>
   );
 };
