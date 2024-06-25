@@ -9,6 +9,7 @@ import ProPage from '@/components/homePage/proPage'
 import Footer from '@/components/productPage/Footer';
 import Service from '@/components/homePage/service';
 import FeaturedPro from '@/components/homePage/featuredPro';
+import ProReav from '@/components/homePage/proReav';
 // import { motion, useViewportScroll, useTransform } from "framer-motion";
 const HomePage = () => {
   return (
@@ -22,6 +23,7 @@ const HomePage = () => {
      <ProPage />
      <Service />
      <FeaturedPro />
+     <ProReav />
      <Footer />
     </div>
   );

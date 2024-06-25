@@ -11,6 +11,7 @@ const ProPage = lazy(() => import('@/components/homePage/proPage'));
 const Footer = lazy(() => import('@/components/productPage/Footer'));
 const Service = lazy(() => import('@/components/homePage/service'));
 const FeaturedPro = lazy(() => import('@/components/homePage/featuredPro'));
+const ProReav = lazy(() => import('@/components/homePage/proReav'));
 
 const HomePage = () => {
   return (
@@ -25,6 +26,7 @@ const HomePage = () => {
         <ProPage />
         <Service />
         <FeaturedPro />
+        <ProReav />
         <Footer />
       </Suspense>
     </div>
