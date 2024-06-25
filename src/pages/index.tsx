@@ -4,14 +4,14 @@ import { Suspense, lazy } from 'react';
 const Header = lazy(() => import('@/components/homePage/header'));
 const Category = lazy(() => import('@/components/homePage/category'));
 const Hero = lazy(() => import('@/components/homePage/hero'));
-const Stat = lazy(() => import('@/components/homePage/stat'));
+// const Stat = lazy(() => import('@/components/homePage/stat'));
 const Product = lazy(() => import('@/components/homePage/product'));
 const Why = lazy(() => import('@/components/homePage/why'));
-const ProPage = lazy(() => import('@/components/homePage/proPage'));
+// const ProPage = lazy(() => import('@/components/homePage/proPage'));
 const Footer = lazy(() => import('@/components/productPage/Footer'));
 const Service = lazy(() => import('@/components/homePage/service'));
 const FeaturedPro = lazy(() => import('@/components/homePage/featuredPro'));
-const ProReav = lazy(() => import('@/components/homePage/proReav'));
+// const ProReav = lazy(() => import('@/components/homePage/proReav'));
 
 const HomePage = () => {
   return (
@@ -20,13 +20,13 @@ const HomePage = () => {
         <Header />
         <Category />
         <Hero />
-        <Stat />
+        {/* <Stat /> */}
         <Product />
         <Why />
-        <ProPage />
+        {/* <ProPage /> */}
         <Service />
         <FeaturedPro />
-        <ProReav />
+        {/* <ProReav /> */}
         <Footer />
       </Suspense>
     </div>
