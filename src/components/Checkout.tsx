@@ -28,7 +28,7 @@ function showCustomAlert(message: string) {
 
   setTimeout(() => {
     document.body.removeChild(alertContainer);
-  }, 100000); // Adjust the duration (in milliseconds) to control how long the alert should be displayed
+  }, 100000);
 }
 
 interface CartItem {
@@ -59,10 +59,9 @@ interface AddressStepProps {
 
 const AddressStep: React.FC<AddressStepProps> = ({ selectedAddress, setSelectedAddress, onAddressSelect }) => {
   const [addresses, setAddresses] = useState<Address[]>([]);
-  // const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [newAddress, setNewAddress] = useState<Address>({
     _id: '',
-    id: 1, // You may want to initialize this with a reasonable value or remove it
+    id: 1,
     location: '',
     university: '',
     city: '',
@@ -73,7 +72,6 @@ const AddressStep: React.FC<AddressStepProps> = ({ selectedAddress, setSelectedA
 
   interface DecodedToken {
     userId: string;
-    // Add any other properties present in the decoded token
   }
 
   const getAuthHeaders = () => {
@@ -305,7 +303,6 @@ const AddressStep: React.FC<AddressStepProps> = ({ selectedAddress, setSelectedA
           >
             Add Address
           </button>
-          {/* <LoginPopup isOpen={showLoginPopup} onClose={handleCloseLoginPopup} /> */}
         </div>
       </div>
     </div>
@@ -357,17 +354,17 @@ const SummaryStep: React.FC<SummaryStepProps> = ({
     const fetchCartData = async () => {
       try {
         const cartId = localStorage.getItem('cartId');
-        
+
         const response = await axios.post('https://unibackend.onrender.com/api/v1/cart/items', {
           cartId: cartId
         });
-        
+
         setCartItems(response.data);
       } catch (error) {
         console.error('Error fetching cart data:', error);
       }
     };
-  
+
     fetchCartData();
   }, []);
 
@@ -375,7 +372,7 @@ const SummaryStep: React.FC<SummaryStepProps> = ({
     const newDeliveryMethod = event.target.value as DeliveryOption;
     setSelectedDeliveryMethod(newDeliveryMethod);
     if (newDeliveryMethod === 'schedule') {
-      setSelectedDate(null); // Reset the selected date when switching to schedule delivery
+      setSelectedDate(null);
     }
   };
 
@@ -509,12 +506,12 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
   const sendWhatsAppNotification = (vendorWhatsappNumber: string, notificationMessage: string) => {
     const encodedMessage = encodeURIComponent(notificationMessage);
     const whatsappUrl = `https://wa.me/${vendorWhatsappNumber}?text=${encodedMessage}`;
-  
+
     try {
       window.open(whatsappUrl, '_blank', "noopener noreferrer");
     } catch (error) {
       console.error('Error opening WhatsApp:', error);
-  
+
       const smsUrl = `sms://${vendorWhatsappNumber}?body=${encodedMessage}`;
       window.open(smsUrl, '_blank');
     }
@@ -551,51 +548,54 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
     };
   };
 
-    const handleSendMoney = async () => {
-      const token = localStorage.getItem('token');
-  if (!token) {
-    throw new Error('Token not found');
-  }
-  const decodedToken = jwt.decode(token) as DecodedToken | null;
-  if (!decodedToken) {
-    showCustomAlert("Please proceed to re-login, as your session has expired.");
-    window.location.href = '/login';
-    throw new Error('Invalid token');
-  }
-  const userId = decodedToken?.userId;
+  const handleSendMoney = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('Token not found');
+    }
+    const decodedToken = jwt.decode(token) as DecodedToken | null;
+    if (!decodedToken) {
+      showCustomAlert("Please proceed to re-login, as your session has expired.");
+      window.location.href = '/login';
+      throw new Error('Invalid token');
+    }
+    const userId = decodedToken?.userId;
 
-  try {
-    console.log('user id sent:', userId);
-    const orderData = {
-      userId,
-      items: cartItems,
-      selectedAddress,
-      selectedDeliveryMethod,
-      selectedDate,
-      serviceCharge,
-      deliveryFee,
-    };
+    try {
+      const orderData = {
+        userId,
+        items: cartItems,
+        selectedAddress,
+        selectedDeliveryMethod,
+        selectedDate,
+        serviceCharge,
+        deliveryFee,
+      };
 
-    const response = await axios.post(
-      'https://unibackend.onrender.com/api/v1/order/',
-      orderData,
-      getAuthHeaders()
-    );
-    
+      const response = await axios.post(
+        'https://unibackend.onrender.com/api/v1/order/',
+        orderData,
+        getAuthHeaders()
+      );
+
       if (response.status === 201) {
         // Order created successfully
-        console.log('Order created:', response.data);
-          const vendorWhatsappNumber = response.data.vendorWhatsAppNumber;
-          // const vendorWhatsappNumber = '09125740495';
-          console.log('Vendor number:', vendorWhatsappNumber)
-    
-          // Construct the notification message
-          const notificationMessage = `Hi,I've sent the money./n/nMy cart items are: ${cartItems.map(
-            (item) => `${item.name} (Quantity: ${item.quantity})`
-          ).join(', ')}/n/nThe total cost is: ${response.data.order.total}./nThe delivery time is: ${response.data.order.deliveryTime} minutes.`;
-    
-          // Send the WhatsApp notification
-          sendWhatsAppNotification(vendorWhatsappNumber, notificationMessage);
+        // const vendorWhatsappNumber = response.data.vendorWhatsAppNumber;
+        const vendorWhatsappNumber = '09125740495';
+
+        // Construct the notification message
+        const notificationMessage = `Hi,
+          I've sent the money.
+
+          My cart items are: ${cartItems.map(item => `${item.name} (Quantity: ${item.quantity})`).join(', ')}
+
+          The total cost is: ${response.data.order.total}.
+          The delivery time is: ${response.data.order.deliveryTime} minutes.
+          The delivery address is: ${response.data.order.deliveryAddress}.
+          The order ID is: ${response.data.order.orderId}.`;
+
+        // Send the WhatsApp notification
+        sendWhatsAppNotification(vendorWhatsappNumber, notificationMessage);
       } else {
         console.error('Failed to create order:', response.data);
       }
@@ -603,7 +603,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
       console.error('Error adding product to cart:', error);
     }
 
-    };
+  };
 
   return (
     <div>

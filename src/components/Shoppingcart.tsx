@@ -243,80 +243,93 @@ const ShoppingCart = () => {
         </header>
 
         <h2 className="text-2xl font-bold mb-6 text-center font-poppins">My Cart</h2>
-        <table className="w-full table-auto">
-          <thead>
-            <tr className="bg-white-200 border-b border-red-800 py-2 px-4">
-              <th className="px-4 py-6 text-left">PRODUCT</th>
-              <th className="px-4 py-2 text-left">PRICE</th>
-              <th className="px-4 py-2 text-left">QTY</th>
-              <th className="px-4 py-2 text-left">TOTAL</th>
-            </tr>
-          </thead>
+        <table className="carttable w-full">
+        <thead className="cartTableHead">
+          <tr className="tableheaddiv bg-white-200 border-b border-red-800 py-2 px-4">
+            <th className="tablehead px-4 py-6 text-left">PRODUCT</th>
+            <th className="tablehead px-4 py-2 text-left">PRICE</th>
+            <th className="tablehead px-4 py-2 text-left">QTY</th>
+            <th className="tablehead px-4 py-2 text-left">TOTAL</th>
+          </tr>
+        </thead>
           <tbody>
             {cartItems.map((item, index) => (
-              <tr key={index} className="border-b border-red-800">
-                <td className="px-4 py-2 flex items-center">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-16 h-16 object-contain mr-4"
-                  />
-                  <div>
-                    <p className="font-semibold productName">{item.name}</p>
-                    {item.productId && (
-                      <p className="text-gray-500 font-100 productId">#{item.productId}</p>
-                    )}
-                    {item.colors && (
-                      <p className="text-gray-500 productColor">Color: {item.colors.join(', ')}</p>
-                    )}
-                  </div>
-                </td>
-                <td className="px-4 py-2 align-top productPrice">₦{item.price.toLocaleString()}</td>
-                <td className="px-4 py-2 align-top quantitydiv">
-                  <button
-                    className="bg-gray-200 hover:bg-gray-300 text-red-800 font-bold py-1 px-2 rounded-l"
-                    onClick={() => handleQuantityChange(item.productId, item.quantity - 1)}
-                    disabled={item.quantity === 1}
-                  >
-                    -
-                  </button>
-                  <span className="mx-1">{item.quantity}</span>
-                  <button
-                    className="bg-gray-200 hover:bg-gray-300 text-red-800 font-bold py-1 px-2 rounded-r"
-                    onClick={() => handleQuantityChange(item.productId, item.quantity + 1)}
-                  >
-                    +
-                  </button>
-                </td>
-
-                <td className="px-4 py-2 align-top relative">
-                  <div className="mobilediv">
-                        <p>₦{item.price * item.quantity}</p>
-                    <div className="px-4 py-2 align-top quantitybtn">
-                      <button
-                        className=" py-1 px-2 rounded-l qtybtn"
-                        onClick={() => handleQuantityChange(item.productId, item.quantity - 1)}
-                        disabled={item.quantity === 1}
-                      >
-                        -
-                      </button>
-                      <span className="mx-1">{item.quantity}</span>
-                      <button
-                        className=" py-1 px-2 rounded-r qtybtn"
-                        onClick={() => handleQuantityChange(item.productId, item.quantity + 1)}
-                      >
-                        +
-                      </button>
-                    </div>
-                    <button
-                      className="absolute top-0 right-0 text-red-800 hover:text-red-600 xmark"
-                      onClick={() => handleRemoveFromCart(item.productId)}
-                    >
-                      &times;
-                    </button>
-                  </div>
-                </td>
-              </tr>
+               <tr key={index} className="tableheaddiv border-b border-red-800">
+               <td className="tablecontent px-4 py-2 flex items-center">
+                 <img
+                   src={item.image}
+                   alt={item.name}
+                   className="w-16 h-16 object-contain mr-4"
+                 />
+                 <div>
+                   <p className="font-semibold productName">{item.name}</p>
+                   {item.productId && (
+                     <p className="text-gray-500 font-100 productId">
+                       #{item.productId}
+                     </p>
+                   )}
+                   {item.colors && (
+                     <p className="text-gray-500 productColor">
+                       Color: {item.colors.join(", ")}
+                     </p>
+                   )}
+                 </div>
+               </td>
+               <td className="px-4 py-2 pricediv">
+                 ₦{item.price.toLocaleString()}
+               </td>
+               <td className="hidden sm:table-cell">
+                 <button
+                   className="bg-gray-200 hover:bg-gray-300 text-red-800 font-bold py-1 px-2 rounded-l"
+                   onClick={() =>
+                     handleQuantityChange(item.productId, item.quantity - 1)
+                   }
+                   disabled={item.quantity === 1}
+                 >
+                   -
+                 </button>
+                 <span className="mx-1">{item.quantity}</span>
+                 <button
+                   className="bg-gray-200 hover:bg-gray-300 text-red-800 font-bold py-1 px-2 rounded-r"
+                   onClick={() =>
+                     handleQuantityChange(item.productId, item.quantity + 1)
+                   }
+                 >
+                   +
+                 </button>
+               </td>
+               <td className="tablecontent relative">
+                 <div className="mobilediv flex">
+                   <p className="mobiledivTotal">₦{itemTotals[index].toLocaleString()}</p>
+                   <div className="sm:hidden ml-10 hiddenqtybtn">
+                     <button
+                       className="py-1 px-2 rounded-l qtybtn"
+                       onClick={() =>
+                         handleQuantityChange(item.productId, item.quantity - 1)
+                       }
+                       disabled={item.quantity === 1}
+                     >
+                       -
+                     </button>
+                     <span className="mx-1">{item.quantity}</span>
+                     <button
+                       className="py-1 px-2 rounded-r qtybtn"
+                       onClick={() =>
+                         handleQuantityChange(item.productId, item.quantity + 1)
+                       }
+                     >
+                       +
+                     </button>
+                   </div>
+                   <button
+                     className="absolute right-0 text-red-800 hover:text-red-600 xmark"
+                     onClick={() => handleRemoveFromCart(item.productId)}
+                   >
+                     &times;
+                   </button>
+                 </div>
+               </td>
+             </tr>
             ))}
           </tbody>
         </table>
