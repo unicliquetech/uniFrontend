@@ -9,6 +9,8 @@ import Product from '@/components/homePage/product'
 import Footer from '@/components/productPage/Footer';
 import Service from '@/components/homePage/service';
 import FeaturedPro from '@/components/homePage/featuredPro';
+import Offer from '@/components/homePage/offer';
+import Faq from '@/components/homePage/faq';
 // import ProReav from '@/components/homePage/proReav';
 // import { motion, useViewportScroll, useTransform } from "framer-motion";
 const HomePage = () => {
@@ -23,6 +25,8 @@ const HomePage = () => {
      {/* <ProPage /> */}
      <Service />
      <FeaturedPro />
+     <Offer />
+     <Faq />
      {/* <ProReav /> */}
      <Footer />
     </div>

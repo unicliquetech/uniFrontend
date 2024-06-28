@@ -1,17 +1,13 @@
-import React from "react";
+import React from "react"
+import logo from '../../images/logo.svg'
+import Image from "next/image";
 
 const Footer = () => {
   return (
-    <footer className="bg-[#590209] text-white py-8 px-4">
+    <footer className="bg-white text-[#590209] mt-[2rem] py-8 px-4">
       <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
         <div className="flex flex-col items-start md:items-start">
-          <img
-            src="https://res.cloudinary.com/daqlpvggg/image/upload/v1717040777/logo3_zd01wc.png"
-            alt="Uniclique"
-            width={50}
-            height={30}
-            className="mb-4"
-          />
+          <Image src={logo} alt="" className="mb-3"/>
           <ul className="space-y-2">
             <li>About Us</li>
             <li>FAQs</li>
