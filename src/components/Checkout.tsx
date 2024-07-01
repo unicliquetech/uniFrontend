@@ -778,7 +778,7 @@ const Checkout = () => {
 
           <header className="flex justify-between items-center bg-white py-4 px-4 sm:px-6 lg:px-8">
             <div className="flex items-center">
-              <img src="/images/logo1.png" alt="Uniclique" className="h-6 mr-2 sm:h-8" />
+            <a href='/'><img src="/images/logo1.png" alt="Uniclique" className="h-6 mr-2 sm:h-8" /></a>
               <h1 className="text-xl mr-6  font-bold text-red-900 sm:text-2xl">Uniclique</h1>
             </div>
             <div className="flex items-center">
@@ -1015,7 +1015,7 @@ const Checkout = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 <div>
                   <div className="flex items-center">
-                    <img src="https://res.cloudinary.com/daqlpvggg/image/upload/v1717040777/logo3_zd01wc.png" alt="Uniclique" className="h-16 mr-2" />
+                  <a href='/'><img src="https://res.cloudinary.com/daqlpvggg/image/upload/v1717040777/logo3_zd01wc.png" alt="Uniclique" className="h-16 mr-2" /></a>
                   </div>
                   <span className="text-white mt-4 mb-2">
                     Join our newsletters to stay up to date on features and releases

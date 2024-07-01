@@ -36,9 +36,9 @@ const Header: React.FC<HeaderProps> = ({
     <header className="header">
       <div className="headerbar flex justify-between items-center bg-white py-4 px-4 sm:px-6 lg:px-8">
         <div className="logo">
-          <div className="logo">
+          <a href='/' className="logo">
             <img src={logo.src} alt="Uniclique" className="w-10" width={logo.width} height={logo.height} />
-          </div>
+          </a>
         </div>
         <div className="search relative mr-2 sm:mr-4 sm:flex w-60">
           <input 

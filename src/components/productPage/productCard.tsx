@@ -33,6 +33,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
     const [isAdded, setIsAdded] = useState(false);
     const [showFullImage, setShowFullImage] = useState(false);
     const displayPrice = discountPrice || price;
+    console.log("display:", price);
     const discountPercentage = discountPrice
         ? Number(((price - discountPrice) / price * 100).toFixed(1))
         : 0;
@@ -84,6 +85,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
         }
     };
 
+    function formatNumberWithCommas(number: number): string {
+        return number.toLocaleString('en-US');
+      }
+
     const handleImageClick = () => {
         setShowFullImage(true);
     };
@@ -111,8 +116,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
                                         <b>{truncateName(name)}</b>
                                     </p>
                                     <p className={styles.price}>
-                                        ₦{displayPrice}
-                                        {discountPrice && (
+                                        ₦{formatNumberWithCommas(displayPrice)}
+                                        {discountPercentage > 0 && (
                                             <span className={styles.originalPrice}>₦{price}</span>
                                         )}
                                     </p>

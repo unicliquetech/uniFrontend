@@ -116,9 +116,9 @@ const VendorPage: React.FC<VendorPageProps> = ({ vendor }) => {
   return (
     <div className='w-full mt-4 '>
       <div className={styles.header}>
-        <div>
+        <a href='/'>
           <Image src={logo} alt={name} className={styles.logo} />
-        </div>
+        </a>
         <a href='/vendorSignup'> <b>Sell with Uniclique </b> </a>
       </div>
       <HeroSection name={name} description={description} rating={rating} />
