@@ -35,7 +35,6 @@ const Homepage = () => {
                         body: JSON.stringify({ vendorEmail }),
                     });
                     const data = await response.json();
-                    console.log('vendor data:', data.vendor.ownerName);
                     setVendor(data.vendor);
                 }
             } catch (error) {
@@ -191,6 +190,9 @@ const Homepage = () => {
                             <p className='text-white text-[17px]'>Total Product</p>
                             <select name="date" id="date" className='p-1 border-[1px] border-gray-400 focus:outline-none bg-[#8C3926] text-white'>
                                 <option>May 2024</option>
+                                <option>June 2024</option>
+                                <option>July 2024</option>
+                                <option>August 2024</option>
                             </select>
                         </div>
                     </div>

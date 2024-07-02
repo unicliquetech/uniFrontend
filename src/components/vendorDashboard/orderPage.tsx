@@ -48,7 +48,7 @@ const OrderStatusDropdown: React.FC<OrderStatusDropdownProps> = ({
   };
 
   return (
-    <div className="relative">
+    <div className="w-[100%] relative">
       <select
         value={status}
         onChange={(e) => handleStatusChange(e.target.value)}

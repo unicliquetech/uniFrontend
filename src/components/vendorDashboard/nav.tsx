@@ -34,7 +34,6 @@ const Nav: React.FC<NavProps> = ({ toggleMobileVisibility }) => {
                         body: JSON.stringify({ vendorEmail }),
                     });
                     const data = await response.json();
-                    console.log('vendor data:', data.vendor.businessName);
                     setVendor(data.vendor);
                 }
             } catch (error) {
