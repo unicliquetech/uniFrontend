@@ -96,18 +96,6 @@ const Order = () => {
     const [activeTab, setActiveTab] = useState('All');
     const [isMobileVisible, setIsMobileVisible] = useState<boolean>(false);
     const [order, setOrder] = useState<Order[]>([]);
-    // const [order, setOrder] = useState
-    //     ({
-    //         orderId: '', email: '',
-    //         // productName: "",
-    //         userId: "",
-    //         location: '',
-    //         orderDate: "",
-    //         orderType: "Product",
-    //         time: "Just Now",
-    //         price: '',
-    //         orderStatus: ''
-    //     });
 
     interface OrderItem {
         name: string;
@@ -129,7 +117,6 @@ const Order = () => {
                         body: JSON.stringify({ vendorEmail }),
                     });
                     const data = await response.json();
-                    console.log('vendor order:', data.orders);
                     setOrder(data.orders);
                 }
             } catch (error) {
