@@ -11,6 +11,8 @@ const Why = lazy(() => import('@/components/homePage/why'));
 const Footer = lazy(() => import('@/components/productPage/Footer'));
 const Service = lazy(() => import('@/components/homePage/service'));
 const FeaturedPro = lazy(() => import('@/components/homePage/featuredPro'));
+const Offer = lazy(() => import('@/components/homePage/offer'));
+const Faq = lazy(() => import('@/components/homePage/faq'));
 // const ProReav = lazy(() => import('@/components/homePage/proReav'));
 
 const HomePage = () => {
@@ -26,6 +28,8 @@ const HomePage = () => {
         {/* <ProPage /> */}
         <Service />
         <FeaturedPro />
+        <Offer />
+        <Faq />
         {/* <ProReav /> */}
         <Footer />
       </Suspense>
