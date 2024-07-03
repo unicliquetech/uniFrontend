@@ -10,7 +10,11 @@ interface Product {
   name: string;
   price: number;
   image: string;
+  discountPrice?: number;
   description: string;
+  productId: string;
+  deliveryTime: number;
+  isAdded: boolean;
 }
 
 interface Review {
@@ -26,8 +30,8 @@ interface VendorData {
   products: Product[];
   reviews: Review[];
   description: string;
-  address: string;
-  contact: string;
+  location: string;
+  phoneNumber: string;
 }
 
 interface VendorPageProps {
@@ -36,6 +40,10 @@ interface VendorPageProps {
 
 const VendorPage: React.FC<VendorPageProps> = ({ vendor }) => {
   const router = useRouter();
+  const { name, rating, reviews, image, description, location, phoneNumber } = vendor;
+  const [isAdded, setIsAdded] = useState(false);
+  const [products, setProducts] = useState<Product[]>(vendor.products);
+  const [showFullImage, setShowFullImage] = useState(false);
   const [fullImage, setFullImage] = useState<string | null>(null);
   const [newReview, setNewReview] = useState<Review>({
     userName: '',
@@ -62,7 +70,6 @@ const VendorPage: React.FC<VendorPageProps> = ({ vendor }) => {
     try {
       const businessName = router.query.businessName as string;
       const { rating, comment } = newReview;
-      console.log(newReview.rating);
 
       // Check if the token is available and not expired
       const email = localStorage.getItem('email');
@@ -111,7 +118,41 @@ const VendorPage: React.FC<VendorPageProps> = ({ vendor }) => {
     return <div className={styles.container}>Loading...</div>;
   }
 
-  const { name, rating, products, reviews, image, description, address, contact } = vendor;
+const handleAddToCart = async (product: Product) => {
+  try {
+      const cartId = localStorage.getItem('cartId');
+      const response = await fetch('https://unibackend.onrender.com/api/v1/cart', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            cartId,
+            productId: product.productId,
+            quantity: 1,
+            image: product.image,
+            name: product.name,
+            price: product.discountPrice || product.price,
+            deliveryTime: product.deliveryTime,
+                        }),
+      });
+
+      if (response.ok) {
+          const cartId = await response.json();
+          localStorage.setItem('cartId', cartId);
+          // Update the specific product's isAdded property
+      const updatedProducts = products.map(p => 
+        p.productId === product.productId ? { ...p, isAdded: true } : p
+      );
+      // You'll need to add a state for products if you haven't already
+      setProducts(updatedProducts);
+      } else {
+          console.error('Failed to add product to cart');
+      }
+  } catch (error) {
+      console.error('Error adding product to cart:', error);
+  }
+};
 
   return (
     <div className='w-full mt-4 '>
@@ -120,8 +161,11 @@ const VendorPage: React.FC<VendorPageProps> = ({ vendor }) => {
           <Image src={logo} alt={name} className={styles.logo} />
         </a>
         <a href='/vendorSignup'> <b>Sell with Uniclique </b> </a>
+        <button className="bg-transparent border-none cursor-pointer mr-4">
+            <a href='/cartPage'><img src="https://res.cloudinary.com/daqlpvggg/image/upload/v1717107545/Frame_13_mmlp5r.svg" alt="Cart" className="w-6" width={100} height={50}/></a>
+          </button>
       </div>
-      <HeroSection name={name} description={description} rating={rating} />
+      <HeroSection name={name} description={description} rating={rating} phoneNumber={phoneNumber} location={location}/>
 
       <div className={styles.products}>
         <h2 className={styles.sectionTitle}>Products</h2>
@@ -143,8 +187,18 @@ const VendorPage: React.FC<VendorPageProps> = ({ vendor }) => {
                     {product.description}
                   </p>
                   <p className={styles.productPrice}>
-                    ₦{product.price}
+                    ₦{product.discountPrice || product.price}
                   </p>
+                  <button 
+                    className={styles.addToCartButton} 
+                    onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                      e.preventDefault();
+                      handleAddToCart(product);
+                    }} 
+                    disabled={product.isAdded}
+                  >
+                    {product.isAdded ? 'Added to Cart' : 'Add to Cart'}
+                  </button>
                 </div>
               </div>
             ))

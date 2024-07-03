@@ -19,6 +19,18 @@ interface Product {
 
 interface ProductCardProps extends Product { }
 
+function formatDeliveryTime(minutes: number): string {
+    if (minutes >= 2880) {
+      const days = Math.floor(minutes / 1440);
+      return `${days} day${days > 1 ? 's' : ''}`;
+    } else if (minutes >= 60) {
+      const hours = Math.floor(minutes / 60);
+      return `${hours} hour${hours > 1 ? 's' : ''}`;
+    } else {
+      return `${minutes} minute${minutes > 1 ? 's' : ''}`;
+    }
+  }
+
 const ProductCard: React.FC<ProductCardProps> = ({
     image,
     name,
@@ -33,7 +45,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
     const [isAdded, setIsAdded] = useState(false);
     const [showFullImage, setShowFullImage] = useState(false);
     const displayPrice = discountPrice || price;
-    console.log("display:", price);
     const discountPercentage = discountPrice
         ? Number(((price - discountPrice) / price * 100).toFixed(1))
         : 0;
@@ -55,15 +66,19 @@ const ProductCard: React.FC<ProductCardProps> = ({
         return result.trim() + (result.length < name.length ? '...' : '');
     }
 
+    const formattedDeliveryTime = formatDeliveryTime(parseInt(deliveryTime));
+
 
     const handleAddToCart = async () => {
         try {
+            const cartId = localStorage.getItem('cartId');
             const response = await fetch('https://unibackend.onrender.com/api/v1/cart', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
+                    cartId,
                     productId,
                     quantity: 1,
                     image,
@@ -74,7 +89,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
             });
 
             if (response.ok) {
-                const { cartId } = await response.json();
+                const cartId = await response.json();
+                console.log("Cart:", cartId);
                 localStorage.setItem('cartId', cartId);
                 setIsAdded(true);
             } else {
@@ -122,7 +138,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                                         )}
                                     </p>
                                 </div>
-                                <p>{deliveryTime} minutes</p>
+                                <p><p>{formattedDeliveryTime}</p></p>
                                 <div className={styles.deliveryData}>
                                     <p>{deliveryNote}</p>
                                     <div className={styles.rating}>

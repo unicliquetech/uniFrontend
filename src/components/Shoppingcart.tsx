@@ -27,9 +27,15 @@ const ShoppingCart = () => {
           cartId: cartId
         });
         
-        setCartItems(response.data);
+        if (response.data && Array.isArray(response.data.items)) {
+          setCartItems(response.data.items);
+        } else {
+          console.error('Unexpected response format:', response.data);
+          setCartItems([]);
+        }
       } catch (error) {
         console.error('Error fetching cart data:', error);
+        setCartItems([]);
       }
     };
   
@@ -40,12 +46,6 @@ const ShoppingCart = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  // const deliveryPrice = (400);
-  // const productTotals = cartItems.map(item => ({
-  //   ...item,
-  //   itemTotal: item.price * item.quantity
-  // }));
-
   const itemTotals = cartItems.map(item => item.price * item.quantity);
   const total = itemTotals.reduce((acc, itemTotal) => acc + itemTotal, 0);
   const subtotal = total;
@@ -54,7 +54,9 @@ const ShoppingCart = () => {
 
   const handleQuantityChange = async (productId: string, newQuantity: number) => {
     try {
-      const response = await axios.put(`https://unibackend.onrender.com/api/v1/cart/${productId}`, { quantity: newQuantity });
+      const cartId = localStorage.getItem('cartId');
+
+      const response = await axios.put(`https://unibackend.onrender.com/api/v1/cart/${productId}`, { quantity: newQuantity, cartId });
       const updatedCartItems = cartItems.map((item) =>
         item.productId === productId ? { ...item, quantity: response.data.quantity } : item
       );
@@ -65,8 +67,12 @@ const ShoppingCart = () => {
   };
 
   const handleRemoveFromCart = async (productId: string) => {
+
     try {
-      await axios.delete(`https://unibackend.onrender.com/api/v1/cart/${productId}`);
+      const cartId = localStorage.getItem('cartId');
+      const response = await axios.delete(`https://unibackend.onrender.com/api/v1/cart/${productId}`, {
+        data: { cartId }
+      });
 
       // Filter out the removed product from the cartItems state
       const updatedCartItems = cartItems.filter((item) => item.productId !== productId);

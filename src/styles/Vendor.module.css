@@ -113,6 +113,17 @@ hyphens: auto;
   object-fit: contain;
 }
 
+.addToCartButton{
+  background-color: #590209;
+  color: #fff;
+  margin-left: 25%;
+  padding: 8px 18px;
+  border: #fff solid 2px;
+  border-radius: 6px;
+  margin-top: 10px;
+  margin-bottom: -10px;
+}
+
 
 .reviewSection {
   /* background: linear-gradient(to right, #f0f0f0, #e0e0e0); */

@@ -354,17 +354,23 @@ const SummaryStep: React.FC<SummaryStepProps> = ({
     const fetchCartData = async () => {
       try {
         const cartId = localStorage.getItem('cartId');
-
+        
         const response = await axios.post('https://unibackend.onrender.com/api/v1/cart/items', {
           cartId: cartId
         });
-
-        setCartItems(response.data);
+        
+        if (response.data && Array.isArray(response.data.items)) {
+          setCartItems(response.data.items);
+        } else {
+          console.error('Unexpected response format:', response.data);
+          setCartItems([]);
+        }
       } catch (error) {
         console.error('Error fetching cart data:', error);
+        setCartItems([]);
       }
     };
-
+  
     fetchCartData();
   }, []);
 

@@ -7,6 +7,8 @@ interface Product {
   image: string;
   price: number;
   description: string;
+  productId: string;
+  deliveryTime: number;
 }
 
 interface Review {
@@ -19,6 +21,8 @@ interface VendorData {
   name: string;
   description: string;
   rating: number;
+  location: string;
+  phoneNumber: string;
   products: Product[];
   reviews: Review[];
 }
@@ -37,11 +41,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       name: vendorData.vendor.businessName || '',
       rating: vendorData.vendor.rating || 0,
       description: vendorData.vendor.businessDescription || '',
+      location: vendorData.vendor.location || '',
+      phoneNumber: vendorData.vendor.phoneNumber || '',
       products: (vendorData.products || []).map((product: any) => ({
         name: product.name || '',
         image: product.image || '',
         price: product.price || 0,
         description: product.description || '',
+        productId: product.productId || '',
+        deliveryTime: product.deliveryTime || '',
       })),
       reviews: (vendorData.vendor.reviews || []).map((review: any) => ({
         userName: review.userName || null,
@@ -63,6 +71,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         vendor: {
           name: '',
           rating: 0,
+          location: '',
+          phoneNumber: '',
           products: [],
           reviews: [],
         },

@@ -19,6 +19,18 @@
     font-size: 1.2rem;
     margin-bottom: 2rem;
   }
+
+  .contact {
+    display: flex;
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    align-items: center;
+    justify-content: space-between;
+    justify-self: center;
+    width: 30%;
+    margin-left: 35%;
+  }
   
   .rating {
     font-size: 1.5rem;
@@ -42,10 +54,20 @@
     .rating {
       font-size: 1.2rem;
     }
+    .contact {
+      width: 70%;
+      margin-left: 10%;
+      font-size: 1rem;
+    }
   }
 
   @media (max-width: 320px) { 
     .hero_section {
       width: 120%;
+    }
+    .contact {
+      width: 70%;
+      margin-left: 5%;
+      font-size: 1rem;
     }
   }
