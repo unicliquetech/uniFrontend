@@ -16,14 +16,14 @@ interface ProductCardProps {
         discount?: number;
         sponsored: boolean;
     };
-    
+    onImageClick: (imageUrl: string) => void;
 }
 
 // interface ErrorType {
 //     message: string;
 // }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product,  onImageClick }) => {
     const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [fullImage, setFullImage] = useState<string | null>(null);
@@ -110,7 +110,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           )}
 
                 <img src={product.image} alt={product.name} className="w-full productImage h-48 object-cover rounded-t-lg"
-                    onClick={() => handleImageClick(product.image)} />
+                    onClick={() => onImageClick(product.image)} />
 
             <div className="p-4">
                 <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
@@ -144,6 +144,7 @@ interface ErrorType {
 const VendorProducts: React.FC = () => {
     const [products, setProducts] = useState([]);
     const [showFullImage, setShowFullImage] = useState(false);
+    const [fullImage, setFullImage] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<ErrorType | null>(null);
     const [selectedProduct, setSelectedProduct] = useState(null);
@@ -200,6 +201,10 @@ const VendorProducts: React.FC = () => {
         return pageNumbers;
     };
 
+    const handleImageClick = (imageUrl: string) => {
+        setFullImage(imageUrl);
+    };
+
     return (
         <main className='w-[100%] flex flex-col'>
             <div>
@@ -252,7 +257,7 @@ const VendorProducts: React.FC = () => {
                         <h2 className="text-xl font-semibold mb-4">Products</h2>
                         <div className="grid grid-cols-1 p-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                             {currentProducts.map((product, index) => (
-                                <ProductCard key={index} product={product} />
+                                <ProductCard key={index} product={product} onImageClick={handleImageClick} />
                             ))}
                         </div>
                         <div className="flex justify-center mt-8 mb-8">
@@ -277,6 +282,11 @@ const VendorProducts: React.FC = () => {
                     </div>
                 </div>
                  </div>
+                 {fullImage && (
+                <div className={styles.fullImageOverlay} onClick={() => setFullImage(null)}>
+                    <img src={fullImage} alt="Full size product" className={styles.fullImage} />
+                </div>
+            )}
         </main>
         
     );
