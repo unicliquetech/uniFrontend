@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import styles from '@/styles/Vendor.module.css';
 import AddProductModal from '@/components/vendorDashboard/addProductModal';
 import Nav from '@/components/vendorDashboard/nav';
 import Aside from '@/components/vendorDashboard/Aside';
@@ -25,6 +26,7 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [fullImage, setFullImage] = useState<string | null>(null);
     const [error, setError] = useState<ErrorType | null>(null);
     const [selectedProduct, setSelectedProduct] = useState<ProductCardProps['product'] | null>(null);
 
@@ -92,6 +94,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         }
       };
 
+      const handleImageClick = (imageUrl: string) => {
+        setFullImage(imageUrl);
+      };
+
     return (
         <div className="bg-white rounded-lg shadow-md relative">
             {product.sponsored && (
@@ -102,9 +108,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               {deletionMessage}
             </div>
           )}
-            <a href={`/product/${product.name.replace(/\s/g, '-').toLowerCase()}`}>
-                <img src={product.image} alt={product.name} className="w-full h-48 object-cover rounded-t-lg" />
-            </a>
+
+                <img src={product.image} alt={product.name} className="w-full productImage h-48 object-cover rounded-t-lg"
+                    onClick={() => handleImageClick(product.image)} />
+
             <div className="p-4">
                 <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
                 <p className="text-gray-600 mb-2">
@@ -136,6 +143,7 @@ interface ErrorType {
 
 const VendorProducts: React.FC = () => {
     const [products, setProducts] = useState([]);
+    const [showFullImage, setShowFullImage] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<ErrorType | null>(null);
     const [selectedProduct, setSelectedProduct] = useState(null);
@@ -206,6 +214,7 @@ const VendorProducts: React.FC = () => {
                         >
                             <b>+</b> Add Product
                         </button>
+                        
 
                         <AddProductModal
                             isOpen={isModalOpen}
@@ -267,8 +276,9 @@ const VendorProducts: React.FC = () => {
                         </div>
                     </div>
                 </div>
-            </div>
+                 </div>
         </main>
+        
     );
 };
 

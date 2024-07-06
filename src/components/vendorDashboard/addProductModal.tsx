@@ -317,6 +317,10 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
                   >
                     <option value="">Select Category</option>
+                    <option value="foodstuffs">Foodstuffs</option>
+                    <option value="provisions">Provisions</option>
+                    <option value="fruits">Fruits</option>
+                    <option value="jewelry & accessories">Jewelry & Accessories</option>
                     <option value="gadgets">Gadgets</option>
                     <option value="footwear">Footwear</option>
                     <option value="clothes">Clothes</option>
