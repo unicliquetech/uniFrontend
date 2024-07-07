@@ -621,7 +621,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
                       <div className="mt-4">
                         <h3 className="text-lg font-semibold mb-2">Select a color:</h3>
                         <div className="flex">
-                          {['red', 'green', 'blue', 'yellow', 'orange', 'purple', 'pink', 'brown', 'gray', 'black', 'white'].map(
+                          {['red', 'green', 'blue', 'yellow', 'orange', 'purple', 'pink', 'brown', 'gray', 'black', 'white', 'wine', 'gold', 'silver'].map(
                             (color) => (
                               <button
                                 key={color}
@@ -643,7 +643,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
                     <label htmlFor="deliveryTime" className="block font-semibold mb-1">
                       Delivery Time (minutes)
                     </label>
-                    <p className="text-gray-600 mt-1">How long will it take to package and prepare this product? (not more than 1 hour)</p>
+                    <p className="text-gray-600 mt-1">How long will it take to package and prepare this product? (in minutes)</p>
                     <input
                       type="number"
                       id="deliveryTime"
@@ -651,7 +651,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
                       onChange={(e) => setDeliveryTime(parseInt(e.target.value))}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
                       min={1}
-                      max={60}
+                      max={10080}
                     />
                   </div>
 
