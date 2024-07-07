@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import styles from '@/styles/Vendor.module.css';
@@ -50,6 +50,25 @@ const VendorPage: React.FC<VendorPageProps> = ({ vendor }) => {
     rating: 0,
     comment: '',
   });
+  const [showWhatsAppIcon, setShowWhatsAppIcon] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 300) {
+        setShowWhatsAppIcon(true);
+      } else {
+        setShowWhatsAppIcon(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleWhatsAppClick = () => {
+    const whatsappUrl = `https://wa.me/${phoneNumber}`;
+    window.open(whatsappUrl, '_blank');
+  };
 
   const handleImageClick = (imageUrl: string) => {
     setFullImage(imageUrl);
@@ -309,6 +328,21 @@ const handleAddToCart = async (product: Product) => {
           <img src={fullImage} alt="Full size image" className={styles.fullImage} />
         </div>
       )}
+
+      {showWhatsAppIcon && (
+        <div 
+          className={styles.whatsappIcon} 
+          onClick={handleWhatsAppClick}
+        >
+          <img 
+            src="https://res.cloudinary.com/daqlpvggg/image/upload/v1720351514/1200px-WhatsApp.svg_xaqyay.png" 
+            alt="WhatsApp" 
+            width={50} 
+            height={50}
+          />
+        </div>
+      )}
+
     </div>
   );
 };

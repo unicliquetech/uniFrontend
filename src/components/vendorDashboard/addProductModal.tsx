@@ -323,6 +323,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
                     <option value="jewelry & accessories">Jewelry & Accessories</option>
                     <option value="gadgets">Gadgets</option>
                     <option value="footwear">Footwear</option>
+                    <option value="bags">Bags</option>
                     <option value="clothes">Clothes</option>
                     <option value="cakes">Cakes</option>
                     <option value="fan">Fan</option>
