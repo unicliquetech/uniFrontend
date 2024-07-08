@@ -52,7 +52,7 @@ const Nav: React.FC<NavProps> = ({ toggleMobileVisibility }) => {
                 </div>
                 <div className='flex flex-col justify-start gap-1 lg:flex'>
                     <p className='md:text-[17px] text-[15px] font-bold'>Dashboard</p>
-                    <p className='md:text-[12.5px] text-[12px]'>11 May 2024, Saturday</p>
+                    {/* <p className='md:text-[12.5px] text-[12px]'>{Date.now()}</p> */}
                 </div>
                 <div className='max-w-3xl w-full lg:w-fit border-2 border-[#8B8A8] rounded-md justify-start gap-[5rem] flex p-2 mt-2 lg:mt-0 hidden lg:flex'>
                     <input type='text' className='focus:outline-none bg-[#8B8A8] placeholder:text-[13px] w-full' placeholder='search orders' />

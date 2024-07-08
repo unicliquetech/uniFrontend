@@ -5,7 +5,7 @@ import styles from '@/styles/Product.module.css';
 
 interface Product {
     _id: string;
-    image: string;
+    image: string | string[];
     name: string;
     price: number;
     discountPrice?: number;
@@ -21,15 +21,35 @@ interface ProductCardProps extends Product { }
 
 function formatDeliveryTime(minutes: number): string {
     if (minutes >= 2880) {
-      const days = Math.floor(minutes / 1440);
-      return `${days} day${days > 1 ? 's' : ''}`;
+        const days = Math.floor(minutes / 1440);
+        return `${days} day${days > 1 ? 's' : ''}`;
     } else if (minutes >= 60) {
-      const hours = Math.floor(minutes / 60);
-      return `${hours} hour${hours > 1 ? 's' : ''}`;
+        const hours = Math.floor(minutes / 60);
+        return `${hours} hour${hours > 1 ? 's' : ''}`;
     } else {
-      return `${minutes} minute${minutes > 1 ? 's' : ''}`;
+        return `${minutes} minute${minutes > 1 ? 's' : ''}`;
     }
-  }
+}
+
+function truncateName(name: string, maxWords = 3, maxChars = 25) {
+    const words = name.split(' ');
+    let result = '';
+    let wordCount = 0;
+
+    for (let word of words) {
+        if (wordCount >= maxWords || (result + word).length > maxChars) {
+            break;
+        }
+        result += (wordCount > 0 ? ' ' : '') + word;
+        wordCount++;
+    }
+
+    return result.trim() + (result.length < name.length ? '...' : '');
+}
+
+function formatNumberWithCommas(number: number): string {
+    return number.toLocaleString('en-US');
+}
 
 const ProductCard: React.FC<ProductCardProps> = ({
     image,
@@ -49,25 +69,20 @@ const ProductCard: React.FC<ProductCardProps> = ({
         ? Number(((price - discountPrice) / price * 100).toFixed(1))
         : 0;
 
+    // console.log('Received image prop:', image);
 
-    function truncateName(name: string, maxWords = 3, maxChars = 25) {
-        const words = name.split(' ');
-        let result = '';
-        let wordCount = 0;
-
-        for (let word of words) {
-            if (wordCount >= maxWords || (result + word).length > maxChars) {
-                break;
-            }
-            result += (wordCount > 0 ? ' ' : '') + word;
-            wordCount++;
+    // Updated image handling
+    const getImageUrl = (image: string | string[]): string => {
+        if (Array.isArray(image)) {
+            return image[0] || '';
         }
+        return image || '';
+    };
 
-        return result.trim() + (result.length < name.length ? '...' : '');
-    }
+    const imageUrl = getImageUrl(image);
+    // console.log('Image URL:', imageUrl);
 
     const formattedDeliveryTime = formatDeliveryTime(parseInt(deliveryTime));
-
 
     const handleAddToCart = async () => {
         try {
@@ -81,7 +96,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     cartId,
                     productId,
                     quantity: 1,
-                    image,
+                    image: imageUrl, // Use the processed imageUrl
                     name,
                     price: displayPrice,
                     deliveryTime,
@@ -101,10 +116,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
         }
     };
 
-    function formatNumberWithCommas(number: number): string {
-        return number.toLocaleString('en-US');
-      }
-
     const handleImageClick = () => {
         setShowFullImage(true);
     };
@@ -120,10 +131,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     )}
                     <div>
                         <div className={styles.product}>
-                            <img
-                                src={image}
-                                alt={`${name} image`}
-                                className={styles.productImage}
+                            <img 
+                                src={imageUrl} 
+                                alt={name} 
+                                className={styles.productImage} 
                                 onClick={handleImageClick}
                             />
                             <div className={styles.productContent}>
@@ -134,19 +145,27 @@ const ProductCard: React.FC<ProductCardProps> = ({
                                     <p className={styles.price}>
                                         ₦{formatNumberWithCommas(displayPrice)}
                                         {discountPercentage > 0 && (
-                                            <span className={styles.originalPrice}>₦{price}</span>
+                                            <span className={styles.originalPrice}>₦{formatNumberWithCommas(price)}</span>
                                         )}
                                     </p>
                                 </div>
-                                <p><p>{formattedDeliveryTime}</p></p>
+                                <p>{formattedDeliveryTime}</p>
                                 <div className={styles.deliveryData}>
                                     <p>{deliveryNote}</p>
                                     <div className={styles.rating}>
                                         <p>{rating}</p>
-                                        <img src="https://res.cloudinary.com/da1l4j12k/image/upload/v1716642067/Star_1_ahpoz0.png" className={styles.star} alt="Rating" />
+                                        <img 
+                                            src="https://res.cloudinary.com/da1l4j12k/image/upload/v1716642067/Star_1_ahpoz0.png" 
+                                            className={styles.star} 
+                                            alt="Rating" 
+                                        />
                                     </div>
                                 </div>
-                                <button className={styles.addToCartButton} onClick={handleAddToCart} disabled={isAdded}>
+                                <button 
+                                    className={styles.addToCartButton} 
+                                    onClick={handleAddToCart} 
+                                    disabled={isAdded}
+                                >
                                     {isAdded ? 'Added to Cart' : 'Add to Cart'}
                                 </button>
                             </div>
@@ -155,7 +174,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 </div>
                 {showFullImage && (
                     <div className={styles.fullImageOverlay} onClick={() => setShowFullImage(false)}>
-                        <img src={image} alt={`${name} full image`} className={styles.fullImage} />
+                        <img src={imageUrl} alt={`${name} full image`} className={styles.fullImage} />
                     </div>
                 )}
             </div>

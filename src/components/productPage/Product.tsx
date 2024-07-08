@@ -9,7 +9,7 @@ import Footer from '@/components/productPage/Footer';
 
 interface Product {
   _id: string;
-  image: string;
+  image: string | string[];
   name: string;
   price: number;
   discountPrice?: number;

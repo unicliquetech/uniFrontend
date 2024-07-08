@@ -25,7 +25,8 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
   const [step, setStep] = useState(1);
   const [productName, setProductName] = useState('');
   const [productDescription, setProductDescription] = useState('');
-  const [productImage, setProductImage] = useState<{ src: string } | null>(null);
+  const [productImage, setProductImage] = useState<{ src: string[] } | null>(null);
+  const [productImages, setProductImages] = useState<string[]>([]);
   const [productImagePreview, setProductImagePreview] = useState<File | null>(null);
   const [productVisibility, setProductVisibility] = useState<'visible' | 'hidden'>('visible');
   const [productCategory, setProductCategory] = useState('');
@@ -42,7 +43,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
   const [discountPrice, setDiscountPrice] = useState<number>(0);
   const [showColorPicker, setShowColorPicker] = useState<boolean>(false);
   const [isMobileVisible, setIsMobileVisible] = useState<boolean>(false);
-  
+
 
   const toggleMobileVisibility = () => {
     setIsMobileVisible(!isMobileVisible);
@@ -56,22 +57,24 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
     setStep(step - 1);
   };
 
-  // const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //     if (event.target.files && event.target.files.length > 0) {
-  //         setProductImage(event.target.files[0]);
-  //     }
-  // };
+  const MAX_IMAGES = 5; 
 
   const handleProductImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
+      if (productImages.length + event.target.files.length > MAX_IMAGES) {
+        alert(`You can only upload a maximum of ${MAX_IMAGES} images.`);
+        return;
+      }
       try {
-        const file = event.target.files[0];
-        console.log('Selected file:', file); // Debug: Log the selected file
+        const files = Array.from(event.target.files);
+        console.log('Selected files:', files);
 
         const formData = new FormData();
-        formData.append('image', file);
+        files.forEach((file, index) => {
+          formData.append(`image${index}`, file);
+        });
 
-        console.log('Sending request to server'); // Debug: Log before sending the request
+        console.log('Sending request to server');
 
         const response = await axios.post('https://unibackend.onrender.com/api/v1/products/uploadImage', formData, {
           headers: {
@@ -79,27 +82,17 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
           },
         });
 
-        console.log('Server response:', response.data.image); // Debug: Log the server response
+        console.log('Server response:', response.data.images);
 
-        // const productImage = (response.data.image); 
-        const imageUrl = response.data.image;
-        setProductImage(imageUrl); // Update the state with the image URL
+        const imageUrls = response.data.images;
+        setProductImages(prevImages => [...prevImages, ...imageUrls]); // Append new images to existing ones
 
-        console.log('Product url Image:', imageUrl);
-
-
-        console.log('Product Image:', productImage);
+        console.log('Product Image URLs:', imageUrls);
       } catch (error) {
-        console.error('Error uploading image:', error);
-        // Handle error
-
+        console.error('Error uploading images:', error);
       }
     }
   };
-
-  // useEffect(() => {
-  //   console.log('Product Image:', productImage.src);
-  // }, [productImage]);
 
   const handleAddColor = (color: string) => {
     if (color && !colors.includes(color)) {
@@ -136,14 +129,13 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
     event.preventDefault();
     const vendorEmail = localStorage.getItem('vendorEmail');
 
-    console.log('Product Image Form:', productImage);
 
     try {
       const formData = new FormData();
       formData.append('vendorEmail', vendorEmail ? vendorEmail : '');
       formData.append('name', productName);
       formData.append('description', productDescription);
-      formData.append('image', productImage?.src || '');
+      formData.append('image', JSON.stringify(productImages));
       formData.append('category', productCategory);
       formData.append('brand', productBrand);
       formData.append('gender', productGender);
@@ -162,7 +154,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
       if (selectedProduct) {
         // Update existing product
         const response = await axios.put(
-          `https://unibackend.onrender.com/api/v1/products/${selectedProduct._id}`,
+          `http://localhost:5000/api/v1/products/${selectedProduct._id}`,
           formData,
           {
             headers: {
@@ -173,7 +165,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
         console.log('Product updated:', response.data);
       } else {
         // Create new product
-        const response = await axios.post('https://unibackend.onrender.com/api/v1/products', formData, {
+        const response = await axios.post('http://localhost:5000/api/v1/products', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -257,6 +249,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
                     rows={5}
                   />
 
+                  {/* Product Image Component */}
                   <div className="mb-4">
                     <label htmlFor="productImage" className="block font-semibold mb-1">
                       Product Image
@@ -266,12 +259,28 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
                         htmlFor="productImageUpload"
                         className="flex flex-col items-center justify-center h-40 border-2 border-dashed border-gray-300 rounded-md cursor-pointer"
                       >
-                        {productImage ? (
-                          <Image
-                            src='productImage.src'
-                            alt="Product Preview"
-                            className="max-h-32 max-w-full object-contain"
-                          />
+                        {productImages.length > 0 ? (
+                          <div className="grid grid-cols-3 gap-2 p-2">
+                            {productImages.map((image, index) => (
+                              <div key={index} className="relative">
+                                <Image
+                                  src={image}
+                                  width={100}
+                                  height={100}
+                                  alt={`Product Preview ${index + 1}`}
+                                  className="object-cover rounded"
+                                />
+                                <button
+                                  onClick={() => {
+                                    setProductImages(prevImages => prevImages.filter((_, i) => i !== index));
+                                  }}
+                                  className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center"
+                                >
+                                  ×
+                                </button>
+                              </div>
+                            ))}
+                          </div>
                         ) : (
                           <div className="text-center">
                             <svg
@@ -301,6 +310,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
                         accept="image/png, image/jpeg"
                         onChange={handleProductImageUpload}
                         className="hidden"
+                        multiple
                       />
                     </div>
                   </div>
@@ -731,7 +741,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
                         </label>
                       </div>
                     </div>
-                    
+
                   </div>
 
                   {/* Product Sponsorship */}
