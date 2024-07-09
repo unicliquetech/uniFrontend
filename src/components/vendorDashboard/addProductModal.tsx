@@ -154,7 +154,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
       if (selectedProduct) {
         // Update existing product
         const response = await axios.put(
-          `http://localhost:5000/api/v1/products/${selectedProduct._id}`,
+          `https://unibackend.onrender.com/api/v1/products/${selectedProduct._id}`,
           formData,
           {
             headers: {
@@ -165,7 +165,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
         console.log('Product updated:', response.data);
       } else {
         // Create new product
-        const response = await axios.post('http://localhost:5000/api/v1/products', formData, {
+        const response = await axios.post('https://unibackend.onrender.com/api/v1/products', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
