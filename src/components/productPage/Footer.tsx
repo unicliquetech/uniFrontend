@@ -24,9 +24,9 @@ const Footer = () => {
           <h4 className="font-bold mb-2">Account</h4>
           <ul className="space-y-2">
             <li><a href="/signup">Create An Account</a></li>
-            <li><a href="/login">Vendor Login</a></li>
-            <li><a href="/loginVendor">Buyer Login</a></li>
-            <li><a href="/vendorSignup">Sign Up</a></li>
+            <li><a href="/login">Buyer Login</a></li>
+            <li><a href="/loginVendor">Vendor Login</a></li>
+            <li><a href="/vendorSignup">Sign Up As A Vendor</a></li>
             <li><a href="/cartPage">My Orders</a></li>
           </ul>
         </div>
