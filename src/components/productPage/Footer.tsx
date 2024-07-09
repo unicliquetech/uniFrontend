@@ -23,7 +23,9 @@ const Footer = () => {
         <div className="flex flex-col md:items-start">
           <h4 className="font-bold mb-2">Account</h4>
           <ul className="space-y-2">
-            <li><a href="/loginVendor">Seller Login</a></li>
+            <li><a href="/signup">Create An Account</a></li>
+            <li><a href="/login">Vendor Login</a></li>
+            <li><a href="/loginVendor">Buyer Login</a></li>
             <li><a href="/vendorSignup">Sign Up</a></li>
             <li><a href="/cartPage">My Orders</a></li>
           </ul>
@@ -31,18 +33,19 @@ const Footer = () => {
         <div className="flex flex-col md:items-start">
           <h4 className="font-bold mb-2">Products</h4>
           <ul className="space-y-2">
-            <li>Shoes</li>
-            <li>Jewelries</li>
-            <li>Gadgets</li>
-            <li>Fitness Products</li>
-            <li>Food</li>
-            <li>Clothes</li>
+            <li><a href='/category-products?category=shoes'>Shoes</a></li>
+            <li><a href='/category-products?category=jewelry'>Jewelries</a></li>
+            <li><a href='/category-products?category=gadgets'>Gadgets</a></li>
+            <li><a href='/category-products?category=sports/fitness'>Sports/Fitness Products</a></li>
+            <li><a href='/category-products?category=snacks'>Food</a></li>
+            <li><a href='/category-products?category=clothes'>Clothes</a></li>
             <li>Books</li>
           </ul>
         </div>
         <div className="flex flex-col md:items-start">
           <h4 className="font-bold mb-2">Services</h4>
           <ul className="space-y-2">
+            <li><a href='/category-products?category=graphics'>Graphics Design</a></li>
             <li>Photography</li>
             <li>Make-up artist</li>
             <li>Fashion Designing</li>
