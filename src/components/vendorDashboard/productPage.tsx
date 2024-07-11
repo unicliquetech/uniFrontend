@@ -12,11 +12,11 @@ interface ProductCardProps {
         name: string;
         description: string;
         price: number;
-        image: string;
+        image: string | string[];
         discount?: number;
         sponsored: boolean;
     };
-    onImageClick: (imageUrl: string) => void;
+    onImageClick: (imageUrl: string | string[]) => void;
 }
 
 // interface ErrorType {
@@ -94,6 +94,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onImageClick }) => {
         }
     };
 
+    const productImage = Array.isArray(product.image) ? product.image[0] : product.image;
+
     const handleImageClick = (imageUrl: string) => {
         setFullImage(imageUrl);
     };
@@ -109,7 +111,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onImageClick }) => {
                 </div>
             )}
 
-            <img src={product.image} alt={product.name} className="w-full productImage h-48 object-cover rounded-t-lg"
+            {/* <img src={product.image} alt={product.name} className="w-full productImage h-48 object-cover rounded-t-lg"
+                onClick={() => onImageClick(product.image)} /> */}
+            <img src={productImage} alt={product.name} className="w-full productImage h-48 object-cover rounded-t-lg"
                 onClick={() => onImageClick(product.image)} />
 
             <div className="p-4">
@@ -217,8 +221,8 @@ const VendorProducts: React.FC = () => {
         return pageNumbers;
     };
 
-    const handleImageClick = (imageUrl: string) => {
-        setFullImage(imageUrl);
+    const handleImageClick = (imageUrl: string | string[]) => {
+        setFullImage(Array.isArray(imageUrl) ? imageUrl[0] : imageUrl);
     };
 
     return (

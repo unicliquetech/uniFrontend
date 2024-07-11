@@ -51,6 +51,7 @@ const VendorPage: React.FC<VendorPageProps> = ({ vendor }) => {
     comment: '',
   });
   const [showWhatsAppIcon, setShowWhatsAppIcon] = useState(false);
+  
 
   useEffect(() => {
     const handleScroll = () => {
@@ -70,8 +71,11 @@ const VendorPage: React.FC<VendorPageProps> = ({ vendor }) => {
     window.open(whatsappUrl, '_blank');
   };
 
-  const handleImageClick = (imageUrl: string) => {
-    setFullImage(imageUrl);
+  // const handleImageClick = (imageUrl: string) => {
+  //   setFullImage(imageUrl);
+  // };
+  const handleImageClick = (imageUrl: string | string[]) => {
+    setFullImage(Array.isArray(imageUrl) ? imageUrl[0] : imageUrl);
   };
 
 
@@ -189,38 +193,41 @@ const handleAddToCart = async (product: Product) => {
       <div className={styles.products}>
         <h2 className={styles.sectionTitle}>Products</h2>
         <div className={styles.productList}>
-          {products.length === 0 ? (
+        {products.length === 0 ? (
             <p>No products available</p>
           ) : (
-            products.map((product) => (
-              <div key={product.name} className={styles.productCard}>
-                <img
-                  className={styles.productImage}
-                  src={product.image}
-                  alt={product.name}
-                  onClick={() => handleImageClick(product.image)}
-                />
-                <div className={styles.productDetails}>
-                  <h3 className={styles.productName}>{product.name}</h3>
-                  <p className={styles.productDescription}>
-                    {product.description}
-                  </p>
-                  <p className={styles.productPrice}>
-                    ₦{product.discountPrice || product.price}
-                  </p>
-                  <button 
-                    className={styles.addToCartButton} 
-                    onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                      e.preventDefault();
-                      handleAddToCart(product);
-                    }} 
-                    disabled={product.isAdded}
-                  >
-                    {product.isAdded ? 'Added to Cart' : 'Add to Cart'}
-                  </button>
+            products.map((product) => {
+              const productImage = Array.isArray(product.image) ? product.image[0] : product.image;
+              return (
+                <div key={product.name} className={styles.productCard}>
+                  <img
+                    className={styles.productImage}
+                    src={productImage}
+                    alt={product.name}
+                    onClick={() => handleImageClick(product.image)}
+                  />
+                  <div className={styles.productDetails}>
+                    <h3 className={styles.productName}>{product.name}</h3>
+                    <p className={styles.productDescription}>
+                      {product.description}
+                    </p>
+                    <p className={styles.productPrice}>
+                      ₦{product.discountPrice || product.price}
+                    </p>
+                    <button 
+                      className={styles.addToCartButton} 
+                      onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                        e.preventDefault();
+                        handleAddToCart(product);
+                      }} 
+                      disabled={product.isAdded}
+                    >
+                      {product.isAdded ? 'Added to Cart' : 'Add to Cart'}
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       </div>
