@@ -99,15 +99,15 @@ const ShoppingCart = () => {
   };
 
   const handleHomeDelivery = () => {
-    setDeliveryPrice(800);
-  };
-  
-  const handleRegularDelivery = () => {
     setDeliveryPrice(400);
   };
   
+  const handleRegularDelivery = () => {
+    setDeliveryPrice(0);
+  };
+  
   const handleScheduledDelivery = () => {
-    setDeliveryPrice(500);
+    setDeliveryPrice(0);
   };
 
 
@@ -183,7 +183,7 @@ const ShoppingCart = () => {
             <span className="text-gray-500 ml-2 sm:ml-4 mr-2 sm:mr-4 hidden sm:inline">
               Need Help?
             </span>
-            <div className="hidden sm:flex items-center">
+            {/* <div className="hidden sm:flex items-center">
               <img
                 src="https://res.cloudinary.com/daqlpvggg/image/upload/v1717040743/avatar_jznivx.png"
                 alt="Profile"
@@ -193,7 +193,7 @@ const ShoppingCart = () => {
                 <span className="text-gray-700">Ayotunde Ojay</span>
                 <span className="text-gray-700">ayojay@gmail.com</span>
               </div>
-            </div>
+            </div> */}
             <button className="bg-red-900 hover:bg-red-600 text-white rounded ml-2 sm:ml-4 px-2 py-2 sm:px-4 sm:py-2 hidden sm:inline-block">
               <a href='/product'>Continue Shopping</a>
             </button>
@@ -351,7 +351,7 @@ const ShoppingCart = () => {
                 className="form-radio"
                 onChange={handleRegularDelivery}
               />
-              <span className="ml-2">Regular (In 6 hours) • ₦400</span>
+              <span className="ml-2">Regular (In 6 hours) • ₦0</span>
             </label>
             <div className="mt-2">
               <label className="inline-flex items-center">
@@ -363,7 +363,7 @@ const ShoppingCart = () => {
                   className="form-radio"
                   onChange={handleHomeDelivery}
                 />
-                <span className="ml-2">Express Delivery (In 1 hour) • ₦800</span>
+                <span className="ml-2">Express Delivery (In 1 hour) • ₦400</span>
               </label>
             </div>
             <div className="mt-2">
@@ -376,7 +376,7 @@ const ShoppingCart = () => {
                   className="form-radio"
                   onChange={handleScheduledDelivery}
                 />
-                <span className="ml-2">Schedule (In 2-4 days) • ₦500</span>
+                <span className="ml-2">Schedule (In 2-4 days) • ₦0</span>
               </label>
             </div>
           </div>

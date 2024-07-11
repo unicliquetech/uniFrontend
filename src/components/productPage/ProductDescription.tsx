@@ -49,6 +49,10 @@ interface ProductDescriptionProps {
     product: Product;
 }
 
+function formatNumberWithCommas(number: number): string {
+    return number.toLocaleString('en-US');
+}
+
 const ProductDescription: React.FC<ProductDescriptionProps> = ({ product }) => {
     const router = useRouter();
     const { productId } = router.query;
@@ -67,7 +71,6 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({ product }) => {
         try {
             const response = await fetch(`https://unibackend.onrender.com/api/v1/products/product/${id}`);
             const data = await response.json();
-            console.log(data.vendor);
             setMainImage(Array.isArray(data.product.image) ? data.product.image[0] : data.product.image);
         } catch (error) {
             console.error('Error fetching product data:', error);
@@ -115,8 +118,14 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({ product }) => {
                 const cartId = await response.json();
                 localStorage.setItem('cartId', cartId);
                 setIsAdded(true);
+                alert('Added To Cart');
             } else {
-                console.error('Failed to add product to cart');
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Failed to add product to cart:', response.status, errorText);
+                    alert('Failed to add product to cart. Please try again.');
+                    return;
+                }
             }
         } catch (error) {
             console.error('Error adding product to cart:', error);
@@ -172,7 +181,7 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({ product }) => {
                                 <h1 className='lg:text-[24px] text-[21px] font-[600] text-[#0D0D0D] mb-[.5rem]'>{product.name}</h1>
                                 <h3 className='lg:text-[15px] md:text-[14px] text-[12px] font-[400] text-[#3E3E3E] text-start mb-[1rem]'>{product.description}</h3>
                                 <div className='flex lg:gap-4 gap-2 flex-wrap items-center mb-[.5rem]'>
-                                    <p className='lg:text-[36px] text-[30px] font-[700] text-[#000000]'>₦ {product.price.toFixed(2)}</p>
+                                    <p className='lg:text-[36px] text-[30px] font-[700] text-[#000000]'>₦ {formatNumberWithCommas(product.price)}</p>
                                     {product.discountPrice && (
                                         <>
                                             <s className='text-[#000000] lg:text-[16px] text-[12px] font-[400]'>₦ {product.discountPrice.toFixed(2)}</s>
@@ -190,8 +199,8 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({ product }) => {
                                 </div> */}
 
 
-                                 {/* Quantity selector */}
-                                 <div className='flex-start flex gap-3 items-center mb-[1rem]'>
+                                {/* Quantity selector */}
+                                <div className='flex-start flex gap-3 items-center mb-[1rem]'>
                                     <Image src={increasecart} alt='' width={35} height={35} className='cursor-pointer' onClick={() => setQuantity(prev => prev + 1)} />
                                     <span className='text-[#000000] lg:text-[16px] text-[14px] font-[400]'>{quantity}</span>
                                     <Image src={decreasecart} alt='' width={35} height={35} className='cursor-pointer' onClick={() => setQuantity(prev => Math.max(1, prev - 1))} />
@@ -202,7 +211,7 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({ product }) => {
                                     <p className='text-[#000000] lg:text-[16px] text-[14px] font-[600] mb-2'>Colors:</p>
                                     <div className='flex gap-2'>
                                         {product.colours.map((color, index) => (
-                                            <div key={index} className='w-6 h-6 rounded-full' style={{backgroundColor: color}}></div>
+                                            <div key={index} className='w-6 h-6 rounded-full' style={{ backgroundColor: color }}></div>
                                         ))}
                                     </div>
                                 </div>
@@ -212,8 +221,18 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({ product }) => {
                                 </p>
                                 {/* Buttons */}
                                 <div className='flex gap-[2rem] mt-[1.5rem] justify-between w-full'>
-                                    <Button text='Buy Now' styles='bg-[#590209] lg:text-[18px] text-[16px] text-white w-1/2' />
-                                    <Button text={isAdded ? 'Added to Cart' : 'Add to Cart'} styles='bg-white border-[1.2px] border-[#590209] w-1/2' onClick={handleAddToCart} />
+                                    <button
+                                        className='bg-[#590209] lg:text-[18px] text-[16px] text-white w-1/2'
+                                        onClick={() => {
+                                            handleAddToCart();
+                                            // Redirect to cart page
+                                            window.location.href = '/cartPage';  
+                                        }}
+                                        disabled={isAdded}
+                                    >
+                                        Buy Now
+                                    </button>
+                                    <button className='bg-white border-[1.2px] border-[#590209] w-1/2' onClick={handleAddToCart} disabled={isAdded}> {isAdded ? 'Added to Cart' : 'Add to Cart'} </button>
                                 </div>
                             </div>
                             {/* Vendor info */}
@@ -226,8 +245,8 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({ product }) => {
                                     <p className='pl-3 lg:text-[16px] text-[14px] font-[400]'>{product.vendor.rating}/5</p>
                                 </div>
                             </div>
-                                
-                                {/* <div className='flex gap-[2rem] mt-[1.5rem] justify-between w-full'>
+
+                            {/* <div className='flex gap-[2rem] mt-[1.5rem] justify-between w-full'>
                                     <Button text='Buy Now' styles='bg-[#590209] lg:text-[18px] text-[16px] text-white w-1/2' />
                                     <Button text='Add to Cart' styles='bg-white border-[1.2px] border-[#590209] w-1/2' />
                                 </div>

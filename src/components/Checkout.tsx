@@ -347,7 +347,7 @@ const SummaryStep: React.FC<SummaryStepProps> = ({
     setSelectedDeliveryTime(event.target.value);
   };
 
-  const deliveryTimes = ['9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'];
+  const deliveryTimes = [ '8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
 
 
   useEffect(() => {
@@ -391,10 +391,10 @@ const SummaryStep: React.FC<SummaryStepProps> = ({
   };
   const deliveryFee =
     selectedDeliveryMethod === 'express'
-      ? 800
+      ? 400
       : selectedDeliveryMethod === 'regular'
-        ? 400
-        : 500;
+        ? 0
+        : 0;
   const serviceFee = 50;
   const totalCost = calculateTotal() + deliveryFee + serviceFee;
 
@@ -436,9 +436,9 @@ const SummaryStep: React.FC<SummaryStepProps> = ({
           onChange={handleDeliveryChange}
           className="border p-2 rounded"
         >
-          <option value="express">Express (₦800)</option>
-          <option value="regular">Regular Delivery (₦400)</option>
-          <option value="schedule">Schedule (₦500)</option>
+          <option value="express">Express (₦400)</option>
+          <option value="regular">Regular Delivery (₦0)</option>
+          <option value="schedule">Schedule (₦0)</option>
         </select>
         {selectedDeliveryMethod === 'schedule' && (
           <div className="mt-2">
@@ -639,8 +639,6 @@ const Checkout = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
-  // const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState<DeliveryOption>('regular');
-  // const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [lastLoginTime, setLastLoginTime] = useState<null | number>(null);
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState<DeliveryOption>('regular');

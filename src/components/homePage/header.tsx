@@ -91,11 +91,11 @@ const Header = () => {
                         <a href="/">
                             <li className="text-main-color-gray cursor-pointer hover:scale-105 mt-10">Home</li>
                         </a>
-                        <a href="#about">
-                            <li className="text-main-color-gray cursor-pointer hover:scale-105 mt-10">About Us</li>
-                        </a>
                         <a href="/product">
-                            <li className="text-main-color-gray cursor-pointer hover:scale-105 mt-10">Services</li>
+                            <li className="text-main-color-gray cursor-pointer hover:scale-105 mt-10">Products & Services </li>
+                        </a>
+                        <a href="/cartPage">
+                            <li className="text-main-color-gray cursor-pointer hover:scale-105 mt-10">Cart</li>
                         </a>
                         <a href="#portfolio">
                             <li className="text-main-color-gray cursor-pointer hover:scale-105 mt-10">Gallery</li>
