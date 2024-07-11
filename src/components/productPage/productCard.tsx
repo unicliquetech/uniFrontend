@@ -54,6 +54,7 @@ function formatNumberWithCommas(number: number): string {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
+    _id,
     image,
     name,
     price,
@@ -125,9 +126,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
     const router = useRouter();
 
+    const handleProductClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        router.push(`/product/${_id}`);
+    };
+
     return (
         <LazyLoad>
-            <div onClick={() => router.push("/productDescription")}>
+            <div className={styles.productCard} onClick={handleProductClick}>
                 <div className={styles.productCard} >
                     {discountPercentage > 0 && (
                         <div className={styles.discountBadge}>

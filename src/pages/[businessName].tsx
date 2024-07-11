@@ -1,4 +1,5 @@
 import { GetServerSideProps } from 'next';
+import { notFound } from 'next/navigation';
 import VendorPage from '@/components/vendorDashboard/vendorPage';
 import image1 from '@/images/LaptopImg.svg'
 
@@ -66,18 +67,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   } catch (error) {
     console.error('Error fetching vendor data:', error);
-    return {
-      props: {
-        vendor: {
-          name: '',
-          rating: 0,
-          location: '',
-          phoneNumber: '',
-          products: [],
-          reviews: [],
-        },
-      },
-    };
+    notFound();
   }
 };
 
