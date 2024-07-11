@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import LazyLoad from 'react-lazy-load';
 import styles from '@/styles/Product.module.css';
+import router from 'next/navigation';
+import { useRouter } from 'next/router';
 
 interface Product {
     _id: string;
@@ -96,7 +98,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     cartId,
                     productId,
                     quantity: 1,
-                    image: imageUrl, // Use the processed imageUrl
+                    image: imageUrl, 
                     name,
                     price: displayPrice,
                     deliveryTime,
@@ -108,6 +110,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 console.log("Cart:", cartId);
                 localStorage.setItem('cartId', cartId);
                 setIsAdded(true);
+                
             } else {
                 console.error('Failed to add product to cart');
             }
@@ -120,10 +123,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
         setShowFullImage(true);
     };
 
+    const router = useRouter();
+
     return (
         <LazyLoad>
-            <div>
-                <div className={styles.productCard}>
+            <div onClick={() => router.push("/productDescription")}>
+                <div className={styles.productCard} >
                     {discountPercentage > 0 && (
                         <div className={styles.discountBadge}>
                             {discountPercentage}% OFF
@@ -177,6 +182,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                         <img src={imageUrl} alt={`${name} full image`} className={styles.fullImage} />
                     </div>
                 )}
+
             </div>
         </LazyLoad>
     );
