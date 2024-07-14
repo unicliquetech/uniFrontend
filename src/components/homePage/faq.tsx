@@ -6,23 +6,23 @@ import minus from '../../images/minusfaq.svg'
 const faqData = [
   {
     question: "What is Uniclique about",
-    answer: "We offer a variety of services including branding, marketing, order management, and online store creation to boost your business."
+    answer: "Unicliche is an amazing ecommerce hosting platform tailor-made for innovative student entrepreneurs. We provide a dynamic space where students can effortlessly showcase and sell their businesses to the university community. We offer a variety of services including branding, marketing, order management, and online store creation to boost your business."
   },
   {
     question: "How does Uniclique work?",
-    answer: "You can get started by clicking the 'Get Started' button on our homepage and following the registration process."
+    answer: "Uniclique works to help reduce stress and help buyers make informed purchasing decisions. Once you add a product to your cart and checkout your cart, your order will be sent to the vendor who will confirm your order and deliver your products to you."
   },
   {
     question: "How do i get started as a seller on Uniclique?",
-    answer: "Our pricing model is flexible and based on the services you choose. Contact our sales team for a detailed quote."
+    answer: "First, head over to our website and find the 'Get Started' button. Fill out the sign-up form with your passion for business, and we'll guide you through the rest. Once you've completed the verification process and added your products, voilà! Your business gets a front-row seat in our vibrant marketplace, and you're officially part of the Unicliche family"
   },
   {
     question: "What kind of business can join Uniclique?",
-    answer: "Yes, we offer 24/7 customer support to assist you with any issues or questions you may have."
+    answer: "We welcome all sorts of creative businesses with open arms. Whether you're into fashion, tech, handmade crafts, delicious treats, or any other entrepreneurial pursuit, Unicliche is your stage. Our diverse community loves to explore unique products and experiences, so let your imagination run wild"
   },
   {
     question: "How do i promote my business on Uniclique?",
-    answer: "We have got you covered in the promotion department! Uniclique offers marketing tools and tips to help your business shine brightly through social media marketing bringing the face of your product to the world."
+    answer: "We have got you covered in the promotion department. Uniclique offers marketing tools and tips to help your business shine brightly through social media marketing bringing the face of your product to the world."
   },
 ];
 
