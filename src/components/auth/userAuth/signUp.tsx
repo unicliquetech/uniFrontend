@@ -26,13 +26,13 @@ const Button: React.FC<ButtonProps> = ({ style, text, ...rest }) => {
     );
 };
 
-function showCustomAlert(message: string) {
+function showCustomAlert(message: string, isSuccess: boolean) {
     const alertContainer = document.createElement('div');
     alertContainer.classList.add('custom-alert');
   
     const alertHeader = document.createElement('div');
     alertHeader.classList.add('custom-alert-header');
-    alertHeader.textContent = 'Alert';
+    alertHeader.textContent = isSuccess ? 'Success' : 'Error';
   
     const alertBody = document.createElement('div');
     alertBody.classList.add('custom-alert-body');
@@ -41,18 +41,50 @@ function showCustomAlert(message: string) {
     alertContainer.appendChild(alertHeader);
     alertContainer.appendChild(alertBody);
   
+    alertContainer.style.position = 'fixed';
+    alertContainer.style.top = '20px';
+    alertContainer.style.right = '20px';
+    alertContainer.style.backgroundColor = isSuccess ? '#4CAF50' : '#f44336';
+    alertContainer.style.color = 'white';
+    alertContainer.style.padding = '15px';
+    alertContainer.style.borderRadius = '5px';
+    alertContainer.style.zIndex = '1000';
+  
     document.body.appendChild(alertContainer);
   
     setTimeout(() => {
       document.body.removeChild(alertContainer);
-    }, 100000); // Adjust the duration (in milliseconds) to control how long the alert should be displayed
-  }
+    }, 5000);
+}
+
+// function showCustomAlert(message: string) {
+//     const alertContainer = document.createElement('div');
+//     alertContainer.classList.add('custom-alert');
+  
+//     const alertHeader = document.createElement('div');
+//     alertHeader.classList.add('custom-alert-header');
+//     alertHeader.textContent = 'Alert';
+  
+//     const alertBody = document.createElement('div');
+//     alertBody.classList.add('custom-alert-body');
+//     alertBody.textContent = message;
+  
+//     alertContainer.appendChild(alertHeader);
+//     alertContainer.appendChild(alertBody);
+  
+//     document.body.appendChild(alertContainer);
+  
+//     setTimeout(() => {
+//       document.body.removeChild(alertContainer);
+//     }, 100000); 
+//   }
 
 
 const SignUp = () => {
     const router = useRouter()
     const [passwordVisible, setPasswordVisible] = useState(false)
     const [confirmpasswordVisible, setConfirmPasswordVisible] = useState(false)
+    const [isSubmitting, setIsSubmitting] = useState(false)
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -73,6 +105,11 @@ const SignUp = () => {
     interface DecodedToken {
         email: string;
       }
+
+    const validatePassword = (password: string) => {
+        const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/;
+        return regex.test(password);
+    }
     
 
     
@@ -83,19 +120,35 @@ const SignUp = () => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setIsSubmitting(true);
+
+        if (!validatePassword(formData.password)) {
+            showCustomAlert("Password must contain at least one number, one uppercase letter, one lowercase letter, and one special character.", false);
+            setIsSubmitting(false);
+            return;
+        }
+
+        if (formData.password !== formData.confirmPassword) {
+            showCustomAlert("Passwords do not match.", false);
+            setIsSubmitting(false);
+            return;
+        }
 
         try {
             const response = await axios.post('https://unibackend.onrender.com/api/v1/user/register', formData )
-            console.log(response.data); // Handle the response as needed
+            console.log(response.data); 
 
             if (response.data.email) {
                 localStorage.setItem('email', response.data.email);
-                // You can also store other user information from the response if needed
               }
 
+            showCustomAlert("Sign up successful! You will be redirected to the verification page shortly", true);
             router.push('/verify')
         } catch (error) {
             console.error(error);
+            showCustomAlert("An error occurred during sign up. Please try again.", false);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -180,10 +233,23 @@ const SignUp = () => {
                                     <Image src={confirmpasswordVisible ? eyeOpen : eyelock} alt='' width={15} height={15} onClick={togConfirm} className='absolute right-[2%] flex justify-center items-center top-[57%]' />
                                 </div>
                             </div>
-                        <Button style={{ backgroundColor: "#590209", fontSize: "12px", font: 'bold', padding: "15px", color: '#fff', width: '90%', marginTop: "20px", borderRadius: '10px' }}
-                            text='Sign Up'
-                            type='submit' />
-                        <Button style={{ backgroundColor: "#590209", fontSize: "12px", font: 'bold', padding: "15px", color: '#fff', width: '90%', marginTop: "2px", borderRadius: '10px' }} text='Already have an account? Sign In' onClick={() => router.push('/login')} />
+                            <Button 
+                                style={{ 
+                                    backgroundColor: isSubmitting ? "#8B0000" : "#590209", 
+                                    fontSize: "12px", 
+                                    font: 'bold', 
+                                    padding: "15px", 
+                                    color: '#fff', 
+                                    width: '90%', 
+                                    marginTop: "20px", 
+                                    borderRadius: '10px',
+                                    cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                                }}
+                                text={isSubmitting ? 'Signing Up...' : 'Sign Up'}
+                                type='submit'
+                                disabled={isSubmitting}
+                            />
+                            <Button style={{ backgroundColor: "#590209", fontSize: "12px", font: 'bold', padding: "15px", color: '#fff', width: '90%', marginTop: "2px", borderRadius: '10px' }} text='Already have an account? Log In' onClick={() => router.push('/login')} />
                         </form>
                     </div>
                 </div>
