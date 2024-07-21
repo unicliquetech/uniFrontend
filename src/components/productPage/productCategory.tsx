@@ -16,6 +16,7 @@ interface Product {
   category: string;
   productId: string;
   company: string;
+  vendorLocation: string;
 }
 
 interface ProductGridProps {
@@ -38,6 +39,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
           category={product.category}
           productId={product.productId}
           company={product.company}
+          vendorLocation={product.vendorLocation}
         />
       ))}
     </div>
