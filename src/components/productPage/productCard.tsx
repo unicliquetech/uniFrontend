@@ -17,6 +17,7 @@ interface Product {
     category: string;
     productId: string;
     company: string;
+    vendorLocation: string;
 }
 
 interface ProductCardProps extends Product { }
@@ -64,6 +65,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
     deliveryNote,
     productId,
     company,
+    vendorLocation,
 }) => {
     const [isAdded, setIsAdded] = useState(false);
     const [showFullImage, setShowFullImage] = useState(false);
@@ -72,9 +74,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         ? Number(((price - discountPrice) / price * 100).toFixed(1))
         : 0;
 
-    // console.log('Received image prop:', image);
 
-    // Updated image handling
     const getImageUrl = (image: string | string[]): string => {
         if (Array.isArray(image)) {
             return image[0] || '';
@@ -83,7 +83,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
     };
 
     const imageUrl = getImageUrl(image);
-    // console.log('Image URL:', imageUrl);
 
     const formattedDeliveryTime = formatDeliveryTime(parseInt(deliveryTime));
 
@@ -160,7 +159,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
                                         )}
                                     </p>
                                 </div>
+                                <div className={styles.deliveryData}>
                                 <p>{formattedDeliveryTime}</p>
+                                <p className={styles.vendorLocation}>{vendorLocation}</p>
+                                </div>
                                 <div className={styles.deliveryData}>
                                     <p>{deliveryNote}</p>
                                     <div className={styles.rating}>
