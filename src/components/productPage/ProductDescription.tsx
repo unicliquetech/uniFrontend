@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import * as gtag from '../../../lib/gtag';
 import { useRouter } from 'next/router';
 import Header from '@/components/homePage/header';
 import Footer from '@/components/productPage/Footer';
@@ -43,6 +44,8 @@ interface Product {
     vendor: Vendor;
     refund: boolean;
     deliveryTime: string;
+    businessName: string;
+    businessDescription: string;
 }
 
 interface ProductDescriptionProps {
@@ -71,6 +74,7 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({ product }) => {
         try {
             const response = await fetch(`https://unibackend.onrender.com/api/v1/products/product/${id}`);
             const data = await response.json();
+            console.log(data);
             setMainImage(Array.isArray(data.product.image) ? data.product.image[0] : data.product.image);
         } catch (error) {
             console.error('Error fetching product data:', error);
@@ -117,6 +121,12 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({ product }) => {
             if (response.ok) {
                 const cartId = await response.json();
                 localStorage.setItem('cartId', cartId);
+                gtag.event({
+                    action: 'add_to_cart',
+                    category: 'Ecommerce',
+                    label: product.name,
+                    value: product.price * quantity
+                  });
                 setIsAdded(true);
                 alert('Added To Cart');
             } else {
@@ -135,6 +145,8 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({ product }) => {
     if (!product) {
         return <div>Loading...</div>;
     }
+
+    console.log(product.vendor.businessName);
 
     return (
         <section>
@@ -224,11 +236,17 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({ product }) => {
                                     <button
                                         className='bg-[#590209] lg:text-[18px] text-[16px] text-white w-1/2'
                                         onClick={() => {
+                                            gtag.event({
+                                                action: 'buy_now',
+                                                category: 'Ecommerce',
+                                                label: product.name,
+                                                value: product.price * quantity
+                                              });
                                             handleAddToCart();
                                             // Redirect to cart page
                                             window.location.href = '/cartPage';  
                                         }}
-                                        disabled={isAdded}
+                                        disabled={isAdded}  
                                     >
                                         Buy Now
                                     </button>
@@ -236,11 +254,11 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({ product }) => {
                                 </div>
                             </div>
                             {/* Vendor info */}
-                            <div className='p-5 flex-1 flex flex-start flex-col gap-[.6rem] bg-white rounded-md mb-4'>
-                                <h1 className='text-start lg:text-[24px] text-[20px] font-[600] text-red'>{product.vendor.businessName}</h1>
-                                <h1 className='text-start lg:text-[24px] text-[20px] font-[600] text-red'>{product.vendor.businessDescription}</h1>
+                            <div className='p-5 flex-1 flex flex-start flex-col gap-[.6rem] text-red-900 bg-white rounded-md mb-4'>
+                                <h1 className='text-start lg:text-[20px] text-[16px] font-[600] text-red-900'>{product.vendor.businessName}</h1>
+                                <h1 className='text-start lg:text-[16px] text-[12px] font-[600] text-red-900'>{product.vendor.businessDescription}</h1>
                                 <div className='flex gap-[.2rem]'>
-                                    <h1 className='text-start lg:text-[24px] text-[20px] font-[600] text-red-900'>Vendor Ratings: </h1>
+                                    <h1 className='text-start lg:text-[16px] text-[12px] font-[600] text-red-900'>Vendor Ratings: </h1>
                                     {renderRatingStars(5)}
                                     <p className='pl-3 lg:text-[16px] text-[14px] font-[400]'>{product.vendor.rating}/5</p>
                                 </div>

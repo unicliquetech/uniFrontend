@@ -35,7 +35,7 @@
     ".next/types/**/*.ts",
     "**/*.css",
     "**/*.png"
-  ],
+, "lib/gtag.js", "lib/gtag.js"  ],
   "exclude": [
     "node_modules"
   ]

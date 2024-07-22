@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from 'react';
+import * as gtag from '../../../lib/gtag';
 import LazyLoad from 'react-lazy-load';
 import styles from '@/styles/Product.module.css';
 import Header from '@/components/productPage/Header';
@@ -19,11 +20,7 @@ interface Product {
   category: string;
   productId: string;
   company: string;
-}
-
-interface ProductWithCategory {
-  name: string;
-  category: string;
+  vendorLocation: string;
 }
 
 const ProductList: React.FC = () => {
@@ -31,15 +28,37 @@ const ProductList: React.FC = () => {
   const productListRef = React.useRef<HTMLDivElement>(null);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [searchValue, setSearchValue] = useState<string>('');
-  const [filteredCategories, setFilteredCategories] = useState<string[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchProductData = async () => {
       try {
         const response = await fetch('https://unibackend.onrender.com/api/v1/products');
         const data = await response.json();
-        setProducts(data.products);
-        setFilteredProducts(data.products);
+
+        console.log(data);
+
+        if (!Array.isArray(data.products)) {
+          throw new Error('Invalid data format: products is not an array');
+        }
+
+        // Prioritize foodstuffs, provisions, and snacks
+        const priorityCategories = ['foodstuffs', 'provisions', 'snacks', 'bags'];
+        const otherCategories = [...new Set(data.products.map((p: Product) => p.category))]
+          .filter((category): category is string =>
+            typeof category === 'string' && !priorityCategories.includes(category));
+
+        const sortedCategories = [...priorityCategories, ...otherCategories];
+        setCategories(sortedCategories);
+
+        // Shuffle products within each category
+        const shuffledProducts = sortedCategories.flatMap(category => {
+          const categoryProducts = data.products.filter((p: Product) => p.category === category);
+          return categoryProducts.sort(() => Math.random() - 2.5);
+        });
+
+        setProducts(shuffledProducts);
+        setFilteredProducts(shuffledProducts);
       } catch (error) {
         console.error('Error fetching product data:', error);
       }
@@ -49,12 +68,11 @@ const ProductList: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const filtered = filteredProducts.filter(({ name }) =>
+    const filtered = products.filter(({ name }) =>
       name.toLowerCase().includes(searchValue.toLowerCase())
     );
-    const categories = Array.from(new Set(filtered.map(({ category }) => category)));
-    setFilteredCategories(categories);
-  }, [searchValue, filteredProducts]);
+    setFilteredProducts(filtered);
+  }, [searchValue, products]);
 
   const handleScroll = (direction: 'left' | 'right', category: string) => {
     const containerWidth = productListRef.current?.offsetWidth || 0;
@@ -64,7 +82,7 @@ const ProductList: React.FC = () => {
   };
 
   const getProductsByCategory = (category: string) => {
-    return products.filter((product) => product.category === category);
+    return filteredProducts.filter((product) => product.category === category);
   };
 
   return (
@@ -93,50 +111,47 @@ const ProductList: React.FC = () => {
       />
 
       <div>
-        {filteredCategories.map((category) => (
-          <div className={styles.productListContainer} key={category}>
-            <div className={styles.productHeaderContainer}>
-              <h2 className={styles.category}>{category}</h2>
-              <a href={`/category-products?category=${category.toLowerCase()}`} className={styles.viewMoreButton}>
-                View More
-              </a>
+        {categories.map((category) => {
+          const categoryProducts = getProductsByCategory(category);
+          if (categoryProducts.length === 0) return null;
+
+          const displayProducts = categoryProducts.slice(0, 10);
+
+          return (
+            <div className={styles.productListContainer} key={category}>
+              <div className={styles.productHeaderContainer}>
+                <h2 className={styles.category}>{category}</h2>
+                <a href={`/category-products?category=${category.toLowerCase()}`} className={styles.viewMoreButton}>
+                  View More
+                </a>
+              </div>
+              <div className={styles.scrollContainer}>
+                <button
+                  className={`${styles.scrollButton} ${styles.leftButton}`}
+                  onClick={() => handleScroll('left', category)}
+                  aria-label={`Scroll Left for ${category}`}
+                >
+                  &lt;
+                </button>
+                <button
+                  className={`${styles.scrollButton} ${styles.rightButton}`}
+                  onClick={() => handleScroll('right', category)}
+                  aria-label={`Scroll Right for ${category}`}
+                >
+                  &gt;
+                </button>
+              </div>
+              <div className={styles.productList} id={`category-${category}`} ref={productListRef}>
+                {displayProducts.map((product, index) => (
+                  <ProductCard
+                    key={`${product._id}-${index}`}
+                    {...product}
+                  />
+                ))}
+              </div>
             </div>
-            <div className={styles.scrollContainer}>
-              <button
-                className={`${styles.scrollButton} ${styles.leftButton}`}
-                onClick={() => handleScroll('left', category)}
-                aria-label={`Scroll Left for ${category}`}
-              >
-                &lt;
-              </button>
-              <button
-                className={`${styles.scrollButton} ${styles.rightButton}`}
-                onClick={() => handleScroll('right', category)}
-                aria-label={`Scroll Right for ${category}`}
-              >
-                &gt;
-              </button>
-            </div>
-            <div className={styles.productList} id={`category-${category}`} ref={productListRef}>
-              {getProductsByCategory(category).map((product, index) => (
-                <ProductCard
-                  key={index}
-                  _id={product._id}
-                  image={product.image}
-                  name={product.name}
-                  price={product.price}
-                  discountPrice={product.discountPrice}
-                  rating={product.rating}
-                  deliveryTime={product.deliveryTime}
-                  deliveryNote={product.deliveryNote}
-                  category={product.category}
-                  productId={product.productId}
-                  company={product.company}
-                />
-              ))}
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <LazyLoad>

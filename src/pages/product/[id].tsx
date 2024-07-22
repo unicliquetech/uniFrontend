@@ -31,6 +31,8 @@ interface Product {
   vendor: Vendor;
   refund: boolean;
   deliveryTime: string;
+  businessName: string;
+  businessDescription: string;
 }
 
 const ProductPage: React.FC = () => {
