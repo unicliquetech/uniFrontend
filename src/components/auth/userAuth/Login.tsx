@@ -48,8 +48,6 @@ const LoginForm: React.FC<LoginFormProps> = ()=> {
       // Store the token in localStorage or a cookie
       localStorage.setItem('token', token)
 
-
-      // Redirect to the desired page or show a success message
       router.push('/checkout')
     } catch (err) {
       console.error('Login error:', err)
