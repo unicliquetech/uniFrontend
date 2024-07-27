@@ -611,11 +611,11 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
 
   return (
     <div>
-      <div className="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px; background-color: #f9f9f9;">
-        <h2 className="color: #2c3e50; margin-bottom: 20px;">Order Confirmation </h2>
-        <p className="text-red-900 text-semi-bold line-height: 1.6;">
-          <p className="text-red-900 text-semi-bold line-height: 1.6;"><b>We're thrilled to confirm that your order has been received.</b></p>
-          <strong className="text-black">Please hold off on sending payment until we've finalized your order and completed the checkout process.</strong>
+      <div className="p-8 ">
+        <h2 className="color: #2c3e50; nb-2">Order Confirmation </h2>
+        <p className="text-red-900 text-semi-bold mt-1.6">
+          <p className="text-red-900 text-semi-bold mt-1.5 mb-6"><b>We're thrilled to confirm that your order has been received.</b></p>
+          <p className="text-black mb-6"><strong>Please hold off on sending payment until we've finalized your order and completed the checkout process.</strong></p>
         </p>
         <p className="mt-2">
           By choosing to shop from a student vendor, you're not just making a purchase, you're investing in dreams.
