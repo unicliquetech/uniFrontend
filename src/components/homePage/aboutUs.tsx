@@ -77,7 +77,7 @@ const AboutUs = () => {
                 </div>
                 <div className='flex items-center'>
                     <button
-                        className={`text-2xl md:p-4 p-3  rounded-full ${currentIndex === 0 ? 'text-gray-200 bg-[#590209]' : 'text-white'}`}
+                        className={`text-2xl md:p-4 p-3  rounded-full ${currentIndex === 0 ? 'text-gray-200 bg-gray-400' : 'text-white bg-[#590209]'}`}
                         onClick={prevMember}
                         disabled={currentIndex === 0}
                     >
