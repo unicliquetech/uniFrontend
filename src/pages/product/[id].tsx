@@ -25,6 +25,7 @@ interface Product {
       date: string;
   }[];
   stockNumber: number;
+  productId: string;
   category: string;
   company: string;
   additionalInfo: string[];
