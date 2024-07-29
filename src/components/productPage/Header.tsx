@@ -63,7 +63,8 @@ const Header: React.FC<HeaderProps> = ({
       </div>
       <div className="headericon">
         <div className={styles.headerTextWrapper}>
-          <h2 className={styles.headerText}><span>SHOP NOW</span></h2>
+          {/* <h2 className={styles.headerText}><span>SHOP NOW</span></h2> */}
+          <h2 className={styles.headerText}><span>FREE DELIVERY TO ALL HOSTELS</span></h2>
         </div>
         <img src={headerimg.src} alt="Header" className={styles.headerimg} width={headerimg.width} height={headerimg.height}/>
       </div>

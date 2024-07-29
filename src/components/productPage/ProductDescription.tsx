@@ -126,7 +126,7 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({ product }) => {
                     category: 'Ecommerce',
                     label: product.name,
                     value: product.price * quantity
-                  });
+                });
                 setIsAdded(true);
                 alert('Added To Cart');
             } else {
@@ -145,8 +145,6 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({ product }) => {
     if (!product) {
         return <div>Loading...</div>;
     }
-
-    console.log(product.vendor.businessName);
 
     return (
         <section>
@@ -193,12 +191,16 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({ product }) => {
                                 <h1 className='lg:text-[24px] text-[21px] font-[600] text-[#0D0D0D] mb-[.5rem]'>{product.name}</h1>
                                 <h3 className='lg:text-[15px] md:text-[14px] text-[12px] font-[400] text-[#3E3E3E] text-start mb-[1rem]'>{product.description}</h3>
                                 <div className='flex lg:gap-4 gap-2 flex-wrap items-center mb-[.5rem]'>
-                                    <p className='lg:text-[36px] text-[30px] font-[700] text-[#000000]'>₦ {formatNumberWithCommas(product.price)}</p>
+                                    <p className='lg:text-[36px] text-[30px] font-[700] text-[#000000]'>
+                                        ₦ {formatNumberWithCommas(product.discountPrice || product.price)}
+                                    </p>
                                     {product.discountPrice && (
                                         <>
-                                            <s className='text-[#000000] lg:text-[16px] text-[12px] font-[400]'>₦ {product.discountPrice.toFixed(2)}</s>
+                                            <s className='text-[#000000] lg:text-[16px] text-[12px] font-[400]'>
+                                                ₦ {formatNumberWithCommas(product.price)}
+                                            </s>
                                             <h1 className='p-2 bg-[#F6EEE1] text-[#8C3926] lg:text-[16px] text-[13px]'>
-                                                -{Math.round((1 - product.price / product.discountPrice) * 100)}%
+                                                -{Math.round((1 - product.discountPrice / product.price) * 100)}%
                                             </h1>
                                         </>
                                     )}
@@ -241,12 +243,12 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({ product }) => {
                                                 category: 'Ecommerce',
                                                 label: product.name,
                                                 value: product.price * quantity
-                                              });
+                                            });
                                             handleAddToCart();
                                             // Redirect to cart page
-                                            window.location.href = '/cartPage';  
+                                            window.location.href = '/cartPage';
                                         }}
-                                        disabled={isAdded}  
+                                        disabled={isAdded}
                                     >
                                         Buy Now
                                     </button>

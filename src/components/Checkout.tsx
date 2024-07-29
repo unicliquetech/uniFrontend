@@ -347,18 +347,18 @@ const SummaryStep: React.FC<SummaryStepProps> = ({
     setSelectedDeliveryTime(event.target.value);
   };
 
-  const deliveryTimes = [ '8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
+  const deliveryTimes = ['8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
 
 
   useEffect(() => {
     const fetchCartData = async () => {
       try {
         const cartId = localStorage.getItem('cartId');
-        
+
         const response = await axios.post('https://unibackend.onrender.com/api/v1/cart/items', {
           cartId: cartId
         });
-        
+
         if (response.data && Array.isArray(response.data.items)) {
           setCartItems(response.data.items);
         } else {
@@ -370,7 +370,7 @@ const SummaryStep: React.FC<SummaryStepProps> = ({
         setCartItems([]);
       }
     };
-  
+
     fetchCartData();
   }, []);
 
@@ -578,6 +578,8 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
         deliveryFee,
       };
 
+      console.log("NEW!!!");
+
       const response = await axios.post(
         'https://unibackend.onrender.com/api/v1/order/',
         orderData,
@@ -591,9 +593,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
 
         // Construct the notification message
         const notificationMessage = `Hi,
-          I've sent the money.
-
-          My cart items are: ${cartItems.map(item => `${item.name} (Quantity: ${item.quantity})`).join(', ')}
+          I will like to buy ${cartItems.map(item => `${item.name} (Quantity: ${item.quantity})`).join(', ')}
 
           The total cost is: ${response.data.order.total}.
           The delivery time is: ${response.data.order.deliveryTime} minutes.
@@ -613,14 +613,28 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
 
   return (
     <div>
-      <Image src={paymentImage} alt='' width={40} height={40} className='p-2 bg-[#FEF0F1] sm:ml-[30%] ml-[20%] mt-2 rounded-md text-center h-[20%] flex justify-center items-center w-[40%]' />
+      <div className="p-8 ">
+        <h2 className="color: #2c3e50; nb-2">Order Confirmation </h2>
+        <p className="text-red-900 text-semi-bold mt-1.6">
+          <p className="text-red-900 text-semi-bold mt-1.5 mb-6"><b>We're thrilled to confirm that your order has been received.</b></p>
+          <p className="text-black mb-6"><strong>Please hold off on sending payment until we've finalized your order and completed the checkout process.</strong></p>
+        </p>
+        <p className="mt-2">
+          By choosing to shop from a student vendor, you're not just making a purchase, you're investing in dreams.
+          <p>Each order helps a young entrepreneur take another step towards their goals, fueling both their personal growth and our community's economic future.</p>
+        </p>
+        <div className="pt-2 bt-1px ft-2 text-[#000] mt-2">
+          <p className="tagline">Together, we're building a brighter tomorrow, one purchase at a time.</p>
+          <p className="gratitude">Your support means the world to us. Thank you for believing in student potential!</p>
+        </div>
+      </div>
+
       <button
         className="bg-red-900 text-white px-4 py-2 rounded sm:ml-[45%] ml-[30%] mt-4"
         onClick={handleSendMoney}
       >
-        I've sent the money
+        Complete Checkout
       </button>
-      {/* ... */}
     </div>
   );
 };
@@ -738,11 +752,15 @@ const Checkout = () => {
         setCurrentStep('payment');
         break;
       case 'payment':
-        window.location.href = '/product';
         break;
       default:
         break;
     }
+  };
+
+  const handleContinueShopping = () => {
+    // Redirect to the product page
+    window.location.href = '/product';
   };
 
   const handleBackStep = () => {
@@ -782,7 +800,7 @@ const Checkout = () => {
 
           <header className="flex justify-between items-center bg-white py-4 px-4 sm:px-6 lg:px-8">
             <div className="flex items-center">
-            <a href='/'><img src="/images/logo1.png" alt="Uniclique" className="h-6 mr-2 sm:h-8" /></a>
+              <a href='/'><img src="/images/logo1.png" alt="Uniclique" className="h-6 mr-2 sm:h-8" /></a>
               <h1 className="text-xl mr-6  font-bold text-red-900 sm:text-2xl">Uniclique</h1>
             </div>
             <div className="flex items-center">
@@ -997,18 +1015,16 @@ const Checkout = () => {
 
 
           <div className="bg-white rounded-lg shadow-md sm:p-6">
-            {/* Header with step links */}
-            <header>
-              {/* Links to navigate between steps */}
-            </header>
 
-            {/* Render the current step component */}
             {renderStep()}
 
-            {/* Next button to navigate to the next step */}
             <div className="flex justify-between mt-8 mb-5">
               <button className="bg-red-900 text-white px-4 py-2 rounded" onClick={handleBackStep}>Back</button>
-              <button className="bg-red-900 text-white px-4 py-2 rounded" onClick={handleNextStep}>Next</button>
+              {currentStep === 'payment' ? (
+                <button className="bg-red-900 text-white px-4 py-2 rounded" onClick={handleContinueShopping}>Continue Shopping</button>
+              ) : (
+                <button className="bg-red-900 text-white px-4 py-2 rounded" onClick={handleNextStep}>Next</button>
+              )}
             </div>
           </div>
 
@@ -1019,7 +1035,7 @@ const Checkout = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 <div>
                   <div className="flex items-center">
-                  <a href='/'><img src="https://res.cloudinary.com/daqlpvggg/image/upload/v1717040777/logo3_zd01wc.png" alt="Uniclique" className="h-16 mr-2" /></a>
+                    <a href='/'><img src="https://res.cloudinary.com/daqlpvggg/image/upload/v1717040777/logo3_zd01wc.png" alt="Uniclique" className="h-16 mr-2" /></a>
                   </div>
                   <span className="text-white mt-4 mb-2">
                     Join our newsletters to stay up to date on features and releases

@@ -54,7 +54,7 @@ const ProductList: React.FC = () => {
         // Shuffle products within each category
         const shuffledProducts = sortedCategories.flatMap(category => {
           const categoryProducts = data.products.filter((p: Product) => p.category === category);
-          return categoryProducts.sort(() => Math.random() - 2.5);
+          return categoryProducts.sort(() => Math.random() - 0.5);
         });
 
         setProducts(shuffledProducts);
@@ -66,6 +66,10 @@ const ProductList: React.FC = () => {
 
     fetchProductData();
   }, []);
+
+  if (!products) {
+    return <div>Loading Products...</div>;
+}
 
   useEffect(() => {
     const filtered = products.filter(({ name }) =>
