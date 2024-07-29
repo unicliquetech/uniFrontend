@@ -21,7 +21,7 @@ const Header = () => {
                     <p className="text-[#F29F05] poppins-semibold md:text-[12px] text-[10px] cursor-pointer hover:text-[#fff]">
                         Eng
                     </p>
-                    <div className="flex columnGap justify-between">
+                    <div className="flex  justify-between md:gap-[1rem] gap-2">
                         <p className="text-[#fff] poppins-semibold md:text-[12px] text-[10px] cursor-pointer hover:text-[#F29F05]">
                             Discounts
                         </p>

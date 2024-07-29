@@ -102,7 +102,7 @@ const ProductCard: React.FC<{ product: FeaturedProductProps, activeColor: number
         : 0;
 
     return (
-        <div className='flex-shrink-0 w-[300px] bg-[#F2F2F2] p-4 rounded-lg'>
+        <div className='flex-shrink-0 h-fit w-[300px] bg-[#F2F2F2] p-4 rounded-lg'>
             <Image src={image} alt={name} width={300} height={300} className='w-full h-[200px] object-cover mb-4' />
             <div className='flex flex-col gap-2'>
                 <div className='flex justify-between items-center'>

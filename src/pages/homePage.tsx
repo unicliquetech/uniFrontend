@@ -11,6 +11,7 @@ import Service from '@/components/homePage/service';
 import FeaturedPro from '@/components/homePage/featuredPro';
 import Offer from '@/components/homePage/offer';
 import Faq from '@/components/homePage/faq';
+import About from '../components/homePage/aboutUs';
 // import ProReav from '@/components/homePage/proReav';
 // import { motion, useViewportScroll, useTransform } from "framer-motion";
 const HomePage = () => {
@@ -19,6 +20,7 @@ const HomePage = () => {
      <Header /> 
      <Category />
      <Hero />
+     <About />
      <Product />
      {/* <Stat /> */}
      <Why />
@@ -29,6 +31,7 @@ const HomePage = () => {
      <Faq />
      {/* <ProReav /> */}
      <Footer />
+
     </div>
   );
 }
