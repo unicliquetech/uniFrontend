@@ -578,7 +578,6 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
         deliveryFee,
       };
 
-      console.log("NEW!!!");
 
       const response = await axios.post(
         'https://unibackend.onrender.com/api/v1/order/',

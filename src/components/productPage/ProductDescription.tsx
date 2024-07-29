@@ -39,6 +39,7 @@ interface Product {
     }[];
     stockNumber: number;
     category: string;
+    productId: string;
     company: string;
     additionalInfo: string[];
     vendor: Vendor;
@@ -109,7 +110,7 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({ product }) => {
                 },
                 body: JSON.stringify({
                     cartId,
-                    productId: product._id,
+                    productId: product.productId,
                     quantity,
                     image: mainImage,
                     name: product.name,
