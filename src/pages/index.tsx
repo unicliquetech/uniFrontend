@@ -23,7 +23,6 @@ const HomePage = () => {
         <Header />
         <Category />
         <Hero />
-        <About />
         {/* <Stat /> */}
         <Product />
         <Why />
@@ -33,6 +32,7 @@ const HomePage = () => {
         <Offer />
         <Faq />
         {/* <ProReav /> */}
+        <About />
         <Footer />
       </Suspense>
     </div>
