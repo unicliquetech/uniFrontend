@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import * as gtag from '../../../lib/gtag';
 import { useRouter } from 'next/router';
 import Header from '@/components/homePage/header';
 import Footer from '@/components/productPage/Footer';
 import { MdArrowBack } from "react-icons/md";
 import Image from 'next/image';
+import styles from '@/styles/Vendor.module.css';
 import increasecart from '@/images/increasecart.svg';
 import decreasecart from '@/images/descrcart.svg';
 import Button from '@/components/homePage/button';
@@ -19,6 +20,7 @@ interface Vendor {
     businessName: string;
     rating: number;
     businessDescription: string;
+    phoneNumber: string;
 }
 
 interface Product {
@@ -47,6 +49,7 @@ interface Product {
     deliveryTime: string;
     businessName: string;
     businessDescription: string;
+    phoneNumber: string;
 }
 
 interface ProductDescriptionProps {
@@ -64,6 +67,8 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({ product }) => {
     const [mainImage, setMainImage] = useState<string>(initialImage);
     const [quantity, setQuantity] = useState(1);
     const [isAdded, setIsAdded] = useState(false);
+    const [showWhatsAppIcon, setShowWhatsAppIcon] = useState(true);
+    const [showCopiedMessage, setShowCopiedMessage] = useState(false);
 
     useEffect(() => {
         if (productId) {
@@ -142,6 +147,62 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({ product }) => {
             console.error('Error adding product to cart:', error);
         }
     };
+
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 300) {
+                setShowWhatsAppIcon(true);
+            } else {
+                setShowWhatsAppIcon(true);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    const handleWhatsAppClick = () => {
+        const whatsappUrl = `https://wa.me/${product.vendor.phoneNumber}`;
+        window.open(whatsappUrl, '_blank');
+    };
+
+
+    const shareProduct = useCallback(async (platform: string) => {
+        const shareUrl = window.location.href;
+        const shareText = `Check out this product: ${product.name}`;
+
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: product.name,
+                    text: shareText,
+                    url: shareUrl,
+                });
+            } catch (error) {
+                console.error('Error sharing:', error);
+            }
+        } else {
+            // Fallback for browsers that don't support Web Share API
+            let url = '';
+            switch (platform) {
+                case 'facebook':
+                    url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+                    break;
+                case 'twitter':
+                    url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+                    break;
+                case 'instagram':
+                    await navigator.clipboard.writeText(shareUrl);
+                    setShowCopiedMessage(true);
+                    setTimeout(() => setShowCopiedMessage(false), 2000);
+                    return;
+                default:
+                    return;
+            }
+            window.open(url, '_blank');
+        }
+    }, [product.name]);
 
     if (!product) {
         return <div>Loading...</div>;
@@ -258,41 +319,69 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({ product }) => {
                             </div>
                             {/* Vendor info */}
                             <div className='p-5 flex-1 flex flex-start flex-col gap-[.6rem] text-red-900 bg-white rounded-md mb-4'>
-                                <h1 className='text-start lg:text-[20px] text-[16px] font-[600] text-red-900'>{product.vendor.businessName}</h1>
-                                <h1 className='text-start lg:text-[16px] text-[12px] font-[600] text-red-900'>{product.vendor.businessDescription}</h1>
+                                <h1 className='text-start lg:text-[24px] text-[22px] font-[600] text-red-900'>{product.vendor.businessName}</h1>
                                 <div className='flex gap-[.2rem]'>
-                                    <h1 className='text-start lg:text-[16px] text-[12px] font-[600] text-red-900'>Vendor Ratings: </h1>
                                     {renderRatingStars(5)}
-                                    <p className='pl-3 lg:text-[16px] text-[14px] font-[400]'>{product.vendor.rating}/5</p>
+                                    {/* <p className='pl-3 lg:text-[16px] text-[14px] font-[400]'>{product.vendor.rating}/5</p> */}
                                 </div>
-                            </div>
+                                <h1 className='text-start lg:text-[20px] text-[18px] font-[600] text-red-900'>{product.vendor.businessDescription}</h1>
+                                <h1 className='flex text-start lg:text-[24px] text-[22px] font-[600] text-red-900'>Message Vendor Here:
+                                    {showWhatsAppIcon && (
+                                        <div
+                                            className='ml-8'
+                                            onClick={handleWhatsAppClick}
+                                        >
+                                            <img
+                                                src="https://res.cloudinary.com/daqlpvggg/image/upload/v1720351514/1200px-WhatsApp.svg_xaqyay.png"
+                                                alt="WhatsApp"
+                                                width={40}
+                                                height={40}
+                                            />
+                                        </div>
+                                    )}
+                                </h1>
 
-                            {/* <div className='flex gap-[2rem] mt-[1.5rem] justify-between w-full'>
-                                    <Button text='Buy Now' styles='bg-[#590209] lg:text-[18px] text-[16px] text-white w-1/2' />
-                                    <Button text='Add to Cart' styles='bg-white border-[1.2px] border-[#590209] w-1/2' />
+
+                                <div className='pt-1 flex-1 flex items-center gap-[1rem] bg-white rounded-md'>
+                                    <h1 className='text-[24px] text-[#0D0D0D] font-[600]'>Share this product</h1>
+                                    <Image
+                                        src={unifacebook}
+                                        alt='Share on Facebook'
+                                        width={30}
+                                        height={30}
+                                        className='cursor-pointer'
+                                        onClick={() => shareProduct('facebook')}
+                                    />
+                                    <Image
+                                        src={unitwitter}
+                                        alt='Share on Twitter'
+                                        width={30}
+                                        height={30}
+                                        className='cursor-pointer'
+                                        onClick={() => shareProduct('twitter')}
+                                    />
+                                    <Image
+                                        src={uniinsta}
+                                        alt='Share on Instagram'
+                                        width={30}
+                                        height={30}
+                                        className='cursor-pointer'
+                                        onClick={() => shareProduct('instagram')}
+                                    />
+                                    {showCopiedMessage && (
+                                        <span className="text-green-500 ml-2">URL copied!</span>
+                                    )}
                                 </div>
                             </div>
-                            <div className='p-5 flex-1 flex flex-start flex-col gap-[.6rem] bg-white rounded-md mb-4'>
-                                <h1 className='text-start lg:text-[24px] text-[20px] font-[600] text-black'>{product.company}</h1>
-                                <div className='flex gap-[.2rem]'>
-                                    {renderRatingStars(product.rating)}
-                                    <p className='pl-3 lg:text-[16px] text-[14px] font-[400]'>{product.rating}/5</p>
-                                </div>
-                                <p className='lg:text-[16px] text-[14px] font-[400] text-[#3E3E3E]'>With a discerning eye for quality and a passion for designer fashion, we source and sell exceptional pre-loved pieces, ensuring authenticity and timeless style.</p>
-                            </div> */}
-                            {/* <div className='p-5 flex-1 flex items-center gap-[1rem] bg-white rounded-md'>
-                                <h1 className='text-[24px] text-[#0D0D0D] font-[600]'>Share this product</h1>
-                                <Image src={unifacebook} alt='' width={30} height={30} className='cursor-pointer' />
-                                <Image src={unitwitter} alt='' width={30} height={30} className='cursor-pointer' />
-                                <Image src={uniinsta} alt='' width={30} height={30} className='cursor-pointer' />
-                            </div> */}
                         </div>
                     </div>
                 </div>
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mt-[3rem]'>
+
+                {/* Reviews Component */}
+                {/* <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mt-[3rem]'>
 
                     <div className='p-5 flex flex-start flex-col h-fit gap-[.6rem] bg-white rounded-md mb-4'>
-                        {/* <h1 className='text-start lg:text-[24px] text-[20px] font-[600] text-black'>Product Reviews</h1>
+                        <h1 className='text-start lg:text-[24px] text-[20px] font-[600] text-black'>Product Reviews</h1>
                         {product.reviews.map(review => (
                             <div key={review.id} className='flex items-start gap-[.5rem] mb-[.5rem]'>
                                 <Image src={review.profileImage} alt='Profile Image' width={50} height={50} className='rounded-full' />
@@ -307,9 +396,9 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({ product }) => {
                                     </div>
                                 </div>
                             </div>
-                        ))} */}
+                        ))}
                     </div>
-                </div>
+                </div> */}
             </div>
             <div>
                 <FeaturedPro />

@@ -7,6 +7,7 @@ import Header from '@/components/productPage/Header';
 import ProductCard from './productCard';
 import MainContent from '@/components/productPage/MainContent';
 import Footer from '@/components/productPage/Footer';
+import cart from '@/images/cart.svg.svg';
 
 interface Product {
   _id: string;
@@ -29,14 +30,13 @@ const ProductList: React.FC = () => {
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [searchValue, setSearchValue] = useState<string>('');
   const [categories, setCategories] = useState<string[]>([]);
+  const [showCartIcon, setShowCartIcon] = useState(true);
 
   useEffect(() => {
     const fetchProductData = async () => {
       try {
         const response = await fetch('https://unibackend.onrender.com/api/v1/products');
         const data = await response.json();
-
-        console.log(data);
 
         if (!Array.isArray(data.products)) {
           throw new Error('Invalid data format: products is not an array');
@@ -77,6 +77,24 @@ const ProductList: React.FC = () => {
     );
     setFilteredProducts(filtered);
   }, [searchValue, products]);
+  
+
+  // useEffect(() => {
+  //   const handlePageScroll = () => {
+  //     if (window.scrollY > 300) {
+  //       setShowCartIcon(true);
+  //     } else {
+  //       setShowCartIcon(false);
+  //     }
+  //   };
+
+  //   window.addEventListener('scroll', handlePageScroll);
+  //   return () => window.removeEventListener('scroll', handlePageScroll);
+  // }, []);
+
+  // const handleCartClick = () => {
+  //   window.open(whatsappUrl, '_blank');
+  // };
 
   const handleScroll = (direction: 'left' | 'right', category: string) => {
     const containerWidth = productListRef.current?.offsetWidth || 0;
@@ -157,6 +175,16 @@ const ProductList: React.FC = () => {
           );
         })}
       </div>
+
+      {showCartIcon && (
+        <a
+          className={styles.whatsappIcon} 
+          href='/cartPage'
+        >
+          <img src="https://res.cloudinary.com/daqlpvggg/image/upload/v1717107545/Frame_13_mmlp5r.svg"
+           alt="Cart" width={15} height={15} />
+        </a>
+      )}
 
       <LazyLoad>
         <Footer />

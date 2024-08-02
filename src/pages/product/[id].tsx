@@ -6,6 +6,7 @@ interface Vendor {
   businessName: string;
   rating: number;
   businessDescription: string;
+  phoneNumber: string;
 }
 
 interface Product {
@@ -34,6 +35,7 @@ interface Product {
   deliveryTime: string;
   businessName: string;
   businessDescription: string;
+  phoneNumber: string;
 }
 
 const ProductPage: React.FC = () => {
