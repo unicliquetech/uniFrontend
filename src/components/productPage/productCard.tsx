@@ -132,7 +132,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
     return (
         <LazyLoad>
-            <div className={styles.productCard} onClick={handleProductClick}>
+            <div className={styles.productCard}>
                 <div className={styles.productCard} >
                     {discountPercentage > 0 && (
                         <div className={styles.discountBadge}>
@@ -145,7 +145,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
                                 src={imageUrl} 
                                 alt={name} 
                                 className={styles.productImage} 
-                                onClick={handleImageClick}
+                                onClick={handleProductClick}
+                                // onClick={handleImageClick}
                             />
                             <div className={styles.productContent}>
                                 <div className={styles.productSubheader}>
