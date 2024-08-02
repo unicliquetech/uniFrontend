@@ -16,7 +16,7 @@ const Header = () => {
 
     return (
         <main className="flex justify-center items-center flex-col mx-auto">
-            <section className="w-full bg-[#590209] h-[76px] flex justify-center items-center sm:px-10 px-5">
+            {/* <section className="w-full bg-[#590209] h-[76px] flex justify-center items-center sm:px-10 px-5">
                 <div className="max-w-7xl w-full flex items-center justify-between">
                     <p className="text-[#F29F05] poppins-semibold md:text-[12px] text-[10px] cursor-pointer hover:text-[#fff]">
                         Eng
@@ -36,9 +36,9 @@ const Header = () => {
                         </p>
                     </div>
                 </div>
-            </section>
+            </section> */}
 
-            <div className={`w-full mt-[.7rem] transitionStyle bg-[#fff] left-0 right-0 ease-in-out duration-300 p-3 h-[100px] sm:px-8  flex flex-col items-center`}>
+            <div className={`w-full transitionStyle bg-[#fff] left-0 right-0 ease-in-out duration-300 p-3 h-[100px] sm:px-8  flex flex-col items-center`}>
                 <div className="max-w-7xl w-full flex items-center justify-between lg:px-12 px-2">
                     <Image src={Logo} alt="Uniclique logo" className="cursor-pointer" />
 
