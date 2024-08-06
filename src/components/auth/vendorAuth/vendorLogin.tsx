@@ -39,11 +39,11 @@ const LoginVendor = () => {
 
     try {
       const response = await axios.post('https://unibackend.onrender.com/api/v1/vendor/login', formData)
-      const { token } = response.data
+      const { token, vendorEmail } = response.data
 
       // Store the token in localStorage or a cookie
       localStorage.setItem('token', token)
-
+      localStorage.setItem('vendorEmail', vendorEmail)
 
       // Redirect to the desired page or show a success message
       router.push('/vendorDashboard')
