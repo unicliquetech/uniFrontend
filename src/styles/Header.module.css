@@ -126,7 +126,7 @@
 
   @media (max-width: 435px)and (min-width: 376px) {
     .headerTextWrapper{
-      top: 15%;
+      top: 18%;
     }
     .headerText span{
       font-size: 1.5rem;

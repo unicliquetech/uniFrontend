@@ -1,8 +1,8 @@
 "use client"
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Image from 'next/image';
-import DatePicker, { ReactDatePickerProps } from 'react-datepicker';
+// import { useNavigate } from 'react-router-dom';
+// import Image from 'next/image';
+// import DatePicker, { ReactDatePickerProps } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import axios, { AxiosResponse } from 'axios';
 import jwt, { JwtPayload } from 'jsonwebtoken';
@@ -508,6 +508,8 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
   serviceCharge,
   deliveryFee,
 }) => {
+  const [checkoutMessage, setCheckoutMessage] = useState<string | null>(null);
+  const [isCheckoutSuccessful, setIsCheckoutSuccessful] = useState<boolean>(false);
 
   const sendWhatsAppNotification = (vendorWhatsappNumber: string, notificationMessage: string) => {
     const encodedMessage = encodeURIComponent(notificationMessage);
@@ -586,8 +588,10 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
       );
 
       if (response.status === 201) {
-        // Order created successfully
         // const vendorWhatsappNumber = response.data.vendorWhatsAppNumber;
+        // Order created successfully
+        setIsCheckoutSuccessful(true);
+        setCheckoutMessage("Checkout successful! Thank you for your order.");
         const vendorWhatsappNumber = '09125740495';
 
         // Construct the notification message
@@ -603,9 +607,17 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
         sendWhatsAppNotification(vendorWhatsappNumber, notificationMessage);
       } else {
         console.error('Failed to create order:', response.data);
+        setIsCheckoutSuccessful(false);
+        setCheckoutMessage(response.data.message || "Failed to complete checkout. Please check that your cart items and delivery address is correctly inputted and try again.");
       }
     } catch (error) {
       console.error('Error adding product to cart:', error);
+      setIsCheckoutSuccessful(false);
+      if (axios.isAxiosError(error) && error.response) {
+        setCheckoutMessage(error.response.data.message || "An error occurred during checkout.Please check that your cart items and delivery address is correctly inputted and try again.");
+      } else {
+        setCheckoutMessage("An unexpected error occurred. Please check that your cart items and delivery address is correctly inputted and try again.");
+      }
     }
 
   };
@@ -627,6 +639,12 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
           <p className="gratitude">Your support means the world to us. Thank you for believing in student potential!</p>
         </div>
       </div>
+
+      {checkoutMessage && (
+        <div className={`mt-4 p-4 rounded ${isCheckoutSuccessful ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+          {checkoutMessage}
+        </div>
+      )}
 
       <button
         className="bg-red-900 text-white px-4 py-2 rounded sm:ml-[45%] ml-[30%] mt-4"

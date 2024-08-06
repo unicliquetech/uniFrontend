@@ -25,6 +25,8 @@ const LoginVendor = () => {
     password: '',
   })
   const [error, setError] = useState('');
+  const [isLogging, setIsLogging] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
 
   const PasswordVis = () => {
     setPasswordVis((prev) => !prev)
@@ -36,16 +38,19 @@ const LoginVendor = () => {
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setIsLogging(true);
+    setError('');
+    setSuccessMessage('');
 
     try {
       const response = await axios.post('https://unibackend.onrender.com/api/v1/vendor/login', formData)
       const { token, vendorEmail } = response.data
 
-      // Store the token in localStorage or a cookie
+      // Store the token in localStorage 
       localStorage.setItem('token', token)
       localStorage.setItem('vendorEmail', vendorEmail)
 
-      // Redirect to the desired page or show a success message
+      setSuccessMessage('Login successful! Redirecting...');
       router.push('/vendorDashboard')
     } catch (err) {
       console.error('Login error:', err)

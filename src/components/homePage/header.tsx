@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Logo from "@/images/logo.svg";
 import profile from '@/images/profile.svg.svg';
 import saved from '@/images/saved.svg.svg';
@@ -9,6 +10,22 @@ import { MdKeyboardArrowDown, MdMenu, MdClose } from "react-icons/md";
 
 const Header = () => {
     const [navbarOpen, setNavbarOpen] = useState(false);
+    const [isNotificationVisible, setIsNotificationVisible] = useState(false);
+    const router = useRouter();
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            setIsNotificationVisible(true);
+            setTimeout(() => {
+                setIsNotificationVisible(false);
+            }, 30000);
+        }
+    }, []);
+
+    const handleSignup = () => {
+        router.push('/signup');
+    };
 
     const handleOpen = () => {
         setNavbarOpen(!navbarOpen);
@@ -16,27 +33,6 @@ const Header = () => {
 
     return (
         <main className="flex justify-center items-center flex-col mx-auto">
-            {/* <section className="w-full bg-[#590209] h-[76px] flex justify-center items-center sm:px-10 px-5">
-                <div className="max-w-7xl w-full flex items-center justify-between">
-                    <p className="text-[#F29F05] poppins-semibold md:text-[12px] text-[10px] cursor-pointer hover:text-[#fff]">
-                        Eng
-                    </p>
-                    <div className="flex  justify-between md:gap-[1rem] gap-2">
-                        <p className="text-[#fff] poppins-semibold md:text-[12px] text-[10px] cursor-pointer hover:text-[#F29F05]">
-                            Discounts
-                        </p>
-                        <p className="text-[#fff] poppins-semibold md:text-[12px] text-[10px] cursor-pointer hover:text-[#F29F05]">
-                            Delivery
-                        </p>
-                        <p className="text-[#fff] poppins-semibold md:text-[12px] text-[10px] cursor-pointer hover:text-[#F29F05]">
-                            About us
-                        </p>
-                        <p className="text-[#fff] poppins-semibold md:text-[12px] text-[10px] cursor-pointer hover:text-[#F29F05]">
-                            Support
-                        </p>
-                    </div>
-                </div>
-            </section> */}
 
             <div className={`w-full transitionStyle bg-[#fff] left-0 right-0 ease-in-out duration-300 p-3 h-[100px] sm:px-8  flex flex-col items-center`}>
                 <div className="max-w-7xl w-full flex items-center justify-between lg:px-12 px-2">
@@ -76,6 +72,16 @@ const Header = () => {
                             <Image src={cart} alt="" width={15} height={15} />
                             <a href='/cartPage' className="md:text-[18px] text-[16px] text-bold">Cart</a>
                         </div>
+                        <a>
+                        {isNotificationVisible && (
+                            <button
+                                className="bg-red-900 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                onClick={handleSignup}
+                            >
+                                Sign Up
+                            </button>
+                        )}
+                        </a>
                     </div>
 
                     <MdMenu size={35} color="#0D0D0D" className="ml-1 cursor-pointer md:hidden block" onClick={handleOpen} />
@@ -100,8 +106,18 @@ const Header = () => {
                         <a href="#portfolio">
                             <li className="text-main-color-gray cursor-pointer hover:scale-105 mt-10">Gallery</li>
                         </a>
-                        <a href="#contact">
+                        <a href="/faq">
                             <li className="text-main-color-gray cursor-pointer hover:scale-105 mt-10">Contact Us</li>
+                        </a>
+                        <a>
+                        {isNotificationVisible && (
+                            <button
+                                className="bg-red-900 hover:bg-blue-700 mt-5 text-white font-bold py-2 px-4 rounded"
+                                onClick={handleSignup}
+                            >
+                                Sign Up
+                            </button>
+                        )}
                         </a>
                     </ul>
                 </div>
