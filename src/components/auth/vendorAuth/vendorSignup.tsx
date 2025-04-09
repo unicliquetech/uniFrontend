@@ -66,7 +66,7 @@ const SignUpVendor = () => {
 
         try {
             console.log('form data:', formData);
-            const response = await axios.post('https://unibackend.onrender.com/api/v1/vendor/register', formData)
+            const response = await axios.post('https://unibackend-4ebp.onrender.com/api/v1/vendor/register', formData)
             setApiResponse(response.data);
             console.log('Email data:', response.data.email);
 

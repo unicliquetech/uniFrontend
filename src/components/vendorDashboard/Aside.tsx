@@ -47,7 +47,7 @@ const Aside: React.FC<AsideProps> = ({ isMobileVisible }) => {
       try {
         const vendorEmail = localStorage.getItem('vendorEmail');
         if (vendorEmail) {
-          const response = await fetch(`https://unibackend.onrender.com/api/v1/vendorProfile`, {
+          const response = await fetch(`https://unibackend-4ebp.onrender.com/api/v1/vendorProfile`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

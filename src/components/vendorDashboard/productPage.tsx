@@ -33,7 +33,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onImageClick, onEdit
 
     const handleDelete = async () => {
         try {
-            const response = await axios.delete(`https://unibackend.onrender.com/api/v1/products/${product._id}`);
+            const response = await axios.delete(`https://unibackend-4ebp.onrender.com/api/v1/products/${product._id}`);
             setDeletionMessage(response.data.msg || 'Product deleted successfully');
             setTimeout(() => {
                 setDeletionMessage('');
@@ -110,7 +110,7 @@ const VendorProducts: React.FC = () => {
         const vendorEmail = localStorage.getItem('vendorEmail');
         try {
             setIsLoading(true);
-            const response = await axios.get(`https://unibackend.onrender.com/api/v1/products/${vendorEmail}`);
+            const response = await axios.get(`https://unibackend-4ebp.onrender.com/api/v1/products/${vendorEmail}`);
             const fetchedProducts = response.data.products;
 
             // Group products by category

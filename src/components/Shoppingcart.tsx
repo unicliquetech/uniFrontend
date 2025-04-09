@@ -23,7 +23,7 @@ const ShoppingCart = () => {
       try {
         const cartId = localStorage.getItem('cartId');
         
-        const response = await axios.post('https://unibackend.onrender.com/api/v1/cart/items', {
+        const response = await axios.post('https://unibackend-4ebp.onrender.com/api/v1/cart/items', {
           cartId: cartId
         });
         
@@ -56,7 +56,7 @@ const ShoppingCart = () => {
     try {
       const cartId = localStorage.getItem('cartId');
 
-      const response = await axios.put(`https://unibackend.onrender.com/api/v1/cart/${productId}`, { quantity: newQuantity, cartId });
+      const response = await axios.put(`https://unibackend-4ebp.onrender.com/api/v1/cart/${productId}`, { quantity: newQuantity, cartId });
       const updatedCartItems = cartItems.map((item) =>
         item.productId === productId ? { ...item, quantity: response.data.quantity } : item
       );
@@ -70,7 +70,7 @@ const ShoppingCart = () => {
 
     try {
       const cartId = localStorage.getItem('cartId');
-      const response = await axios.delete(`https://unibackend.onrender.com/api/v1/cart/${productId}`, {
+      const response = await axios.delete(`https://unibackend-4ebp.onrender.com/api/v1/cart/${productId}`, {
         data: { cartId }
       });
 
@@ -89,7 +89,7 @@ const ShoppingCart = () => {
         const newQuantity = existingItem.quantity + 1;
         await handleQuantityChange(existingItem._id, newQuantity);
       } else {
-        const response = await axios.post('https://unibackend.onrender.com/api/v1/cart', { productId });
+        const response = await axios.post('https://unibackend-4ebp.onrender.com/api/v1/cart', { productId });
         const newItem = response.data;
         setCartItems([...cartItems, newItem]);
       }

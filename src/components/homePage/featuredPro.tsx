@@ -30,7 +30,7 @@ const FeaturedPro: React.FC = () => {
     useEffect(() => {
         const fetchSponsoredProducts = async () => {
             try {
-                const response = await fetch('https://unibackend.onrender.com/api/v1/products?sponsored=true');
+                const response = await fetch('https://unibackend-4ebp.onrender.com/api/v1/products?sponsored=true');
                 const data = await response.json();
                 const sponsored = data.products.filter((product: FeaturedProductProps) => product.sponsored);
                 if (sponsored.length > 0) {

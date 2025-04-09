@@ -182,7 +182,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
 
         console.log('Sending request to server');
 
-        const response = await axios.post('https://unibackend.onrender.com/api/v1/products/uploadImage', formData, {
+        const response = await axios.post('https://unibackend-4ebp.onrender.com/api/v1/products/uploadImage', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -273,7 +273,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
         setSuccessMessage('Product updated successfully!');
       } else {
         // Create new product
-        const response = await axios.post('https://unibackend.onrender.com/api/v1/products', formData, {
+        const response = await axios.post('https://unibackend-4ebp.onrender.com/api/v1/products', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },

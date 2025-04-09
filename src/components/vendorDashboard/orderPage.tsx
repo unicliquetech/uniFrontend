@@ -109,7 +109,7 @@ const Order = () => {
             try {
                 const vendorEmail = localStorage.getItem('vendorEmail');
                 if (vendorEmail) {
-                    const response = await fetch(`https://unibackend.onrender.com/api/v1/vendorProfile`, {
+                    const response = await fetch(`https://unibackend-4ebp.onrender.com/api/v1/vendorProfile`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -174,7 +174,7 @@ const Order = () => {
   const handleStatusChange = async (orderId: string, newStatus: string) => {
     try {
       // Make an API call to update the order status
-      const response = await fetch(`https://unibackend.onrender.com/api/v1/order/${orderId}/status`, {
+      const response = await fetch(`https://unibackend-4ebp.onrender.com/api/v1/order/${orderId}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

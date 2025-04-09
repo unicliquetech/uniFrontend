@@ -27,7 +27,7 @@ const Homepage = () => {
             try {
                 const vendorEmail = localStorage.getItem('vendorEmail');
                 if (vendorEmail) {
-                    const response = await fetch(`https://unibackend.onrender.com/api/v1/vendorProfile`, {
+                    const response = await fetch(`https://unibackend-4ebp.onrender.com/api/v1/vendorProfile`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -60,7 +60,7 @@ const Homepage = () => {
 
     const fetchProductCount = async (vendorEmail: string) => {
         try {
-            const response = await axios.get(`https://unibackend.onrender.com/api/v1/products/${vendorEmail}`);
+            const response = await axios.get(`https://unibackend-4ebp.onrender.com/api/v1/products/${vendorEmail}`);
             setProductCount(response.data.count);
         } catch (error) {
             console.error('Error fetching product count:', error);

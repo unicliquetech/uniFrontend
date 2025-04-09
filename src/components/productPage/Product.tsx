@@ -35,7 +35,7 @@ const ProductList: React.FC = () => {
   useEffect(() => {
     const fetchProductData = async () => {
       try {
-        const response = await fetch('https://unibackend.onrender.com/api/v1/products');
+        const response = await fetch('https://unibackend-4ebp.onrender.com/api/v1/products');
         const data = await response.json();
 
         if (!Array.isArray(data.products)) {

@@ -78,7 +78,7 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({ product }) => {
 
     const fetchProductData = async (id: string) => {
         try {
-            const response = await fetch(`https://unibackend.onrender.com/api/v1/products/product/${id}`);
+            const response = await fetch(`https://unibackend-4ebp.onrender.com/api/v1/products/product/${id}`);
             const data = await response.json();
             console.log(data);
             setMainImage(Array.isArray(data.product.image) ? data.product.image[0] : data.product.image);
@@ -108,7 +108,7 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({ product }) => {
     const handleAddToCart = async () => {
         try {
             const cartId = localStorage.getItem('cartId');
-            const response = await fetch('https://unibackend.onrender.com/api/v1/cart', {
+            const response = await fetch('https://unibackend-4ebp.onrender.com/api/v1/cart', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -135,7 +135,7 @@ const SignUp = () => {
         }
 
         try {
-            const response = await axios.post('https://unibackend.onrender.com/api/v1/user/register', formData )
+            const response = await axios.post('https://unibackend-4ebp.onrender.com/api/v1/user/register', formData )
             console.log(response.data); 
 
             if (response.data.email) {

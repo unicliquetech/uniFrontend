@@ -56,7 +56,7 @@ const CategoryProducts: React.FC = () => {
   useEffect(() => {
     const fetchProductData = async () => {
       try {
-        const response = await fetch('https://unibackend.onrender.com/api/v1/products');
+        const response = await fetch('https://unibackend-4ebp.onrender.com/api/v1/products');
         const data = await response.json();
         const filteredProducts = data.products.filter(
           (product: Product) => product.category.toLowerCase() === category?.toString().toLowerCase()

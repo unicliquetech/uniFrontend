@@ -36,7 +36,7 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = () => {
 
 
     try {
-      const response = await axios.post("https://unibackend.onrender.com/api/v1/user/reset-password-email", {email});
+      const response = await axios.post("https://unibackend-4ebp.onrender.com/api/v1/user/reset-password-email", {email});
       setMessage(response.data.msg);
     } catch (error) {
       if (axios.isAxiosError(error)) {

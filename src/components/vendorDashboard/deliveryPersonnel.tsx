@@ -130,7 +130,7 @@ const DeliveryPersonnelTable: React.FC<DeliveryPersonnelTableProps> = ({
         if (vehicle) filterParams.append('vehicle', vehicle);
         if (type) filterParams.append('type', type);
 
-        const res = await fetch(`https://unibackend.onrender.com/api/v1/deliveryPersonnel/filter?${filterParams.toString()}`);
+        const res = await fetch(`https://unibackend-4ebp.onrender.com/api/v1/deliveryPersonnel/filter?${filterParams.toString()}`);
         const data = await res.json();
         onPersonnelSelect(data);
     };
@@ -321,7 +321,7 @@ const DeliveryPersonnel: React.FC = () => {
 
     useEffect(() => {
         // Fetch delivery personnel data from the API
-        fetch('https://unibackend.onrender.com/api/v1/deliveryPersonnel')
+        fetch('https://unibackend-4ebp.onrender.com/api/v1/deliveryPersonnel')
             .then((res) => res.json())
             .then((data) => setDeliveryPersonnel(data));
     }, []);

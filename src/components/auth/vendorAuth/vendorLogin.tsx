@@ -43,7 +43,7 @@ const LoginVendor = () => {
     setSuccessMessage('');
 
     try {
-      const response = await axios.post('https://unibackend.onrender.com/api/v1/vendor/login', formData)
+      const response = await axios.post('https://unibackend-4ebp.onrender.com/api/v1/vendor/login', formData)
       const { token, vendorEmail } = response.data
 
       // Store the token in localStorage 

@@ -91,7 +91,7 @@ const EmailVerification = () => {
 
   const handleVerifyEmail = async () => {
     try {
-      const response = await axios.post('https://unibackend.onrender.com/api/v1/user/verify-email', { otp }, );
+      const response = await axios.post('https://unibackend-4ebp.onrender.com/api/v1/user/verify-email', { otp }, );
       setApiResponse(response.data);
       if (response.data.message === 'Email verified successfully') {
         router.push('/login');
@@ -105,7 +105,7 @@ const EmailVerification = () => {
   const handleresendEmail = async () => {
     try {
       const headers = getEmailHeaders();
-      const response = await axios.post('https://unibackend.onrender.com/api/v1/user/resend-otp', null, headers);
+      const response = await axios.post('https://unibackend-4ebp.onrender.com/api/v1/user/resend-otp', null, headers);
       setApiResponse(response.data);
       if (response.data.message === 'OTP sent to Email') {
         router.push('/verify');

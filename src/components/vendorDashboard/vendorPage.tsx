@@ -102,7 +102,7 @@ const VendorPage: React.FC<VendorPageProps> = ({ vendor }) => {
       }
 
       // Send a request to verify the token
-      const response = await fetch('https://unibackend.onrender.com/api/v1/vendorProfile/vendorPage/${businessName}/auth', {
+      const response = await fetch('https://unibackend-4ebp.onrender.com/api/v1/vendorProfile/vendorPage/${businessName}/auth', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -114,7 +114,7 @@ const VendorPage: React.FC<VendorPageProps> = ({ vendor }) => {
         const { userId } = await response.json();
 
         // Submit the review with the userId
-        const reviewResponse = await fetch(`https://unibackend.onrender.com/api/v1/vendorProfile/vendorPage/${businessName}/reviews`, {
+        const reviewResponse = await fetch(`https://unibackend-4ebp.onrender.com/api/v1/vendorProfile/vendorPage/${businessName}/reviews`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -144,7 +144,7 @@ const VendorPage: React.FC<VendorPageProps> = ({ vendor }) => {
 const handleAddToCart = async (product: Product) => {
   try {
       const cartId = localStorage.getItem('cartId');
-      const response = await fetch('https://unibackend.onrender.com/api/v1/cart', {
+      const response = await fetch('https://unibackend-4ebp.onrender.com/api/v1/cart', {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json',

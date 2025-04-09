@@ -89,7 +89,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
     const handleAddToCart = async () => {
         try {
             const cartId = localStorage.getItem('cartId');
-            const response = await fetch('https://unibackend.onrender.com/api/v1/cart', {
+            const response = await fetch('https://unibackend-4ebp.onrender.com/api/v1/cart', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

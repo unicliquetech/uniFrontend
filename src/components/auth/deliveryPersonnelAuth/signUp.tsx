@@ -72,7 +72,7 @@ const DeliveryPersonSignUp = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await axios.post('https://unibackend.onrender.com/api/v1/deliveryPersonnel', formData);
+      await axios.post('https://unibackend-4ebp.onrender.com/api/v1/deliveryPersonnel', formData);
       alert('Sign up successful!');
     } catch (err) {
       console.error(err);

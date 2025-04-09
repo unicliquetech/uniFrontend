@@ -33,7 +33,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = () => {
         return;
       }
 
-      const response = await axios.post("https://unibackend.onrender.com/api/v1/user/update-password", {
+      const response = await axios.post("https://unibackend-4ebp.onrender.com/api/v1/user/update-password", {
         resetOtp,
         newPassword,
         confirmPassword,

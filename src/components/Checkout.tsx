@@ -101,7 +101,7 @@ const AddressStep: React.FC<AddressStepProps> = ({ selectedAddress, setSelectedA
     const fetchAddresses = async () => {
       try {
         const response: AxiosResponse<Address[]> = await axios.get(
-          'https://unibackend.onrender.com/api/v1/address',
+          'https://unibackend-4ebp.onrender.com/api/v1/address',
           getAuthHeaders()
         );
         setAddresses(response.data);
@@ -120,7 +120,7 @@ const AddressStep: React.FC<AddressStepProps> = ({ selectedAddress, setSelectedA
   const handleAddAddress = async () => {
     try {
       const response: AxiosResponse<Address> = await axios.post(
-        'https://unibackend.onrender.com/api/v1/address',
+        'https://unibackend-4ebp.onrender.com/api/v1/address',
         newAddress,
         getAuthHeaders()
       );
@@ -156,7 +156,7 @@ const AddressStep: React.FC<AddressStepProps> = ({ selectedAddress, setSelectedA
   const handleUpdateAddress = async (_id: string) => {
     try {
       const response: AxiosResponse<Address> = await axios.put(
-        `https://unibackend.onrender.com/api/v1/address/${_id}`,
+        `https://unibackend-4ebp.onrender.com/api/v1/address/${_id}`,
         newAddress,
         getAuthHeaders()
       );
@@ -169,7 +169,7 @@ const AddressStep: React.FC<AddressStepProps> = ({ selectedAddress, setSelectedA
 
   const handleDeleteAddress = async (_id: string) => {
     try {
-      await axios.delete(`https://unibackend.onrender.com/api/v1/address/${_id}`, getAuthHeaders());
+      await axios.delete(`https://unibackend-4ebp.onrender.com/api/v1/address/${_id}`, getAuthHeaders());
       setAddresses(addresses.filter((address) => address._id !== _id));
     } catch (error) {
       console.error('Error deleting address:', error);
@@ -355,7 +355,7 @@ const SummaryStep: React.FC<SummaryStepProps> = ({
       try {
         const cartId = localStorage.getItem('cartId');
 
-        const response = await axios.post('https://unibackend.onrender.com/api/v1/cart/items', {
+        const response = await axios.post('https://unibackend-4ebp.onrender.com/api/v1/cart/items', {
           cartId: cartId
         });
 
@@ -582,7 +582,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
 
 
       const response = await axios.post(
-        'https://unibackend.onrender.com/api/v1/order/',
+        'https://unibackend-4ebp.onrender.com/api/v1/order/',
         orderData,
         getAuthHeaders()
       );

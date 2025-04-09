@@ -111,7 +111,7 @@ const MessageList: React.FC<MessageListProps> = ({ messages, currentCategory, on
   );
 };
 
-const API_BASE_URL = 'http://localhost:5000/api/v1/message';
+const API_BASE_URL = 'https://unibackend-4ebp.onrender.com/api/v1/message';
 
 const MessagingLayout: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
