@@ -54,6 +54,17 @@ const Header = () => {
                             </a>
                             {/* <MdKeyboardArrowDown size={20} color="#0D0D0D" className="ml-1" /> */}
                         </div>
+                        <div className="flex items-center cursor-pointer ml-3">
+                            <a href='https://declutter.uniclique.com.ng' className="text-[#0D0D0D] poppins-regular text-[18px] hover:text-[#590209]">
+                                Declutter
+                            </a>
+                        </div>
+                        <div className="flex items-center cursor-pointer ml-3">
+                            <a href='https://declutter.uniclique.com.ng/group-buy' className="text-[#0D0D0D] poppins-regular text-[18px] hover:text-[#590209]">
+                                Group Buy
+                            </a>
+                            {/* <MdKeyboardArrowDown size={20} color="#0D0D0D" className="ml-1" /> */}
+                        </div>
                         <p className="text-[#0D0D0D] poppins-regular text-[18px] cursor-pointer hover:text-[#590209] ml-3">
                             Pricing
                         </p>

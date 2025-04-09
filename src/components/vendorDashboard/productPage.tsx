@@ -5,100 +5,46 @@ import AddProductModal from '@/components/vendorDashboard/addProductModal';
 import Nav from '@/components/vendorDashboard/nav';
 import Aside from '@/components/vendorDashboard/Aside';
 
-
-interface ProductCardProps {
-    product: {
-        _id: string;
-        name: string;
-        description: string;
-        price: number;
-        image: string | string[];
-        discount?: number;
-        sponsored: boolean;
-    };
-    onImageClick: (imageUrl: string | string[]) => void;
+interface ErrorType {
+    message: string;
 }
 
-// interface ErrorType {
-//     message: string;
-// }
+interface ProductType {
+    _id: string;
+    name: string;
+    description: string;
+    price: number;
+    image: string | string[];
+    discount?: number;
+    sponsored: boolean;
+    category?: string;
+}
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, onImageClick }) => {
-    const [products, setProducts] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [fullImage, setFullImage] = useState<string | null>(null);
-    const [error, setError] = useState<ErrorType | null>(null);
-    const [selectedProduct, setSelectedProduct] = useState<ProductCardProps['product'] | null>(null);
-    
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+interface ProductCardProps {
+    product: ProductType;
+    onImageClick: (imageUrl: string | string[]) => void;
+    onEdit: (product: ProductType) => void;
+    onDelete: (productId: string) => void;
+    refreshProducts: () => void;
+}
+
+const ProductCard: React.FC<ProductCardProps> = ({ product, onImageClick, onEdit, onDelete, refreshProducts }) => {
     const [deletionMessage, setDeletionMessage] = useState('');
-
-    useEffect(() => {
-        const vendorEmail = localStorage.getItem('vendorEmail');
-        const fetchProducts = async () => {
-            try {
-                setIsLoading(true);
-                const response = await axios.get(`https://unibackend.onrender.com/api/v1/products/${vendorEmail}`);
-                setProducts(response.data.products);
-            } catch (err) {
-                setError(err as ErrorType);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchProducts();
-    }, []);
-
-
-
-    // const handleEditClick = (product: ProductCardProps['product']) => {
-    //     setSelectedProduct(product);
-    //     setIsModalOpen(true);
-    //   };
-
-    // const handleEditButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    //     event.preventDefault(); // Prevent default button behavior if needed
-    //     onEdit(product);
-    //   };
-
-
-    const handleEdit = async () => {
-        try {
-            const response = await axios.patch(`https://unibackend.onrender.com/api/v1/products/${product._id}`, {
-                name: product.name,
-                price: product.price,
-            });
-
-            console.log('Product updated:', response.data.product);
-        } catch (error) {
-            console.error('Error updating product:', error);
-        }
-    };
-
-    useEffect(() => {
-        return () => {
-            setDeletionMessage('');
-        };
-    }, []);
 
     const handleDelete = async () => {
         try {
             const response = await axios.delete(`https://unibackend.onrender.com/api/v1/products/${product._id}`);
-            console.log('Product deleted:', response.data.msg);
+            setDeletionMessage(response.data.msg || 'Product deleted successfully');
             setTimeout(() => {
                 setDeletionMessage('');
-            }, 5000);
+                refreshProducts(); // Refresh products after deletion
+            }, 3000);
         } catch (error) {
             console.error('Error deleting product:', error);
         }
     };
 
     const productImage = Array.isArray(product.image) ? product.image[0] : product.image;
-
-    const handleImageClick = (imageUrl: string) => {
-        setFullImage(imageUrl);
-    };
 
     return (
         <div className="bg-white rounded-lg shadow-md relative">
@@ -111,27 +57,31 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onImageClick }) => {
                 </div>
             )}
 
-            {/* <img src={product.image} alt={product.name} className="w-full productImage h-48 object-cover rounded-t-lg"
-                onClick={() => onImageClick(product.image)} /> */}
-            <img src={productImage} alt={product.name} className="w-full productImage h-48 object-cover rounded-t-lg"
-                onClick={() => onImageClick(product.image)} />
+            <img 
+                src={productImage} 
+                alt={product.name} 
+                className="w-full productImage h-48 object-cover rounded-t-lg"
+                onClick={() => onImageClick(product.image)} 
+            />
 
             <div className="p-4">
                 <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
                 <p className="text-gray-600 mb-2">
-                    Price: <span className="text-red-500 font-bold">₦{product && product.price ? product.price.toLocaleString() : ''}</span>
-                    <span className="line-through ml-2 text-gray-400">₦{product && product.discount ? product.discount.toLocaleString() : ''}</span>
+                    Price: <span className="text-red-500 font-bold">₦{product?.price?.toLocaleString() || ''}</span>
+                    <span className="line-through ml-2 text-gray-400">₦{product?.discount?.toLocaleString() || ''}</span>
                 </p>
                 {product.discount && <small className="bg-red-900 px-1 rounded-md text-white mb-4"> -{product.discount}%</small>}
                 <div className="flex justify-between">
-                    {/* <button
-                            className="bg-red-900 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors duration-300"
-                            onClick={() => setIsModalOpen(true)}
-                        >
-                            Edit
-                        </button> */}
-                    <button className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-gray-400 transition-colors duration-300"
-                        onClick={handleDelete}>
+                    <button
+                        className="bg-red-900 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors duration-300"
+                        onClick={() => onEdit(product)}
+                    >
+                        Edit
+                    </button>
+                    <button 
+                        className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-gray-400 transition-colors duration-300"
+                        onClick={handleDelete}
+                    >
                         Delete
                     </button>
                 </div>
@@ -140,56 +90,50 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onImageClick }) => {
     );
 };
 
-
-interface ErrorType {
-    message: string;
-}
-
 const VendorProducts: React.FC = () => {
-    const [products, setProducts] = useState([]);
-    const [productsByCategory, setProductsByCategory] = useState<{ [key: string]: any[] }>({});
+    const [products, setProducts] = useState<ProductType[]>([]);
+    const [productsByCategory, setProductsByCategory] = useState<{ [key: string]: ProductType[] }>({});
     const [categories, setCategories] = useState<string[]>([]);
-    const [showFullImage, setShowFullImage] = useState(false);
     const [fullImage, setFullImage] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<ErrorType | null>(null);
-    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [selectedProduct, setSelectedProduct] = useState<ProductType | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const productsPerPage = 6;
-    const totalProducts = products.length;
-    const totalPages = Math.ceil(totalProducts / productsPerPage);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isMobileVisible, setIsMobileVisible] = useState<boolean>(false);
 
+    const productsPerPage = 6;
+    const totalProducts = products.length;
+    const totalPages = Math.ceil(totalProducts / productsPerPage);
+
+    const fetchProducts = async () => {
+        const vendorEmail = localStorage.getItem('vendorEmail');
+        try {
+            setIsLoading(true);
+            const response = await axios.get(`https://unibackend.onrender.com/api/v1/products/${vendorEmail}`);
+            const fetchedProducts = response.data.products;
+
+            // Group products by category
+            const groupedProducts = fetchedProducts.reduce((acc: { [key: string]: ProductType[] }, product: ProductType) => {
+                const category = product.category || 'Uncategorized';
+                if (!acc[category]) {
+                    acc[category] = [];
+                }
+                acc[category].push(product);
+                return acc;
+            }, {});
+
+            setProducts(fetchedProducts);
+            setProductsByCategory(groupedProducts);
+            setCategories(Object.keys(groupedProducts));
+        } catch (err) {
+            setError(err as ErrorType);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const vendorEmail = localStorage.getItem('vendorEmail');
-        const fetchProducts = async () => {
-            try {
-                setIsLoading(true);
-                const response = await axios.get(`https://unibackend.onrender.com/api/v1/products/${vendorEmail}`);
-                // setProducts(response.data.products);
-                const products = response.data.products;
-
-                // Group products by category
-                const groupedProducts = products.reduce((acc: { [key: string]: any[] }, product: any) => {
-                    const category = product.category || 'Uncategorized';
-                    if (!acc[category]) {
-                        acc[category] = [];
-                    }
-                    acc[category].push(product);
-                    return acc;
-                }, {});
-
-                setProductsByCategory(groupedProducts);
-                setCategories(Object.keys(groupedProducts));
-            } catch (err) {
-                setError(err as ErrorType);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
         fetchProducts();
     }, []);
 
@@ -211,7 +155,7 @@ const VendorProducts: React.FC = () => {
             pageNumbers.push(
                 <span
                     key={i}
-                    className={`px-4 py-2 ${currentPage === i ? 'bg-white text-red-900' : 'bg-white text-gray-700'}`}
+                    className={`px-4 py-2 cursor-pointer ${currentPage === i ? 'bg-white text-red-900' : 'bg-white text-gray-700'}`}
                     onClick={() => handlePageChange(i)}
                 >
                     {i}
@@ -225,6 +169,16 @@ const VendorProducts: React.FC = () => {
         setFullImage(Array.isArray(imageUrl) ? imageUrl[0] : imageUrl);
     };
 
+    const handleEdit = (product: ProductType) => {
+        setSelectedProduct(product);
+        setIsModalOpen(true);
+    };
+
+    const handleDelete = (productId: string) => {
+        // This function doesn't need implementation as deletion is handled within ProductCard
+        // It's just here to satisfy the prop requirements
+    };
+
     return (
         <main className='w-[100%] flex flex-col'>
             <div>
@@ -235,11 +189,13 @@ const VendorProducts: React.FC = () => {
                         <h1 className="text-2xl font-bold">My Product Catalogue</h1>
                         <button
                             className="bg-red-900 text-white font-semibold px-4 py-2 rounded-md"
-                            onClick={() => setIsModalOpen(true)}
+                            onClick={() => {
+                                setSelectedProduct(null);
+                                setIsModalOpen(true);
+                            }}
                         >
                             <b>+</b> Add Product
                         </button>
-
 
                         <AddProductModal
                             isOpen={isModalOpen}
@@ -248,64 +204,61 @@ const VendorProducts: React.FC = () => {
                                 setSelectedProduct(null);
                             }}
                             selectedProduct={selectedProduct}
+                            onProductSaved={fetchProducts}
                         />
-
                     </div>
-                    {/* <div className="mb-8">
-                        <h2 className="text-xl font-semibold mb-4">Product Category</h2>
-                        <h3 className="text-lg font-semibold mb-2">{products.name}</h3>
-                    </div> */}
-                    <div>
-                        <h2 className="text-xl font-semibold mb-4">Products</h2>
-                        {/* <div className="grid grid-cols-1 p-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                            {currentProducts.map((product, index) => (
-                                <ProductCard key={index} product={product} onImageClick={handleImageClick} />
-                            ))}
-                        </div> */}
 
-                        {categories.length === 1 ? (
-                            <div>
-                                <h2 className="text-xl font-semibold mb-4">Product Category: {categories[0].toUpperCase()}</h2>
-                                <div className="grid grid-cols-1 p-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                                    {productsByCategory[categories[0]].map((product, index) => (
-                                        <ProductCard key={index} product={product} onImageClick={handleImageClick} />
-                                    ))}
-                                </div>
-                            </div>
-                        ) : (
-                            categories.map((category) => (
+                    {isLoading ? (
+                        <div className="text-center py-8">Loading products...</div>
+                    ) : error ? (
+                        <div className="text-center py-8 text-red-600">Error loading products: {error.message}</div>
+                    ) : categories.length === 0 ? (
+                        <div className="text-center py-8">No products found. Add your first product!</div>
+                    ) : (
+                        <div>
+                            <h2 className="text-xl font-semibold mb-4">Products</h2>
+
+                            {categories.map((category) => (
                                 <div key={category} className="mb-8">
-                                    <h2 className="text-xl font-semibold mb-4">Product Category: {category}</h2>
+                                    <h2 className="text-xl font-semibold mb-4">Product Category: {category.toUpperCase()}</h2>
                                     <div className="grid grid-cols-1 p-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                                         {productsByCategory[category].map((product, index) => (
-                                            <ProductCard key={index} product={product} onImageClick={handleImageClick} />
+                                            <ProductCard 
+                                                key={`${product._id}-${index}`} 
+                                                product={product} 
+                                                onImageClick={handleImageClick}
+                                                onEdit={handleEdit}
+                                                onDelete={handleDelete}
+                                                refreshProducts={fetchProducts}
+                                            />
                                         ))}
                                     </div>
                                 </div>
-                            ))
-                        )}
+                            ))}
 
-
-                        <div className="flex justify-center mt-8 mb-8">
-                            <div className="bg-white rounded-md flex gap-2 shadow-md">
-                                <button
-                                    className="px-4 py-2 rounded-l-md bg-red-900 text-white"
-                                    onClick={() => handlePageChange(currentPage - 1)}
-                                    disabled={currentPage === 1}
-                                >
-                                    Previous
-                                </button>
-                                {renderPageNumbers()}
-                                <button
-                                    className="px-4 py-2 rounded-r-md bg-red-900 text-white"
-                                    onClick={() => handlePageChange(currentPage + 1)}
-                                    disabled={currentPage === totalPages}
-                                >
-                                    Next
-                                </button>
-                            </div>
+                            {totalPages > 1 && (
+                                <div className="flex justify-center mt-8 mb-8">
+                                    <div className="bg-white rounded-md flex gap-2 shadow-md">
+                                        <button
+                                            className="px-4 py-2 rounded-l-md bg-red-900 text-white disabled:bg-gray-400"
+                                            onClick={() => handlePageChange(currentPage - 1)}
+                                            disabled={currentPage === 1}
+                                        >
+                                            Previous
+                                        </button>
+                                        {renderPageNumbers()}
+                                        <button
+                                            className="px-4 py-2 rounded-r-md bg-red-900 text-white disabled:bg-gray-400"
+                                            onClick={() => handlePageChange(currentPage + 1)}
+                                            disabled={currentPage === totalPages}
+                                        >
+                                            Next
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
-                    </div>
+                    )}
                 </div>
             </div>
             {fullImage && (
@@ -314,7 +267,6 @@ const VendorProducts: React.FC = () => {
                 </div>
             )}
         </main>
-
     );
 };
 

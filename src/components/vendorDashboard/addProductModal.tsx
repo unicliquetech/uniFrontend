@@ -13,21 +13,34 @@ Modal.setAppElement('#__next');
 interface ProductType {
   _id: string;
   name: string;
+  description?: string;
+  price?: number;
+  image?: string | string[];
+  discount?: number;
+  sponsored?: boolean;
+  category?: string;
+  brand?: string;
+  gender?: 'male' | 'female' | 'unisex';
+  stockNumber?: number;
+  deliveryTime?: number;
+  deliveryNote?: string;
+  refund?: boolean;
+  colours?: string[];
 }
 
 interface AddProductModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
   selectedProduct?: ProductType | null;
+  onProductSaved: () => void;
 }
 
-const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClose, selectedProduct }) => {
+
+const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClose, selectedProduct, onProductSaved }) => {
   const [step, setStep] = useState(1);
   const [productName, setProductName] = useState('');
   const [productDescription, setProductDescription] = useState('');
-  const [productImage, setProductImage] = useState<{ src: string[] } | null>(null);
   const [productImages, setProductImages] = useState<string[]>([]);
-  const [productImagePreview, setProductImagePreview] = useState<File | null>(null);
   const [productVisibility, setProductVisibility] = useState<'visible' | 'hidden'>('visible');
   const [productCategory, setProductCategory] = useState('');
   const [productBrand, setProductBrand] = useState('');
@@ -43,7 +56,100 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
   const [discountPrice, setDiscountPrice] = useState<number>(0);
   const [showColorPicker, setShowColorPicker] = useState<boolean>(false);
   const [isMobileVisible, setIsMobileVisible] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [successMessage, setSuccessMessage] = useState<string>('');
+  // Store original images to prevent reset
+  const [originalImages, setOriginalImages] = useState<string[]>([]);
 
+  useEffect(() => {
+    if (selectedProduct) {
+      // Populate form fields when editing an existing product
+      setProductName(selectedProduct.name || '');
+      setProductDescription(selectedProduct.description || '');
+
+      // Handle product images
+      if (selectedProduct.image) {
+        let images: string[] = [];
+        if (typeof selectedProduct.image === 'string') {
+          try {
+            const parsed = JSON.parse(selectedProduct.image);
+            images = Array.isArray(parsed) ? parsed : [parsed];
+          } catch (err) {
+            // If it's not JSON, fallback to single image string
+            images = [selectedProduct.image];
+          }
+        } else if (Array.isArray(selectedProduct.image)) {
+          images = selectedProduct.image;
+        }
+        setProductImages(images);
+        setOriginalImages(images); // Store original images
+      }
+
+      setProductCategory(selectedProduct.category || '');
+      setProductBrand(selectedProduct.brand || '');
+      setProductGender(selectedProduct.gender || 'unisex');
+      setProductStock(selectedProduct.stockNumber || 1);
+      setDeliveryTime(selectedProduct.deliveryTime || 30);
+      setDeliveryNote(selectedProduct.deliveryNote || '');
+      setRefund(selectedProduct.refund || false);
+      setColors(selectedProduct.colours || ['Red', 'Black']);
+      setSponsorProduct(selectedProduct.sponsored || false);
+
+      // Handle pricing
+      if (selectedProduct.price) {
+        setBasePrice(selectedProduct.price);
+        if (selectedProduct.discount) {
+          setDiscountType('percentageDiscount');
+          setDiscountPrice(selectedProduct.discount);
+        } else {
+          setDiscountType('noDiscount');
+          setDiscountPrice(0);
+        }
+      }
+    } else {
+      // Reset form fields when adding a new product
+      resetForm();
+    }
+  }, [selectedProduct, isOpen]);
+
+  const resetForm = () => {
+    setProductName(selectedProduct?.name || "");
+    setProductDescription(selectedProduct?.description || "");
+
+    // Preserve the images instead of resetting them
+    if (selectedProduct) {
+      // Keep the original images
+      const images = originalImages.length > 0 ? originalImages : selectedProduct?.image;
+      if (typeof images === "string") {
+        try {
+          const parsedImages = JSON.parse(images);
+          setProductImages(Array.isArray(parsedImages) ? parsedImages : []);
+        } catch (e) {
+          setProductImages(typeof images === "string" ? [images] : []);
+        }
+      } else if (Array.isArray(images)) {
+        setProductImages(images);
+      }
+    }
+    // Don't reset images to empty array, keep what we have
+
+    setProductCategory('');
+    setProductBrand('');
+    setProductGender('unisex');
+    setProductStock(1);
+    setDeliveryTime(30);
+    setDeliveryNote('');
+    setRefund(false);
+    setColors(['Red', 'Black']);
+    setSponsorProduct(false);
+    setDiscountType('percentageDiscount');
+    setBasePrice(0);
+    setDiscountPrice(0);
+    setStep(1);
+    setErrorMessage('');
+    setSuccessMessage('');
+  };
 
   const toggleMobileVisibility = () => {
     setIsMobileVisible(!isMobileVisible);
@@ -57,7 +163,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
     setStep(step - 1);
   };
 
-  const MAX_IMAGES = 5; 
+  const MAX_IMAGES = 5;
 
   const handleProductImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -85,7 +191,9 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
         console.log('Server response:', response.data.images);
 
         const imageUrls = response.data.images;
-        setProductImages(prevImages => [...prevImages, ...imageUrls]); // Append new images to existing ones
+        const updatedImages = [...productImages, ...imageUrls];
+        setProductImages(updatedImages); // Append new images to existing ones
+        setOriginalImages(updatedImages); // Update original images as well
 
         console.log('Product Image URLs:', imageUrls);
       } catch (error) {
@@ -124,12 +232,11 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
     setShowColorPicker(!showColorPicker);
   };
 
-
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const vendorEmail = localStorage.getItem('vendorEmail');
 
-
+    setIsSubmitting(true);
     try {
       const formData = new FormData();
       formData.append('vendorEmail', vendorEmail ? vendorEmail : '');
@@ -153,7 +260,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
 
       if (selectedProduct) {
         // Update existing product
-        const response = await axios.put(
+        const response = await axios.patch(
           `https://unibackend.onrender.com/api/v1/products/${selectedProduct._id}`,
           formData,
           {
@@ -163,6 +270,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
           }
         );
         console.log('Product updated:', response.data);
+        setSuccessMessage('Product updated successfully!');
       } else {
         // Create new product
         const response = await axios.post('https://unibackend.onrender.com/api/v1/products', formData, {
@@ -171,20 +279,33 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
           },
         });
         console.log('Product created:', response.data);
+        setSuccessMessage('Product created successfully!');
       }
 
-      onRequestClose();
+      // Call the onProductSaved callback to refresh the product list while preserving images
+      if (onProductSaved) {
+        onProductSaved();
+      }
+
+      // Close modal after short delay to show success message
+      setTimeout(() => {
+        onRequestClose();
+      }, 1500);
     } catch (error) {
       console.error('Error creating/updating product:', error);
+      setErrorMessage('Error saving product. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
+
 
   return (
     <Modal
       isOpen={isOpen}
       onRequestClose={onRequestClose}
       contentLabel="Add Product Modal"
-      className="fixed bg-white inset-0 z-50 max-w-[100vw] overflow-auto" // Add max-w-[90vw] max-h-[90vh] overflow-auto
+      className="fixed bg-white inset-0 z-50 max-w-[100vw] overflow-auto"
       overlayClassName="fixed inset-0 bg-black bg-opacity-50"
     >
       <Nav toggleMobileVisibility={toggleMobileVisibility} />
