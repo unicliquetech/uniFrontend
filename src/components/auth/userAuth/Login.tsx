@@ -42,7 +42,7 @@ const LoginForm: React.FC<LoginFormProps> = ()=> {
     e.preventDefault()
 
     try {
-      const response = await axios.post('https://unibackend-4ebp.onrender.comapi/v1/user/login', formData)
+      const response = await axios.post('https://unibackend-4ebp.onrender.com/api/v1/user/login', formData)
       const { token } = response.data
 
       // Store the token in localStorage or a cookie
