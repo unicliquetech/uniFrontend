@@ -35,6 +35,42 @@ interface AddProductModalProps {
   onProductSaved: () => void;
 }
 
+// Notification component
+const Notification = ({ type, message, onClose }: { type: 'success' | 'error', message: string, onClose: () => void }) => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onClose();
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
+  return (
+    <div className={`fixed top-4 right-4 px-6 py-4 rounded-md shadow-lg z-50 flex items-center ${type === 'success' ? 'bg-green-100 border-l-4 border-green-500 text-green-700' : 'bg-red-100 border-l-4 border-red-500 text-red-700'
+      }`}>
+      <div className="mr-3">
+        {type === 'success' ? (
+          <svg className="h-6 w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+          </svg>
+        ) : (
+          <svg className="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        )}
+      </div>
+      <div className="flex-grow">
+        <p className="font-medium">{type === 'success' ? 'Success!' : 'Error!'}</p>
+        <p className="text-sm">{message}</p>
+      </div>
+      <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  );
+};
 
 const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClose, selectedProduct, onProductSaved }) => {
   const [step, setStep] = useState(1);
@@ -59,6 +95,8 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [successMessage, setSuccessMessage] = useState<string>('');
+  const [showNotification, setShowNotification] = useState<boolean>(false);
+  const [notificationType, setNotificationType] = useState<'success' | 'error'>('success');
   // Store original images to prevent reset
   const [originalImages, setOriginalImages] = useState<string[]>([]);
 
@@ -117,22 +155,26 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
     setProductName(selectedProduct?.name || "");
     setProductDescription(selectedProduct?.description || "");
 
-    // Preserve the images instead of resetting them
-    if (selectedProduct) {
-      // Keep the original images
-      const images = originalImages.length > 0 ? originalImages : selectedProduct?.image;
-      if (typeof images === "string") {
+    // Preserve existing images instead of resetting them
+    if (selectedProduct && originalImages.length > 0) {
+      setProductImages(originalImages);
+    } else if (selectedProduct && selectedProduct.image) {
+      // Keep whatever images were already there
+      if (typeof selectedProduct.image === "string") {
         try {
-          const parsedImages = JSON.parse(images);
-          setProductImages(Array.isArray(parsedImages) ? parsedImages : []);
+          const parsedImages = JSON.parse(selectedProduct.image);
+          setProductImages(Array.isArray(parsedImages) ? parsedImages : [selectedProduct.image]);
         } catch (e) {
-          setProductImages(typeof images === "string" ? [images] : []);
+          setProductImages([selectedProduct.image]);
         }
-      } else if (Array.isArray(images)) {
-        setProductImages(images);
+      } else if (Array.isArray(selectedProduct.image)) {
+        setProductImages(selectedProduct.image);
       }
     }
-    // Don't reset images to empty array, keep what we have
+    // Don't reset productImages to [] - that's what was causing the issue
+
+
+
 
     setProductCategory('');
     setProductBrand('');
@@ -149,6 +191,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
     setStep(1);
     setErrorMessage('');
     setSuccessMessage('');
+    setShowNotification(false);
   };
 
   const toggleMobileVisibility = () => {
@@ -173,14 +216,12 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
       }
       try {
         const files = Array.from(event.target.files);
-        console.log('Selected files:', files);
 
         const formData = new FormData();
         files.forEach((file, index) => {
           formData.append(`image${index}`, file);
         });
 
-        console.log('Sending request to server');
 
         const response = await axios.post('https://unibackend-4ebp.onrender.com/api/v1/products/uploadImage', formData, {
           headers: {
@@ -188,16 +229,15 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
           },
         });
 
-        console.log('Server response:', response.data.images);
 
         const imageUrls = response.data.images;
         const updatedImages = [...productImages, ...imageUrls];
         setProductImages(updatedImages); // Append new images to existing ones
         setOriginalImages(updatedImages); // Update original images as well
 
-        console.log('Product Image URLs:', imageUrls);
       } catch (error) {
         console.error('Error uploading images:', error);
+        showErrorNotification('Error uploading images. Please try again.');
       }
     }
   };
@@ -232,6 +272,22 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
     setShowColorPicker(!showColorPicker);
   };
 
+  const showSuccessNotification = (message: string) => {
+    setSuccessMessage(message);
+    setNotificationType('success');
+    setShowNotification(true);
+  };
+
+  const showErrorNotification = (message: string) => {
+    setErrorMessage(message);
+    setNotificationType('error');
+    setShowNotification(true);
+  };
+
+  const handleCloseNotification = () => {
+    setShowNotification(false);
+  };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const vendorEmail = localStorage.getItem('vendorEmail');
@@ -261,7 +317,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
       if (selectedProduct) {
         // Update existing product
         const response = await axios.patch(
-          `https://unibackend.onrender.com/api/v1/products/${selectedProduct._id}`,
+          `https://unibackend-4ebp.onrender.com/api/v1/products/${selectedProduct._id}`,
           formData,
           {
             headers: {
@@ -269,8 +325,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
             },
           }
         );
-        console.log('Product updated:', response.data);
-        setSuccessMessage('Product updated successfully!');
+        showSuccessNotification('Product updated successfully!');
       } else {
         // Create new product
         const response = await axios.post('https://unibackend-4ebp.onrender.com/api/v1/products', formData, {
@@ -278,8 +333,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
             'Content-Type': 'multipart/form-data',
           },
         });
-        console.log('Product created:', response.data);
-        setSuccessMessage('Product created successfully!');
+        showSuccessNotification('Product created successfully!');
       }
 
       // Call the onProductSaved callback to refresh the product list while preserving images
@@ -290,10 +344,10 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
       // Close modal after short delay to show success message
       setTimeout(() => {
         onRequestClose();
-      }, 1500);
+      }, 5000);
     } catch (error) {
       console.error('Error creating/updating product:', error);
-      setErrorMessage('Error saving product. Please try again.');
+      showErrorNotification('Error saving product. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
