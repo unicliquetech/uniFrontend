@@ -99,15 +99,15 @@ const ShoppingCart = () => {
   };
 
   const handleHomeDelivery = () => {
-    setDeliveryPrice(400);
+    setDeliveryPrice(1000);
   };
   
   const handleRegularDelivery = () => {
-    setDeliveryPrice(0);
+    setDeliveryPrice(500);
   };
   
   const handleScheduledDelivery = () => {
-    setDeliveryPrice(0);
+    setDeliveryPrice(500);
   };
 
 
@@ -351,7 +351,7 @@ const ShoppingCart = () => {
                 className="form-radio"
                 onChange={handleRegularDelivery}
               />
-              <span className="ml-2">Regular (In 6 hours) • ₦0</span>
+              <span className="ml-2">Regular (In 6 hours) • ₦500</span>
             </label>
             <div className="mt-2">
               <label className="inline-flex items-center">
@@ -363,7 +363,7 @@ const ShoppingCart = () => {
                   className="form-radio"
                   onChange={handleHomeDelivery}
                 />
-                <span className="ml-2">Express Delivery (In 1 hour) • ₦400</span>
+                <span className="ml-2">Express Delivery (In 1 hour) • ₦1000</span>
               </label>
             </div>
             <div className="mt-2">
@@ -376,7 +376,7 @@ const ShoppingCart = () => {
                   className="form-radio"
                   onChange={handleScheduledDelivery}
                 />
-                <span className="ml-2">Schedule (In 2-4 days) • ₦0</span>
+                <span className="ml-2">Schedule (In 2-4 days) • ₦500</span>
               </label>
             </div>
           </div>

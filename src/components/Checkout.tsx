@@ -1,35 +1,14 @@
 "use client"
 import React, { useState, useEffect } from 'react';
-// import { useNavigate } from 'react-router-dom';
-// import Image from 'next/image';
-// import DatePicker, { ReactDatePickerProps } from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import axios, { AxiosResponse } from 'axios';
-import jwt, { JwtPayload } from 'jsonwebtoken';
-import paymentImage from '@/images/paymentImage.svg';
+import axios from 'axios';
+import jwt from 'jsonwebtoken';
+import SummaryStep from './summaryStep';
+import PaymentStep from './paymentStep';
+import AddressStep, { Address } from './addressStep';
 
+// Remove the Address interface definition from Checkout.tsx
 
-function showCustomAlert(message: string) {
-  const alertContainer = document.createElement('div');
-  alertContainer.classList.add('custom-alert');
-
-  const alertHeader = document.createElement('div');
-  alertHeader.classList.add('custom-alert-header');
-  alertHeader.textContent = 'Alert';
-
-  const alertBody = document.createElement('div');
-  alertBody.classList.add('custom-alert-body');
-  alertBody.textContent = message;
-
-  alertContainer.appendChild(alertHeader);
-  alertContainer.appendChild(alertBody);
-
-  document.body.appendChild(alertContainer);
-
-  setTimeout(() => {
-    document.body.removeChild(alertContainer);
-  }, 100000);
-}
+type DeliveryOption = 'express' | 'regular' | 'schedule';
 
 interface CartItem {
   id: number;
@@ -39,708 +18,207 @@ interface CartItem {
   quantity: number;
 }
 
-
-interface Address {
-  _id: string;
-  id: number;
-  location: string;
-  university: string;
-  city: string;
-  country: string;
-  phone: string;
-  type: 'HOSTEL' | 'DEPARTMENT';
-}
-
-interface AddressStepProps {
-  selectedAddress: Address | null;
-  setSelectedAddress: (address: Address) => void;
-  onAddressSelect: (address: Address) => void;
-}
-
-const AddressStep: React.FC<AddressStepProps> = ({ selectedAddress, setSelectedAddress, onAddressSelect }) => {
-  const [addresses, setAddresses] = useState<Address[]>([]);
-  const [newAddress, setNewAddress] = useState<Address>({
-    _id: '',
-    id: 1,
-    location: '',
-    university: '',
-    city: '',
-    country: '',
-    phone: '',
-    type: 'HOSTEL',
-  });
-
-  interface DecodedToken {
-    userId: string;
-  }
-
-  const getAuthHeaders = () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      throw new Error('Token not found');
-    }
-
-    const decodedToken = jwt.decode(token) as DecodedToken | null;
-    const userId = decodedToken?.userId;
-
-    if (!userId) {
-      showCustomAlert("Please proceed to re-login, as your session has expired.");
-      window.location.href = '/login';
-      throw new Error('Invalid token');
-    }
-    return {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'User-Id': userId,
-      },
-    };
-  };
-
-  useEffect(() => {
-    // Fetch addresses from the API
-    const fetchAddresses = async () => {
-      try {
-        const response: AxiosResponse<Address[]> = await axios.get(
-          'https://unibackend-4ebp.onrender.com/api/v1/address',
-          getAuthHeaders()
-        );
-        setAddresses(response.data);
-      } catch (error: unknown) {
-        console.error('Error fetching addresses:', error);
-      }
-    };
-    fetchAddresses();
-  });
-
-  const handleNewAddressChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setNewAddress({ ...newAddress, [name]: value });
-  };
-
-  const handleAddAddress = async () => {
-    try {
-      const response: AxiosResponse<Address> = await axios.post(
-        'https://unibackend-4ebp.onrender.com/api/v1/address',
-        newAddress,
-        getAuthHeaders()
-      );
-      const newAddressWithId = response.data;
-      setAddresses([...addresses, newAddressWithId]);
-      setSelectedAddress(newAddressWithId);
-      setNewAddress({
-        _id: '',
-        id: 0,
-        location: '',
-        university: '',
-        city: '',
-        country: '',
-        phone: '',
-        type: 'DEPARTMENT',
-      });
-    } catch (error: unknown) {
-      if (axios.isAxiosError(error) && error.response?.status === 404) {
-        console.error(error)
-      } else {
-        console.error('Error adding address:', error);
-      }
-    }
-  };
-
-  const handleEditAddress = (_id: string) => {
-    const addressToEdit = addresses.find((address) => address._id === _id);
-    if (addressToEdit) {
-      setNewAddress(addressToEdit);
-    }
-  };
-
-  const handleUpdateAddress = async (_id: string) => {
-    try {
-      const response: AxiosResponse<Address> = await axios.put(
-        `https://unibackend-4ebp.onrender.com/api/v1/address/${_id}`,
-        newAddress,
-        getAuthHeaders()
-      );
-      setAddresses(addresses.map((address) => (address._id === _id ? response.data : address)));
-      setNewAddress({ _id: '', id: 0, location: '', university: '', city: '', country: '', phone: '', type: 'DEPARTMENT' });
-    } catch (error) {
-      console.error('Error updating address:', error);
-    }
-  };
-
-  const handleDeleteAddress = async (_id: string) => {
-    try {
-      await axios.delete(`https://unibackend-4ebp.onrender.com/api/v1/address/${_id}`, getAuthHeaders());
-      setAddresses(addresses.filter((address) => address._id !== _id));
-    } catch (error) {
-      console.error('Error deleting address:', error);
-    }
-  };
-
-
-
-
-  return (
-    <div>
-      <h2 className="text-xl font-bold mb-4">Delivery Address</h2>
-      {addresses.map((address) => (
-        <div key={address.id} className="address-container mb-4 border bg-gray-100 border-gray-300 rounded sm:p-4">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center">
-              <input
-                type="radio"
-                name="address"
-                value={address.id}
-                checked={selectedAddress === address}
-                onChange={() => onAddressSelect(address)}
-                className="w-4 h-4 text-red-900 bg-red-900 border-gray-300 focus:ring-red-900"
-              />
-              <span className="text-red-900 ml-2">{address.location}</span>
-            </div>
-            <small className=" text-red-900 border bg-red-900 border-gray-300 rounded sm:p-4 text-white sm:px-4 sm:py-2 mr-2">{address.type}</small>
-            <div>
-              <button onClick={() => handleEditAddress(address._id)} className="text-red-900 hover:text-gray-700">
-                <img src="https://res.cloudinary.com/daqlpvggg/image/upload/v1717040725/Edit_dfef4j.svg" alt="edit" className="h-4 mr-2 sm:h-8" />
-              </button>
-              <button onClick={() => handleDeleteAddress(address._id)} className="text-red-900 hover:text-gray-700">
-                <img src="https://res.cloudinary.com/daqlpvggg/image/upload/v1717040679/Close_zc2plj.svg" alt="delete" className="h-4 mr-2 sm:h-8" />
-              </button>
-            </div>
-          </div>
-          <p className="text-gray-600">
-            {address.university}, {address.city} <br />
-            {address.country}
-          </p>
-          <p className="text-gray-600">{address.phone}</p>
-        </div>
-      ))}
-      <div className="border border-gray-300 rounded p-4">
-        <h3 className="text-lg font-semibold mb-2">Add New Address</h3>
-        <div className="mb-2">
-          <label htmlFor="street" className="text-gray-700">
-            Location/Room Number
-          </label>
-          <input
-            type="text"
-            id="location"
-            name="location"
-            value={newAddress.location}
-            onChange={handleNewAddressChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-        </div>
-        <div className="mb-2">
-          <label htmlFor="city" className="text-gray-700">
-            University
-          </label>
-          <input
-            type="text"
-            id="university"
-            name="university"
-            value={newAddress.university}
-            onChange={handleNewAddressChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-        </div>
-        <div className="mb-2">
-          <label htmlFor="city" className="text-gray-700">
-            City
-          </label>
-          <input
-            type="text"
-            id="city"
-            name="city"
-            value={newAddress.city}
-            onChange={handleNewAddressChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-        </div>
-        <div className="mb-2">
-          <label htmlFor="country" className="text-gray-700">
-            Country
-          </label>
-          <input
-            type="text"
-            id="country"
-            name="country"
-            value={newAddress.country}
-            onChange={handleNewAddressChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-        </div>
-        <div className="mb-2">
-          <label htmlFor="phone" className="text-gray-700">
-            Phone Number
-          </label>
-          <input
-            type="text"
-            id="phone"
-            name="phone"
-            value={newAddress.phone}
-            onChange={handleNewAddressChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-        </div>
-        <div className="mb-2">
-          <label htmlFor="type" className="text-gray-700">
-            Address Type
-          </label>
-          <select
-            id="type"
-            name="type"
-            value={newAddress.type}
-            onChange={handleNewAddressChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          >
-            <option value="HOSTEL">Hostel</option>
-            <option value="DEPARTMENT">Department</option>
-            <option value="GIFT">Gift</option>
-          </select>
-        </div>
-        <div>
-          <button
-            onClick={handleAddAddress}
-            className="bg-red-900 text-white px-4 mt-3 py-2 rounded"
-          >
-            Add Address
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-
-
-////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////
-///////               SUMMARY  STEP                    ////////////
-////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////
-type DeliveryOption = 'express' | 'regular' | 'schedule';
-
-interface SummaryStepProps {
-  cartItems: CartItem[];
-  setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>;
-  selectedAddress: Address | null;
-  selectedDeliveryMethod: DeliveryOption;
-  setSelectedDeliveryMethod: React.Dispatch<React.SetStateAction<DeliveryOption>>;
-  selectedDate: Date | null;
-  setSelectedDate: React.Dispatch<React.SetStateAction<Date | null>>;
-  onServiceChargeChange: (serviceCharge: number) => void;
-  onDeliveryFeeChange: (deliveryFee: number) => void;
-}
-
-const SummaryStep: React.FC<SummaryStepProps> = ({
-  cartItems,
-  setCartItems,
-  selectedAddress,
-  selectedDeliveryMethod,
-  setSelectedDeliveryMethod,
-  selectedDate,
-  setSelectedDate,
-  onServiceChargeChange,
-  onDeliveryFeeChange,
-}) => {
-  const [selectedDeliveryTime, setSelectedDeliveryTime] = useState<string>('9:00');
-
-  const handleDeliveryTimeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedDeliveryTime(event.target.value);
-  };
-
-  const deliveryTimes = ['8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
-
-
-  useEffect(() => {
-    const fetchCartData = async () => {
-      try {
-        const cartId = localStorage.getItem('cartId');
-
-        const response = await axios.post('https://unibackend-4ebp.onrender.com/api/v1/cart/items', {
-          cartId: cartId
-        });
-
-        if (response.data && Array.isArray(response.data.items)) {
-          setCartItems(response.data.items);
-        } else {
-          console.error('Unexpected response format:', response.data);
-          setCartItems([]);
-        }
-      } catch (error) {
-        console.error('Error fetching cart data:', error);
-        setCartItems([]);
-      }
-    };
-
-    fetchCartData();
-  }, []);
-
-  const handleDeliveryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const newDeliveryMethod = event.target.value as DeliveryOption;
-    setSelectedDeliveryMethod(newDeliveryMethod);
-    if (newDeliveryMethod === 'schedule') {
-      setSelectedDate(null);
-    }
-  };
-
-  const calculateTotal = () => {
-    let total = 0;
-    cartItems.forEach((item) => {
-      total += item.price * item.quantity;
-    });
-    return total;
-  };
-  const deliveryFee =
-    selectedDeliveryMethod === 'express'
-      ? 400
-      : selectedDeliveryMethod === 'regular'
-        ? 0
-        : 0;
-  const serviceFee = 50;
-  const totalCost = calculateTotal() + deliveryFee + serviceFee;
-
-  useEffect(() => {
-    onServiceChargeChange(serviceFee);
-    onDeliveryFeeChange(deliveryFee);
-  }, [serviceFee, deliveryFee, onServiceChargeChange, onDeliveryFeeChange]);
-
-  return (
-    <div className='ml-4 mr-4'>
-      <h2 className="text-xl font-bold mb-4">Summary</h2>
-      <div>
-        <h3 className="text-lg font-semibold mb-2">Cart Items</h3>
-        {cartItems.map((item) => (
-          <div key={item.id} className="flex justify-between mb-2">
-            <img src={item.image} alt={item.name} className='h-14' />
-            <span>{item.name}</span>
-            <span>₦{item.price * item.quantity}</span>
-          </div>
-        ))}
-      </div>
-      <div className="mt-4">
-        <h3 className="text-lg font-semibold mb-2">Delivery Address</h3>
-        {selectedAddress ? (
-          <div>
-            <p>{selectedAddress.location}</p>
-            <p>{selectedAddress.university}</p>
-            <p>{selectedAddress.city}, {selectedAddress.country}</p>
-            <p>{selectedAddress.phone}</p>
-          </div>
-        ) : (
-          <p>No address selected</p>
-        )}
-      </div>
-      <div className="mt-4">
-        <h3 className="text-lg font-semibold mb-2">Delivery Method</h3>
-        <select
-          value={selectedDeliveryMethod}
-          onChange={handleDeliveryChange}
-          className="border p-2 rounded"
-        >
-          <option value="express">Express (₦400)</option>
-          <option value="regular">Regular Delivery (₦0)</option>
-          <option value="schedule">Schedule (₦0)</option>
-        </select>
-        {selectedDeliveryMethod === 'schedule' && (
-          <div className="mt-2">
-            <label htmlFor="deliveryDate" className="block">
-              Delivery Date
-            </label>
-            <input
-              type="date"
-              id="deliveryDate"
-              value={selectedDate ? selectedDate.toISOString().split('T')[0] : ''}
-              onChange={(e) => setSelectedDate(e.target.value ? new Date(e.target.value) : null)}
-              className="border p-2 rounded"
-            />
-          </div>
-        )}
-
-        <select
-          value={selectedDeliveryTime}
-          onChange={handleDeliveryTimeChange}
-          className="border p-2 rounded"
-        >
-          {deliveryTimes.map((time) => (
-            <option key={time} value={time}>
-              {time}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div className="mt-4">
-        <h3 className="text-lg font-semibold mb-2">Service Fee</h3>
-        <p>₦{serviceFee}</p>
-      </div>
-      <div className="mt-4">
-        <h3 className="text-lg font-semibold mb-2">Total Cost</h3>
-        <p>₦{totalCost}</p>
-      </div>
-    </div>
-  );
-};
-
-
-
-
-
-
-
-
-
-///////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////
-/////////////        PAYMENT STEP            ////////////////////
-////////////////////////////////////////////////////////////////
-interface PaymentStepProps {
-  cartItems: CartItem[];
-  selectedAddress: Address | null;
-  selectedDeliveryMethod: DeliveryOption;
-  selectedDate: Date | null;
-  serviceCharge: number;
-  deliveryFee: number;
-}
-
-const PaymentStep: React.FC<PaymentStepProps> = ({
-  cartItems,
-  selectedAddress,
-  selectedDeliveryMethod,
-  selectedDate,
-  serviceCharge,
-  deliveryFee,
-}) => {
-  const [checkoutMessage, setCheckoutMessage] = useState<string | null>(null);
-  const [isCheckoutSuccessful, setIsCheckoutSuccessful] = useState<boolean>(false);
-
-  const sendWhatsAppNotification = (vendorWhatsappNumber: string, notificationMessage: string) => {
-    const encodedMessage = encodeURIComponent(notificationMessage);
-    const whatsappUrl = `https://wa.me/${vendorWhatsappNumber}?text=${encodedMessage}`;
-
-    try {
-      window.open(whatsappUrl, '_blank', "noopener noreferrer");
-    } catch (error) {
-      console.error('Error opening WhatsApp:', error);
-
-      const smsUrl = `sms://${vendorWhatsappNumber}?body=${encodedMessage}`;
-      window.open(smsUrl, '_blank');
-    }
-  };
-
-  interface DecodedToken {
-    userId: string;
-  }
-
-  const getAuthHeaders = () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      throw new Error('Token not found');
-    }
-
-    const decodedToken = jwt.decode(token) as DecodedToken | null;
-    if (!decodedToken) {
-      showCustomAlert("Please proceed to re-login, as your session has expired.");
-      window.location.href = '/login';
-      throw new Error('Invalid token');
-    }
-    const userId = decodedToken?.userId;
-
-    if (!userId) {
-      showCustomAlert("Please proceed to re-login, as your session has expired.");
-      window.location.href = '/login';
-      throw new Error('Invalid token');
-    }
-    return {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'User-Id': userId,
-      },
-    };
-  };
-
-  const handleSendMoney = async () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      throw new Error('Token not found');
-    }
-    const decodedToken = jwt.decode(token) as DecodedToken | null;
-    if (!decodedToken) {
-      showCustomAlert("Please proceed to re-login, as your session has expired.");
-      window.location.href = '/login';
-      throw new Error('Invalid token');
-    }
-    const userId = decodedToken?.userId;
-
-    try {
-      const orderData = {
-        userId,
-        items: cartItems,
-        selectedAddress,
-        selectedDeliveryMethod,
-        selectedDate,
-        serviceCharge,
-        deliveryFee,
-      };
-
-
-      const response = await axios.post(
-        'https://unibackend-4ebp.onrender.com/api/v1/order/',
-        orderData,
-        getAuthHeaders()
-      );
-
-      if (response.status === 201) {
-        // const vendorWhatsappNumber = response.data.vendorWhatsAppNumber;
-        // Order created successfully
-        setIsCheckoutSuccessful(true);
-        setCheckoutMessage("Checkout successful! Thank you for your order.");
-        const vendorWhatsappNumber = '09125740495';
-
-        // Construct the notification message
-        const notificationMessage = `Hi,
-          I will like to buy ${cartItems.map(item => `${item.name} (Quantity: ${item.quantity})`).join(', ')}
-
-          The total cost is: ${response.data.order.total}.
-          The delivery time is: ${response.data.order.deliveryTime} minutes.
-          The delivery address is: ${response.data.order.deliveryAddress}.
-          The order ID is: ${response.data.order.orderId}.`;
-
-        // Send the WhatsApp notification
-        sendWhatsAppNotification(vendorWhatsappNumber, notificationMessage);
-      } else {
-        console.error('Failed to create order:', response.data);
-        setIsCheckoutSuccessful(false);
-        setCheckoutMessage(response.data.message || "Failed to complete checkout. Please check that your cart items and delivery address is correctly inputted and try again.");
-      }
-    } catch (error) {
-      console.error('Error adding product to cart:', error);
-      setIsCheckoutSuccessful(false);
-      if (axios.isAxiosError(error) && error.response) {
-        setCheckoutMessage(error.response.data.message || "An error occurred during checkout.Please check that your cart items and delivery address is correctly inputted and try again.");
-      } else {
-        setCheckoutMessage("An unexpected error occurred. Please check that your cart items and delivery address is correctly inputted and try again.");
-      }
-    }
-
-  };
-
-  return (
-    <div>
-      <div className="p-8 ">
-        <h2 className="color: #2c3e50; nb-2">Order Confirmation </h2>
-        <p className="text-red-900 text-semi-bold mt-1.6">
-          <p className="text-red-900 text-semi-bold mt-1.5 mb-6"><b>We're thrilled to confirm that your order has been received.</b></p>
-          <p className="text-black mb-6"><strong>Please hold off on sending payment until we've finalized your order and completed the checkout process.</strong></p>
-        </p>
-        <p className="mt-2">
-          By choosing to shop from a student vendor, you're not just making a purchase, you're investing in dreams.
-          <p>Each order helps a young entrepreneur take another step towards their goals, fueling both their personal growth and our community's economic future.</p>
-        </p>
-        <div className="pt-2 bt-1px ft-2 text-[#000] mt-2">
-          <p className="tagline">Together, we're building a brighter tomorrow, one purchase at a time.</p>
-          <p className="gratitude">Your support means the world to us. Thank you for believing in student potential!</p>
-        </div>
-      </div>
-
-      {checkoutMessage && (
-        <div className={`mt-4 p-4 rounded ${isCheckoutSuccessful ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-          {checkoutMessage}
-        </div>
-      )}
-
-      <button
-        className="bg-red-900 text-white px-4 py-2 rounded sm:ml-[45%] ml-[30%] mt-4"
-        onClick={handleSendMoney}
-      >
-        Complete Checkout
-      </button>
-    </div>
-  );
-};
-
-
-
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-////////        CHECKOUT COMPONENT          /////////////
-////////////////////////////////////////////////////////
-
-
-const Checkout = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
-  const [currentStep, setCurrentStep] = useState('address');
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [addresses, setAddresses] = useState<Address[]>([]);
+// interface Address {
+//   _id: string;
+//   id: number;
+//   location: string;
+//   university: string;
+//   city: string;
+//   country: string;
+//   phone: string;
+//   type: 'HOSTEL' | 'DEPARTMENT' | 'GIFT';
+// }
+
+// interface Address {
+//   _id: string;
+//   id: number;
+//   location: string;
+//   university: string;
+//   city: string;
+//   country: string;
+//   phone: string;
+//   type: 'HOSTEL' | 'DEPARTMENT' | 'GIFT';
+// }
+
+
+                ///////////////////////////////////////////////////////////
+                //////////////////////////////////////////////////////////
+                ////////        CHECKOUT COMPONENT          /////////////
+                ////////////////////////////////////////////////////////
+                ///////////////////////////////////////////////////////
+
+
+const Checkout: React.FC = () => {
+  const [currentStep, setCurrentStep] = useState<'address' | 'summary' | 'payment'>('address');
+  
+  // User authentication state
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState<boolean>(true);
+  const [userProfile, setUserProfile] = useState<{ name?: string, email?: string } | null>(null);
+  
+  // Order data state
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [lastLoginTime, setLastLoginTime] = useState<null | number>(null);
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState<DeliveryOption>('regular');
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [serviceCharge, setServiceCharge] = useState<number>(0);
-  const [deliveryFee, setSelectedDeliveryFee] = useState<number>(0);
+  const [serviceCharge, setServiceCharge] = useState<number>(50);
+  const [deliveryFee, setDeliveryFee] = useState<number>(0);
+  
+  // Mobile navigation
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
-  const handleServiceChargeChange = (serviceCharge: number) => {
-    setServiceCharge(serviceCharge);
-  };
-
-  const handleDeliveryFeeChange = (deliveryFee: number) => {
-    setSelectedDeliveryFee(deliveryFee);
-  };
-
+  // Check authentication on mount
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      setIsAuthenticated(true);
-      const lastLoginTimeFromStorage = localStorage.getItem("lastLoginTime");
-      const currentTime = new Date().getTime();
-      if (lastLoginTimeFromStorage) {
-        const sixHoursInMillis = 6 * 60 * 60 * 1000;
-        const timeSinceLastLogin = currentTime - parseInt(lastLoginTimeFromStorage);
-        if (timeSinceLastLogin > sixHoursInMillis) {
-          // It has been more than 6 hours since the last login
-          localStorage.removeItem("token");
-          localStorage.removeItem("lastLoginTime");
-          setIsAuthenticated(false);
-          alert("Please proceed to re-login, as your session has expired.");
-        } else {
-          setLastLoginTime(parseInt(lastLoginTimeFromStorage));
-        }
-      } else {
-        localStorage.setItem("lastLoginTime", currentTime.toString());
-        setLastLoginTime(currentTime);
+    const checkAuthentication = () => {
+      setIsCheckingAuth(true);
+      
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setIsAuthenticated(false);
+        setIsCheckingAuth(false);
+        return;
       }
-    }
+      
+      try {
+        // Verify token expiration
+        const decodedToken = jwt.decode(token) as { exp?: number, userId?: string, name?: string, email?: string } | null;
+        
+        if (!decodedToken || !decodedToken.userId) {
+          handleLogout();
+          return;
+        }
+        
+        // Check if token is expired
+        if (decodedToken.exp && decodedToken.exp * 1000 < Date.now()) {
+          handleLogout("Your session has expired. Please log in again.");
+          return;
+        }
+        
+        // Set user profile if available
+        if (decodedToken.name || decodedToken.email) {
+          setUserProfile({
+            name: decodedToken.name,
+            email: decodedToken.email
+          });
+        }
+        
+        setIsAuthenticated(true);
+      } catch (error) {
+        console.error("Error validating authentication:", error);
+        handleLogout();
+      } finally {
+        setIsCheckingAuth(false);
+      }
+    };
+    
+    checkAuthentication();
   }, []);
 
-
-
-
-  const handleDeliveryMethodChange = (method: DeliveryOption) => {
-    setSelectedDeliveryMethod(method);
-    if (method !== 'schedule') {
-      setSelectedDate(null);
+  const handleLogout = (message?: string) => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("lastLoginTime");
+    setIsAuthenticated(false);
+    
+    if (message) {
+      alert(message);
     }
   };
 
-  const handleDateChange = (date: Date | null) => {
-    setSelectedDate(date);
+  // Fixed this function to accept Address | null to match the expected prop type
+  const handleAddressSelect = (address: Address | null) => {
+    setSelectedAddress(address);
   };
 
-  const renderStep = () => {
+  const handleServiceChargeChange = (charge: number) => {
+    setServiceCharge(charge);
+  };
+
+  const handleDeliveryFeeChange = (fee: number) => {
+    setDeliveryFee(fee);
+  };
+
+  const handleNextStep = () => {
+    // Validate before proceeding to the next step
+    if (currentStep === 'address') {
+      if (!selectedAddress) {
+        alert("Please select a delivery address to continue.");
+        return;
+      }
+      setCurrentStep('summary');
+    } else if (currentStep === 'summary') {
+      if (!cartItems || cartItems.length === 0) {
+        alert("Your cart is empty. Please add items before proceeding.");
+        return;
+      }
+      setCurrentStep('payment');
+    }
+  };
+
+  const handleBackStep = () => {
+    if (currentStep === 'summary') {
+      setCurrentStep('address');
+    } else if (currentStep === 'payment') {
+      setCurrentStep('summary');
+    } else if (currentStep === 'address') {
+      window.location.href = '/cartPage';
+    }
+  };
+
+  const handleContinueShopping = () => {
+    window.location.href = '/product';
+  };
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  // Render loading state
+  if (isCheckingAuth) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-900 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading checkout...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Render login message if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
+        <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full text-center">
+          <h2 className="text-2xl font-bold text-red-900 mb-4">Authentication Required</h2>
+          <p className="text-gray-600 mb-6">
+            Please log in to your account to continue with the checkout process.
+          </p>
+          <a 
+            href="/login" 
+            className="inline-block bg-red-900 hover:bg-red-800 text-white font-medium py-3 px-8 rounded-lg transition duration-200"
+          >
+            Log In
+          </a>
+          <p className="mt-6 text-gray-500 text-sm">
+            Don't have an account? <a href="/signup" className="text-red-900 hover:underline">Register here</a>
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Function to render the current step content
+  const renderStepContent = () => {
     switch (currentStep) {
       case 'address':
-        return <AddressStep
-          selectedAddress={selectedAddress}
-          setSelectedAddress={setSelectedAddress}
-          onAddressSelect={(address) => setSelectedAddress(address)}
-        />;
-      case 'payment':
-        return <PaymentStep
-          cartItems={cartItems}
-          selectedAddress={selectedAddress}
-          selectedDeliveryMethod={selectedDeliveryMethod}
-          selectedDate={selectedDate}
-          serviceCharge={serviceCharge}
-          deliveryFee={deliveryFee}
-        />;
+        return (
+          <AddressStep
+            selectedAddress={selectedAddress}
+            setSelectedAddress={setSelectedAddress}
+            onAddressSelect={handleAddressSelect}
+          />
+        );
+      
       case 'summary':
         return (
           <SummaryStep
@@ -755,53 +233,23 @@ const Checkout = () => {
             onDeliveryFeeChange={handleDeliveryFeeChange}
           />
         );
+      
+      case 'payment':
+        return (
+          <PaymentStep
+            cartItems={cartItems}
+            selectedAddress={selectedAddress}
+            selectedDeliveryMethod={selectedDeliveryMethod}
+            selectedDate={selectedDate}
+            serviceCharge={serviceCharge}
+            deliveryFee={deliveryFee}
+          />
+        );
+      
       default:
         return null;
     }
   };
-
-  const handleNextStep = () => {
-    switch (currentStep) {
-      case 'address':
-        setCurrentStep('summary');
-        break;
-      case 'summary':
-        setCurrentStep('payment');
-        break;
-      case 'payment':
-        break;
-      default:
-        break;
-    }
-  };
-
-  const handleContinueShopping = () => {
-    // Redirect to the product page
-    window.location.href = '/product';
-  };
-
-  const handleBackStep = () => {
-    switch (currentStep) {
-      case 'summary':
-        setCurrentStep('address');
-        break;
-      case 'address':
-        // Navigate to the cart page
-        window.location.href = '/cartPage';
-        break;
-      case 'payment':
-        setCurrentStep('summary');
-        break;
-      default:
-        break;
-    }
-  };
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  }
-
-
 
   return (
     <div className="checkout-container">
@@ -947,93 +395,53 @@ const Checkout = () => {
           </header>
 
 
-          <nav className="steps flex justify-between sm:items-center bg-white ml-0 py-4 sm:px-20 sm:ml-20 sm:px-6 lg:px-8">
-            <div className="flex">
+
+          {/* Checkout progress steps */}
+      <div className="bg-white shadow-sm mb-6">
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+            <div className="flex w-full justify-between">
               <button
-                className={`mr-4 ${currentStep === 'address' ? 'text-red-600 font-bold' : 'text-gray-400'}`}
+                className={`flex flex-col items-center ${currentStep === 'address' ? 'text-red-900' : 'text-gray-400'}`}
                 onClick={() => setCurrentStep('address')}
               >
-                <div className="flex">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 mt-2"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                    />
-                  </svg>
-                  <div className="grid sm:mr-40 mr-5">
-                    <small className='step-content'>Step 1</small>
-                    <span className="step-content ml-4 font-semibold style={{fontSize: '0.45rem'}} ">Address</span>
-                  </div>
+                <div className={`flex items-center justify-center h-8 w-8 rounded-full ${currentStep === 'address' ? 'bg-red-900 text-white' : 'bg-gray-200'} mb-1`}>
+                  1
                 </div>
+                <span className="text-sm font-medium">Address</span>
               </button>
+              
+              <div className={`flex-1 h-0.5 self-center mx-2 ${currentStep === 'address' ? 'bg-gray-300' : 'bg-red-900'}`} />
+              
               <button
-                className={`mr-4 ${currentStep === 'summary' ? 'text-red-600 font-bold' : 'text-gray-400'}`}
-                onClick={() => setCurrentStep('summary')}
-              // disabled={currentStep !== 'address'}
+                className={`flex flex-col items-center ${currentStep === 'summary' ? 'text-red-900' : currentStep === 'payment' ? 'text-red-900' : 'text-gray-400'}`}
+                onClick={() => selectedAddress && setCurrentStep('summary')}
               >
-                <div className="flex sm:ml-40 ml-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 mt-2"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                    />
-                  </svg>
-                  <div className="grid sm:mr-40 mr-2">
-                    <small className='step-content'>Step 2</small>
-                    <span className="ml-4 step-content font-semibold style={{fontSize: '0.45rem'}}">Summary</span>
-                  </div>
+                <div className={`flex items-center justify-center h-8 w-8 rounded-full ${currentStep === 'summary' ? 'bg-red-900 text-white' : currentStep === 'payment' ? 'bg-red-900 text-white' : 'bg-gray-200'} mb-1`}>
+                  2
                 </div>
+                <span className="text-sm font-medium">Summary</span>
               </button>
+              
+              <div className={`flex-1 h-0.5 self-center mx-2 ${currentStep === 'payment' ? 'bg-red-900' : 'bg-gray-300'}`} />
+              
               <button
-                className={`mr-4 ${currentStep === 'payment' ? 'text-red-600 font-bold' : 'text-gray-400'}`}
-                onClick={() => setCurrentStep('payment')}
-                disabled={currentStep !== 'summary'}
+                className={`flex flex-col items-center ${currentStep === 'payment' ? 'text-red-900' : 'text-gray-400'}`}
+                onClick={() => cartItems.length > 0 && selectedAddress && setCurrentStep('payment')}
               >
-                <div className="flex sm:ml-40 ml-0">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 mt-2"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                    />
-                  </svg>
-                  <div className="grid sm:mr-40 mr-0">
-                    <small className='step-content font-sm'>Step 3</small>
-                    <span className="step-content ml-4 font-semibold style={{fontSize: '0.45rem'}} ">Payment</span>
-                  </div>
+                <div className={`flex items-center justify-center h-8 w-8 rounded-full ${currentStep === 'payment' ? 'bg-red-900 text-white' : 'bg-gray-200'} mb-1`}>
+                  3
                 </div>
+                <span className="text-sm font-medium">Payment</span>
               </button>
             </div>
-          </nav>
-
-
+          </div>
+        </div>
+      </div>
 
           <div className="bg-white rounded-lg shadow-md sm:p-6">
 
-            {renderStep()}
+          {renderStepContent()}
 
             <div className="flex justify-between mt-8 mb-5">
               <button className="bg-red-900 text-white px-4 py-2 rounded" onClick={handleBackStep}>Back</button>
@@ -1044,8 +452,6 @@ const Checkout = () => {
               )}
             </div>
           </div>
-
-
 
           <footer className="bg-red-900 text-white py-8 px-0 mt-0">
             <div className="container px-4 sm:px-6 lg:px-8">
@@ -1105,12 +511,12 @@ const Checkout = () => {
                   <h3 className="text-xl font-semibold mb-4">Pricing | Career</h3>
                   <ul>
                     <li>Contacts</li>
-                    <li>+234-9265356777</li>
-                    <li>info@uniclique.com</li>
+                    <li>+234-9125740495</li>
+                    <li>unicliquetech@gmail.com</li>
                   </ul>
                 </div>
               </div>
-              <p className="mt-8 text-center">© 2023. All rights reserved. Uniclique</p>
+              <p className="mt-8 text-center">© 2025. All rights reserved. Uniclique</p>
             </div>
           </footer>
         </div>
