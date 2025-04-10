@@ -97,6 +97,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
   const [successMessage, setSuccessMessage] = useState<string>('');
   const [showNotification, setShowNotification] = useState<boolean>(false);
   const [notificationType, setNotificationType] = useState<'success' | 'error'>('success');
+  const [formReset, setFormReset] = useState<boolean>(false);
   // Store original images to prevent reset
   const [originalImages, setOriginalImages] = useState<string[]>([]);
 
@@ -152,30 +153,10 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
   }, [selectedProduct, isOpen]);
 
   const resetForm = () => {
-    setProductName(selectedProduct?.name || "");
-    setProductDescription(selectedProduct?.description || "");
-
-    // Preserve existing images instead of resetting them
-    if (selectedProduct && originalImages.length > 0) {
-      setProductImages(originalImages);
-    } else if (selectedProduct && selectedProduct.image) {
-      // Keep whatever images were already there
-      if (typeof selectedProduct.image === "string") {
-        try {
-          const parsedImages = JSON.parse(selectedProduct.image);
-          setProductImages(Array.isArray(parsedImages) ? parsedImages : [selectedProduct.image]);
-        } catch (e) {
-          setProductImages([selectedProduct.image]);
-        }
-      } else if (Array.isArray(selectedProduct.image)) {
-        setProductImages(selectedProduct.image);
-      }
-    }
-    // Don't reset productImages to [] - that's what was causing the issue
-
-
-
-
+    setProductName("");
+    setProductDescription("");
+    setProductImages([]);
+    setOriginalImages([]);
     setProductCategory('');
     setProductBrand('');
     setProductGender('unisex');
@@ -191,8 +172,17 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
     setStep(1);
     setErrorMessage('');
     setSuccessMessage('');
-    setShowNotification(false);
+    setFormReset(true);
   };
+
+  useEffect(() => {
+    if (formReset) {
+      setShowNotification(true);
+      setNotificationType('success');
+      setSuccessMessage('Product details successfully reset!');
+      setTimeout(() => setFormReset(false), 2000);
+    }
+  }, [formReset]);
 
   const toggleMobileVisibility = () => {
     setIsMobileVisible(!isMobileVisible);
@@ -222,13 +212,11 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
           formData.append(`image${index}`, file);
         });
 
-
         const response = await axios.post('https://unibackend-4ebp.onrender.com/api/v1/products/uploadImage', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         });
-
 
         const imageUrls = response.data.images;
         const updatedImages = [...productImages, ...imageUrls];
@@ -336,10 +324,13 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
         showSuccessNotification('Product created successfully!');
       }
 
-      // Call the onProductSaved callback to refresh the product list while preserving images
+      // Call the onProductSaved callback to refresh the product list
       if (onProductSaved) {
         onProductSaved();
       }
+
+      // Reset form after successful submission
+      resetForm();
 
       // Close modal after short delay to show success message
       setTimeout(() => {
@@ -351,6 +342,11 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onRequestClos
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  // Add a reset button function
+  const handleResetForm = () => {
+    resetForm();
   };
 
 
