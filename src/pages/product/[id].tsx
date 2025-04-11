@@ -51,7 +51,7 @@ const ProductPage: React.FC = () => {
 
   const fetchProductData = async (productId: string) => {
     try {
-      const response = await fetch(`https://unibackend.onrender.com/api/v1/products/product/${productId}`);
+      const response = await fetch(`https://unibackend-4ebp.onrender.com/api/v1/products/product/${productId}`);
       if (!response.ok) {
         throw new Error('Failed to fetch product data');
       }

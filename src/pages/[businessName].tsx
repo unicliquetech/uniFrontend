@@ -35,7 +35,7 @@ interface VendorPageProps {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const businessName = context.params?.businessName as string;
   try {
-    const response = await fetch(`https://unibackend.onrender.com/api/v1/vendorProfile/vendorPage/${encodeURIComponent(businessName)}`);
+    const response = await fetch(`https://unibackend-4ebp.onrender.com/api/v1/vendorProfile/vendorPage/${encodeURIComponent(businessName)}`);
     const vendorData = await response.json();
 
     const vendor: VendorData = {
